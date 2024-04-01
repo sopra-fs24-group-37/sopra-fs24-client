@@ -41,7 +41,7 @@ const Login = () => {
   const doLogin = async () => {
     try {
       const requestBody = JSON.stringify({ username, name });
-      const response = await api.post("/users", requestBody);
+      const response = await api.post("/users/login", requestBody);
 
       // Get the returned user and update a new object.
       const user = new User(response.data);
@@ -56,6 +56,10 @@ const Login = () => {
         `Something went wrong during the login: \n${handleError(error)}`
       );
     }
+  };
+
+  const goToRegistration = () => {
+    navigate("/registration");
   };
 
   return (
@@ -75,10 +79,16 @@ const Login = () => {
           <div className="login button-container">
             <Button
               disabled={!username || !name}
-              width="100%"
+              width="100%" // controls size of login button
               onClick={() => doLogin()}
             >
               Login
+            </Button>
+            <Button
+              width="100%" // controls size of register button
+              onClick={goToRegistration}
+            >
+            Go to Registration
             </Button>
           </div>
         </div>

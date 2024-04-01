@@ -49,13 +49,17 @@ const Registration = () => {
       // Store the token into the local storage.
       localStorage.setItem("token", user.token);
 
-      // Login successfully worked --> navigate to the route /game in the GameRouter
+      // Registration successfully worked --> navigate to the route /game in the GameRouter
       navigate("/game");
     } catch (error) {
       alert(
-        `Something went wrong during the login: \n${handleError(error)}`
+        `Something went wrong during the registration: \n${handleError(error)}`
       );
     }
+  };
+  
+  const goToLogin = () => {
+    navigate("/login");
   };
 
   return (
@@ -75,10 +79,16 @@ const Registration = () => {
           <div className="login button-container">
             <Button
               disabled={!username || !name}
-              width="100%"
+              width="100%" // controls size of register button
               onClick={() => doRegistration()}
             >
-              Registration
+              Register
+            </Button>
+            <Button
+              width="100%" // controls size of register button
+              onClick={goToLogin}
+            >
+            Go to Login
             </Button>
           </div>
         </div>
