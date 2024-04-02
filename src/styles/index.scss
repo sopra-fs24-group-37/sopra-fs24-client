@@ -10,7 +10,11 @@ body {
   min-width: 100vw;
   min-height: 100vh;
   font-family: $fontDefault;
-  background-image: linear-gradient(135deg, $accent 10%, $accentDark 100%);
+  background-image: url('../images/background.svg'); /* Replace 'path/to/your/image.jpg' with the actual path to your image */
+  background-size: cover; /* Ensures the background image covers the entire viewport */
+  background-position: center; /* Centers the background image */
+  background-repeat: no-repeat; /* Prevents the background image from repeating */
+  background-color: rgba(0, 0, 0, 0.5); /* Optional: Adds a semi-transparent overlay for better readability of content */
 }
 
 input,

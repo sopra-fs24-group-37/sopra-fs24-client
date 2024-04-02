@@ -20,9 +20,9 @@
     padding-left: 37px;
     padding-right: 37px;
     border-radius: 0.75em;
-    background-color: $background;
+    // background-color: $background;
     transition: opacity 0.5s ease, transform 0.5s ease;
-    box-shadow: $dropShadow;
+    // box-shadow: $dropShadow;
   }
   &.field {
     display: flex;

@@ -1,26 +1,43 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
-import Header from "./Header";
 
 const Landing = () => {
+
+const navigate = useNavigate();
+
+const goToLogin = () => {
+  navigate("/login");
+};
+
+const goToRegistration = () => {
+  navigate("/registration");
+};
+
   return (
     <BaseContainer>
       <div className="login field">
         <div className="login container">
-      Please login as an existing user or register as a new user.
+          <div className="login form">
+            <div className="login button-container">
+
+            <Button
+              width="100%" // controls size of login button
+              onClick={goToLogin}
+            >
+              Login
+            </Button>
+          <Button
+              width="100%" // controls size of register button
+              onClick={goToRegistration}
+            >
+            Go to Registration
+            </Button>
+          </div>
+          </div>
         </div>
-      </div>
-      <div className="login container">
-        <Link to="/login">
-          <Button>Login</Button>
-        </Link>
-        <br />
-        <Link to="/registration">
-          <Button>Register</Button>
-        </Link>
       </div>
     </BaseContainer>
   );
