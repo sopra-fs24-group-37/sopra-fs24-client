@@ -21,6 +21,9 @@ const goToRegistration = () => {
       <div className="login field">
         <div className="login container">
           <div className="login form">
+            <div className="login title">
+              Welcome to Swissquiz!
+            </div>
             <div className="login button-container">
 
             <Button
@@ -33,7 +36,7 @@ const goToRegistration = () => {
               width="100%" // controls size of register button
               onClick={goToRegistration}
             >
-            Go to Registration
+            Register
             </Button>
           </div>
           </div>

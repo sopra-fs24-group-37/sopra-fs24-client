@@ -1,34 +1,44 @@
 @import "../theme";
 
+// defines style of the login class and its child classes (container, form, etc.)
+
 .login {
+
+  // defines style of basic container
   &.container {
     margin-top: 2em;
-    min-height: 300px;
+    min-height: 100px;
     /* we include the center mixin defined in _theme.scss and save three duplicate lines :) */
     @include center;
     flex-direction: column;
   }
+
+  // defines style of black login box
   &.form {
     display: flex;
     flex-direction: column;
     justify-content: center;
     width: 60%;
-    max-width: 30em;
+    max-width: 50em;
     height: 20em;
     font-size: 16px;
     font-weight: 300;
     padding-left: 37px;
     padding-right: 37px;
     border-radius: 0.75em;
-    // background-color: $background;
+    background-color: $background;
     transition: opacity 0.5s ease, transform 0.5s ease;
-    // box-shadow: $dropShadow;
+    box-shadow: $dropShadow;
   }
+
+  // defines positions of descriptions
   &.field {
     display: flex;
     flex-direction: column;
     justify-content: center;
   }
+
+  // defines style of input fields
   &.input {
     height: 35px;
     padding-left: 15px;
@@ -39,12 +49,23 @@
     background: transparentize(white, 0.85);
     color: $textColor;
   }
+
+  // defines style of title
+  &.title {
+    color: $textColor;
+    font-size: 30px;
+    @include center;
+  }
+
+  // defines style of descriptions
   &.label {
     color: $textColor;
     margin-bottom: 10px;
     text-transform: lowercase;
     font-weight: 300;
   }
+
+  // defines style of button
   &.button-container {
     display: flex;
     justify-content: center;

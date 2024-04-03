@@ -41,3 +41,11 @@ $borderRadius: 0.75em;
   align-items: center;
   justify-content: center;
 }
+
+@mixin header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 30px;
+}
