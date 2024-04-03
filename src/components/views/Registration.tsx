@@ -14,10 +14,14 @@ As a rule of thumb, use one file per component and only add small,
 specific components that belong to the main one in the same file.
  */
 const FormField = (props) => {
+
+  const inputType = props.label.toLowerCase() === "password" ? "password" : "text";
+
   return (
     <div className="login field">
       <label className="login label">{props.label}</label>
       <input
+        type={inputType} 
         className="login input"
         placeholder="enter here.."
         value={props.value}
@@ -66,6 +70,11 @@ const Registration = () => {
     <BaseContainer className="flex-center-wrapper">
       <div className="login container">
         <div className="login form">
+          <div className="login explanation">
+              Please register as a new user
+            </div>
+            <br></br>
+            <br></br>
           <FormField
             label="Username"
             value={username}
