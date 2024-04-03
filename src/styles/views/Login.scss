@@ -53,7 +53,8 @@
   // defines style of title
   &.title {
     color: $textColor;
-    font-size: 30px;
+    font-weight: bold;
+    font-size: 50px;
     @include center;
   }
 
@@ -61,8 +62,7 @@
   &.label {
     color: $textColor;
     margin-bottom: 10px;
-    text-transform: lowercase;
-    font-weight: 300;
+    font-weight: bold;
   }
 
   // defines style of button
