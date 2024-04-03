@@ -23,7 +23,7 @@ $SMALL_WIDTH: 768px;
 
 /* some standard elements */
 /* fonts */
-$fontDefault: "M PLUS Rounded 1c", sans-serif;
+$fontDefault: "Helvetica", sans-serif;
 $fontMono: "Roboto Mono", monospace;
 
 /* a standard drop shadow */
@@ -40,12 +40,4 @@ $borderRadius: 0.75em;
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-@mixin header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  font-size: 30px;
 }

@@ -4,13 +4,22 @@
 /**
 This file contains the general and shared style of your application.
  */
- body {
+body {
   margin: 0;
   padding: 0;
   min-width: 100vw;
   min-height: 100vh;
   font-family: $fontDefault;
   background-image: linear-gradient(135deg, $accent 10%, $accentDark 100%);
+}
+
+.flex-center-wrapper {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh; /* This ensures that the wrapper takes up the full viewport height */
+  width: 100%; /* Ensures the wrapper takes the full width of its parent */
 }
 
 input,
@@ -22,6 +31,7 @@ button {
   font-size: inherit;
   outline: none;
 }
+
 
 *:focus {
   outline: none;

@@ -63,7 +63,7 @@ const Registration = () => {
   };
 
   return (
-    <BaseContainer>
+    <BaseContainer className="flex-center-wrapper">
       <div className="login container">
         <div className="login form">
           <FormField

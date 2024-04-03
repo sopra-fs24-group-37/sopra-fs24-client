@@ -17,13 +17,13 @@ const goToRegistration = () => {
 };
 
   return (
-    <BaseContainer>
+    <BaseContainer className="flex-center-wrapper">
       <div className="login field">
         <div className="login container">
           <div className="login form">
             <div className="login title">
               Welcome to Swissquiz!
-            </div>
+              </div>
             <div className="login button-container">
 
             <Button
