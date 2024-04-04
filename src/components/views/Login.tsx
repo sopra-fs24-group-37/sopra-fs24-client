@@ -39,12 +39,12 @@ FormField.propTypes = {
 
 const Login = () => {
   const navigate = useNavigate();
-  const [password, setPassword] = useState<string>(null);
+  const [name, setName] = useState<string>(null);
   const [username, setUsername] = useState<string>(null);
 
   const doLogin = async () => {
     try {
-      const requestBody = JSON.stringify({ username, password });
+      const requestBody = JSON.stringify({ username, name });
       const response = await api.post("/users/login", requestBody);
 
       // Get the returned user and update a new object.
@@ -70,11 +70,11 @@ const Login = () => {
     <BaseContainer className="flex-center-wrapper">
       <div className="login container">
         <div className="login form">
-            <div className="login explanation">
-              Please login with your username and password
-            </div>
-            <br></br>
-            <br></br>
+          <div className="login explanation">
+            Please login with your username and password
+          </div>
+          <br></br>
+          <br></br>
           <FormField
             label="Username"
             value={username}
@@ -82,12 +82,12 @@ const Login = () => {
           />
           <FormField
             label="Password"
-            value={password}
-            onChange={(n) => setPassword(n)}
+            value={name}
+            onChange={(n) => setName(n)}
           />
           <div className="login button-container">
             <Button
-              disabled={!username || !password}
+              disabled={!username || !name}
               width="100%" // controls size of login button
               onClick={() => doLogin()}
             >

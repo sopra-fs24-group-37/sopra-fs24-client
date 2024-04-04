@@ -1,9 +1,19 @@
 @import "../theme";
 
 // defines style of the login class and its child classes (container, form, etc.)
+  
 
-.login {
+  // defines special background image for landing page (attention: must NOT be nested inside landing for inheritance to work!)
+  .background {
+    background-image: url("../../images/background_landing.png");
+    background-size: cover; // Ensure the background covers the entire element
+    background-position: center; // Center the background image
+    background-repeat: no-repeat; // Do not repeat the background image
+    width: 100%; // Ensure the div takes up the full width
+    min-height: 100vh; // Ensure the div takes up the full viewport height
+  }
 
+.landing {
   // defines style of basic container
   &.container {
     margin-top: 2em; 
@@ -18,7 +28,7 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
-    width: 300%;
+    width: 400%;
     max-width: 50em;
     height: 25em;
     font-size: 16px;
@@ -26,9 +36,9 @@
     padding-left: 37px;
     padding-right: 37px;
     border-radius: 0.75em;
-    background-color: white;
+    // background-color: white;
     transition: opacity 0.5s ease, transform 0.5s ease;
-    box-shadow: $dropShadow;
+    // box-shadow: $dropShadow;
   }
 
   // defines positions of descriptions
@@ -53,19 +63,20 @@
 
   // defines style of title
   &.title {
-    color: $boxText;
+    text-align: center;
+    color: $buttonText;
     font-weight: bold;
-    font-size: 50px;
+    font-size: 100px;
     @include center;
   }
 
-    // defines style of title
-    &.explanation {
-      color: $boxText;
-      font-weight: bold;
-      font-size: 25px;
-      @include center;
-    }
+  // defines style of title
+  &.explanation {
+    color: $boxText;
+    font-weight: bold;
+    font-size: 25px;
+    @include center;
+  }
 
   // defines style of descriptions
   &.label {

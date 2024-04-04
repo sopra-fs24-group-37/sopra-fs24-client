@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
-import "styles/views/Login.scss";
+import "styles/views/Landing.scss";
 import BaseContainer from "components/ui/BaseContainer";
 
 const Landing = () => {
@@ -17,14 +17,15 @@ const Landing = () => {
   };
 
   return (
+    <div className="landing background">
     <BaseContainer className="flex-center-wrapper">
-      <div className="login field">
-        <div className="login container">
-          <div className="login form">
-            <div className="login title">
+      <div className="landing field">
+        <div className="landing container">
+          <div className="landing form">
+            <div className="landing title">
               Welcome to Swissquiz!
             </div>
-            <div className="login button-container">
+            <div className="landing button-container">
 
               <Button
                 width="100%" // controls size of login button
@@ -43,6 +44,7 @@ const Landing = () => {
         </div>
       </div>
     </BaseContainer>
+    </div>
   );
 };
 
