@@ -11,8 +11,8 @@ import { User } from "types";
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
     <div className="player username">{user.username}</div>
-    <div className="player name">{user.name}</div>
-    <div className="player id">id: {user.id}</div>
+    {/* <div className="player name">{user.name}</div> */}
+    {/* <div className="player id">id: {user.id}</div> */}
   </div>
 );
 
@@ -99,13 +99,15 @@ const Game = () => {
   }
 
   return (
-    <BaseContainer className="game container">
-      <h2>Happy Coding!</h2>
-      <p className="game paragraph">
-        Get all users from secure endpoint:
-      </p>
-      {content}
-    </BaseContainer>
+    <div className="flex-center-wrapper">
+      <BaseContainer className="game container">
+        <h2>Registered users</h2>
+        <p className="game paragraph">
+          The following users have registered:
+        </p>
+        { content}
+      </BaseContainer>
+    </div>
   );
 };
 
