@@ -10,7 +10,10 @@ body {
   min-width: 100vw;
   min-height: 100vh;
   font-family: $fontDefault;
-  background-image: linear-gradient(135deg, $accent 10%, $accentDark 100%);
+  background-image: url("../images/background_default.png");
+  background-size: cover; // Make the background cover the entire viewport
+  background-position: center; // Center the background image
+  background-repeat: no-repeat; // Prevent the background image from repeating
 }
 
 .flex-center-wrapper {

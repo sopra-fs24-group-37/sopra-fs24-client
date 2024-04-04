@@ -13,6 +13,14 @@
     flex-direction: column;
   }
 
+  .landing-wrapper {
+    background-image: url("../../images/background_landing.png");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 100vh; // Ensures the background covers the full viewport height
+  }
+  
   // defines style of black login box
   &.form {
     display: flex;

@@ -6,15 +6,15 @@ import BaseContainer from "components/ui/BaseContainer";
 
 const Landing = () => {
 
-const navigate = useNavigate();
+  const navigate = useNavigate();
 
-const goToLogin = () => {
-  navigate("/login");
-};
+  const goToLogin = () => {
+    navigate("/login");
+  };
 
-const goToRegistration = () => {
-  navigate("/registration");
-};
+  const goToRegistration = () => {
+    navigate("/registration");
+  };
 
   return (
     <BaseContainer className="flex-center-wrapper">
@@ -23,22 +23,22 @@ const goToRegistration = () => {
           <div className="login form">
             <div className="login title">
               Welcome to Swissquiz!
-              </div>
+            </div>
             <div className="login button-container">
 
-            <Button
-              width="100%" // controls size of login button
-              onClick={goToLogin}
-            >
+              <Button
+                width="100%" // controls size of login button
+                onClick={goToLogin}
+              >
               Login
-            </Button>
-          <Button
-              width="100%" // controls size of register button
-              onClick={goToRegistration}
-            >
+              </Button>
+              <Button
+                width="100%" // controls size of register button
+                onClick={goToRegistration}
+              >
             Register
-            </Button>
-          </div>
+              </Button>
+            </div>
           </div>
         </div>
       </div>
