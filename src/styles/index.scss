@@ -25,6 +25,15 @@ body {
   width: 100%; /* Ensures the wrapper takes the full width of its parent */
 }
 
+.side-by-side-containers {
+  display: flex;
+}
+
+.registered-users-container, .games-container {
+  flex: 1;
+  margin: 0 500px; /* Adjust spacing between containers */
+}
+
 input,
 textarea,
 select,

@@ -100,10 +100,13 @@ const Game = () => {
 
   return (
     <div className="flex-center-wrapper">
-      <BaseContainer title="Registered users" className="game container">
-        <p className="game paragraph">The following users have registered:</p>
-        {content}
-      </BaseContainer>
+      <div className="side-by-side-containers">
+        <BaseContainer title="Registered users" className="game container">
+          <p className="game paragraph">The following users have registered:</p>
+          {content}
+        </BaseContainer>
+        <BaseContainer title="Games" className="game container"></BaseContainer>
+      </div>
     </div>
   );
 };
