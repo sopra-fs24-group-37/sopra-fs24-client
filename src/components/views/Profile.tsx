@@ -5,7 +5,7 @@ import { Button } from "components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-import "styles/views/Game.scss";
+import "styles/views/Profile.scss";
 import { User } from "types";
 
 const Player = ({ user }: { user: User }) => (
@@ -21,20 +21,8 @@ Player.propTypes = {
 };
 
 const Profile = () => {
-  // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
   const navigate = useNavigate();
-
-  // define a state variable (using the state hook).
-  // if this variable changes, the component will re-render, but the variable will
-  // keep its value throughout render cycles.
-  // a component can have as many state variables as you like.
-  // more information can be found under https://react.dev/learn/state-a-components-memory and https://react.dev/reference/react/useState
   const [users, setUsers] = useState<User[]>(null);
-
-  // the effect hook can be used to react to change in your component.
-  // in this case, the effect hook is only run once, the first time the component is mounted
-  // this can be achieved by leaving the second argument an empty array.
-  // for more information on the effect hook, please see https://react.dev/reference/react/useEffect
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
@@ -91,14 +79,32 @@ const Profile = () => {
   }
 
   return (
-    <div className="flex-center-wrapper">
-      <div className="side-by-side-containers">
-        <BaseContainer title="User Profile" className="game container">
-          <p className="game paragraph">User Profile</p>
-          {content}
-        </BaseContainer>
+    <BaseContainer className="flex-center-wrapper">
+      <div className="profile container">
+        <div className="profile title">User Profile </div>
+        <div style={{ textAlign: "left" }}>
+          <p>
+            <strong>Name:</strong> xxxx
+          </p>
+          <p>
+            <strong>Name:</strong> xxxx
+          </p>
+          <p>
+            <strong>Status:</strong> xxxx
+          </p>
+          <p>
+            <strong>Games played:</strong> xxxx
+          </p>
+          <p>
+            <strong>Games won:</strong> xxxx
+          </p>
+          <p>
+            <strong>Points scored:</strong> xxxx
+          </p>
+        </div>
+        <Button width="100%">Go back to Lobby</Button>
       </div>
-    </div>
+    </BaseContainer>
   );
 };
 

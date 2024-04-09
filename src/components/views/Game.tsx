@@ -100,7 +100,7 @@ const Game = () => {
 
   return (
     <div className="flex-center-wrapper">
-      <div className="side-by-side-containers">
+      <div className="game side-by-side-containers">
         <BaseContainer title="Registered users" className="game container">
           <p className="game paragraph">The following users have registered:</p>
           {content}

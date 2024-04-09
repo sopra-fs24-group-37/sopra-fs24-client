@@ -31,6 +31,9 @@
   & p,h2 {
     margin: 0.5em 0;
   }
+  &.side-by-side-containers {
+    display: flex;
+  }
 }
 
 .player {
