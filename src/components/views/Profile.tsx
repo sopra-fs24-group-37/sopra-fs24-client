@@ -102,7 +102,9 @@ const Profile = () => {
             <strong>Points scored:</strong> xxxx
           </p>
         </div>
-        <Button width="100%">Go back to Lobby</Button>
+        <Button width="100%" onClick={() => navigate("/game")}>
+          Go back to Lobby
+        </Button>
       </div>
     </BaseContainer>
   );
