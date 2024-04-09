@@ -20,7 +20,7 @@ Player.propTypes = {
   user: PropTypes.object,
 };
 
-const Game = () => {
+const Profile = () => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
   const navigate = useNavigate();
 
@@ -30,11 +30,6 @@ const Game = () => {
   // a component can have as many state variables as you like.
   // more information can be found under https://react.dev/learn/state-a-components-memory and https://react.dev/reference/react/useState
   const [users, setUsers] = useState<User[]>(null);
-
-  const logout = (): void => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
 
   // the effect hook can be used to react to change in your component.
   // in this case, the effect hook is only run once, the first time the component is mounted
@@ -86,14 +81,11 @@ const Game = () => {
       <div className="game">
         <ul className="game user-list">
           {users.map((user: User) => (
-            <li key={user.id} onClick={() => navigate("/profile/" + user.id)}>
+            <li key={user.id}>
               <Player user={user} />
             </li>
           ))}
         </ul>
-        <Button width="100%" onClick={() => logout()}>
-          Logout
-        </Button>
       </div>
     );
   }
@@ -101,14 +93,13 @@ const Game = () => {
   return (
     <div className="flex-center-wrapper">
       <div className="side-by-side-containers">
-        <BaseContainer title="Registered users" className="game container">
-          <p className="game paragraph">The following users have registered:</p>
+        <BaseContainer title="User Profile" className="game container">
+          <p className="game paragraph">User Profile</p>
           {content}
         </BaseContainer>
-        <BaseContainer title="Games" className="game container"></BaseContainer>
       </div>
     </div>
   );
 };
 
-export default Game;
+export default Profile;
