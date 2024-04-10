@@ -59,12 +59,12 @@
     @include center;
   }
 
-    // defines style of title
-    &.explanation {
-      color: $boxText;
-      font-weight: bold;
-      font-size: 25px;
-      @include center;
+  // defines style of title
+  &.explanation {
+    color: $boxText;
+    font-weight: bold;
+    font-size: 25px;
+    @include center;
     }
 
   // defines style of descriptions

@@ -21,10 +21,14 @@
   &.user-list {
     list-style: none;
     padding-left: 0;
-    cursor: pointer;
-    
-    &:hover { // This targets the hover state of the element
-      transform: translateY(-2px);
+
+    li {
+      cursor: pointer;
+      transition: transform 0.2s ease; // Smooth transition for the transform
+
+      &:hover {
+        transform: translateX(-2px);
+      }
     }
   }
   &.user-item {
