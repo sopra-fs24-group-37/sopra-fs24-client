@@ -22,6 +22,10 @@
     list-style: none;
     padding-left: 0;
     cursor: pointer;
+    
+    &:hover { // This targets the hover state of the element
+      transform: translateY(-2px);
+    }
   }
   &.user-item {
     display: flex;

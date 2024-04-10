@@ -1,28 +1,29 @@
 @import "../theme";
 .profile {
-    &.container {
-        background: $background;
-        padding: 1.5em;
-        border-radius: $borderRadius;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        box-shadow: $dropShadow;
-    }
+
+  &.container {
+    background: $background;
+    padding: 1.5em;
+    border-radius: $borderRadius;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    box-shadow: $dropShadow;
+  }
 
   &.title {
     color: $boxText;
     font-weight: bold;
-    font-size: 50px;
+    font-size: 25px;
     @include center;
   }
 
-    &.text {
-      color: $boxText;
-      font-weight: bold;
-      font-size: 25px;
-      @include center;
-    }
+  &.text {
+    color: $boxText;
+    font-weight: bold;
+    font-size: 25px;
+    @include center;
+  }
 
   &.label {
     color: $boxText;
