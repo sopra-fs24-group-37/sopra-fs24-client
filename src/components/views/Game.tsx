@@ -105,7 +105,11 @@ const Game = () => {
           <p className="game paragraph">The following users have registered:</p>
           {content}
         </BaseContainer>
-        <BaseContainer title="Games" className="game container"></BaseContainer>
+        <BaseContainer title="Games" className="game container">
+          <Button className="align-self-end" width="100%">
+            Initiate new game
+          </Button>
+        </BaseContainer>
       </div>
     </div>
   );

@@ -17,6 +17,7 @@
     flex-direction: column;
     align-items: center;
     box-shadow: $dropShadow;
+    min-width: 350px; 
   }
   &.user-list {
     list-style: none;
@@ -42,7 +43,12 @@
   }
   &.side-by-side-containers {
     display: flex;
+    gap: 50px; // creates gap between the two containers
   }
+}
+
+.align-self-end {
+  margin-top: auto;
 }
 
 .player {
