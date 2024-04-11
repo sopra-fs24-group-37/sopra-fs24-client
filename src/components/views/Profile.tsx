@@ -66,8 +66,8 @@ const Profile = () => {
 
   if (users) {
     content = (
-      <div className="game">
-        <ul className="game user-list">
+      <div className="lobby">
+        <ul className="lobby user-list">
           {users.map((user: User) => (
             <li key={user.id}>
               <Player user={user} />

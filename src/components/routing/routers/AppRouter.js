@@ -7,6 +7,7 @@ import Login from "../../views/Login";
 import Registration from "../../views/Registration";
 import Landing from "../../views/Landing";
 import Profile from "../../views/Profile";
+import GameSetup from "../../views/GameSetup";
 
 /**
  * Main router of your application.
@@ -37,6 +38,10 @@ const AppRouter = () => {
 
         <Route path="/profile/:userId" element={<LobbyGuard />}>
           <Route path="/profile/:userId" element={<Profile/>} />
+        </Route>
+
+        <Route path="/gamesetup" element={<LobbyGuard />}>
+          <Route path="" element={<GameSetup />} />
         </Route>
 
         <Route path="/" element={

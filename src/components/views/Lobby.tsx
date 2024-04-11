@@ -20,6 +20,7 @@ Player.propTypes = {
   user: PropTypes.object,
 };
 
+
 const Lobby = () => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
   const navigate = useNavigate();
@@ -34,6 +35,18 @@ const Lobby = () => {
   const logout = (): void => {
     localStorage.removeItem("token");
     navigate("/login");
+  };
+
+  const [games, setGames] = useState([]);
+
+  const initiateGame = async () => {
+    try {
+      // const response = await api.post("/games", { username: "yourUsername" }); // COMMENTED OUT FOR TESTING PURPOSES
+      // setGames([...games, response.data]); // Add the new game to the list // COMMENTED OUT FOR TESTING PURPOSES
+      navigate("/gamesetup"); // Navigate to the GameSetup view
+    } catch (error) {
+      console.error(`Game creation failed: ${handleError(error)}`);
+    }
   };
 
   // the effect hook can be used to react to change in your component.
@@ -106,7 +119,14 @@ const Lobby = () => {
           {content}
         </BaseContainer>
         <BaseContainer title="Games" className="lobby container">
-          <Button className="align-self-end" width="100%">
+          <div className="games-list">
+            {games.map((game) => (
+              <div key={game.id} onClick={() => navigate("/gamesetup")}>
+                {game.name}
+              </div>
+            ))}
+          </div>
+          <Button className="align-self-end" width="100%" onClick={initiateGame}>
             Initiate new game
           </Button>
         </BaseContainer>
