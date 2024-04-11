@@ -5,7 +5,7 @@ import { Button } from "components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
-import "styles/views/Game.scss";
+import "styles/views/Lobby.scss";
 import { User } from "types";
 
 const Player = ({ user }: { user: User }) => (
@@ -20,7 +20,7 @@ Player.propTypes = {
   user: PropTypes.object,
 };
 
-const Game = () => {
+const Lobby = () => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
   const navigate = useNavigate();
 
@@ -83,8 +83,8 @@ const Game = () => {
 
   if (users) {
     content = (
-      <div className="game">
-        <ul className="game user-list">
+      <div className="lobby">
+        <ul className="lobby user-list">
           {users.map((user: User) => (
             <li key={user.id} onClick={() => navigate("/profile/" + user.id)}>
               <Player user={user} />
@@ -100,12 +100,12 @@ const Game = () => {
 
   return (
     <div className="flex-center-wrapper">
-      <div className="game side-by-side-containers">
-        <BaseContainer title="Registered users" className="game container">
-          <p className="game paragraph">The following users have registered:</p>
+      <div className="lobby side-by-side-containers">
+        <BaseContainer title="Registered users" className="lobby container">
+          <p className="lobby paragraph">The following users have registered:</p>
           {content}
         </BaseContainer>
-        <BaseContainer title="Games" className="game container">
+        <BaseContainer title="Games" className="lobby container">
           <Button className="align-self-end" width="100%">
             Initiate new game
           </Button>
@@ -115,4 +115,4 @@ const Game = () => {
   );
 };
 
-export default Game;
+export default Lobby;

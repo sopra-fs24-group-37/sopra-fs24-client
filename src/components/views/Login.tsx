@@ -53,8 +53,8 @@ const Login = () => {
       // Store the token into the local storage.
       localStorage.setItem("token", user.token);
 
-      // Login successfully worked --> navigate to the route /game in the GameRouter
-      navigate("/game");
+      // Login successfully worked --> navigate to the route /lobby in the LobbyRouter
+      navigate("/lobby");
     } catch (error) {
       alert(
         `Something went wrong during the login: \n${handleError(error)}`

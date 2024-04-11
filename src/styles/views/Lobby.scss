@@ -1,14 +1,14 @@
 @import "../theme";
 
 /* The '&' is a shorthand for the containing element,
-  so for example a '&.user-list' inside .game will compile to
-  .game.user-list
+  so for example a '&.user-list' inside .lobby will compile to
+  .lobby.user-list
 
   for more information visit https://sass-lang.com/guide
  */
 
  // 
-.game {
+.lobby {
   &.container {
     background: $background;
     padding: 1.5em;

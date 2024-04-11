@@ -53,8 +53,8 @@ const Registration = () => {
       // Store the token into the local storage.
       localStorage.setItem("token", user.token);
 
-      // Registration successfully worked --> navigate to the route /game in the GameRouter
-      navigate("/game");
+      // Registration successfully worked --> navigate to the route /lobby in the LobbyRouter
+      navigate("/lobby");
     } catch (error) {
       alert(
         `Something went wrong during the registration: \n${handleError(error)}`
