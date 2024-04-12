@@ -45,7 +45,7 @@ const AppRouter = () => {
           <Route path="" element={<GameSetup />} />
         </Route>
 
-        <Route path="/game/*" element={<LobbyGuard />}>
+        <Route path="/gameround" element={<LobbyGuard />}>
           <Route path="" element={<GameRound />} />
         </Route>
 
