@@ -1,50 +1,43 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import BaseContainer from "components/ui/BaseContainer";
+import { api, handleError } from "helpers/api";
+import { User } from "types"; // If you have a User type defined
+import { Button } from "components/ui/Button";
+import "styles/views/Game.scss";
 
-const GameRound = () => {
-  const [imageUrl, setImageUrl] = useState('');
-  const [location, setLocation] = useState({ lat: 46.8182, lng: 8.2275 }); // Default coordinates for Switzerland
+const GameSetup = () => {
+  const [players, setPlayers] = useState<User[]>([]);
+  const navigate = useNavigate();
 
-  // Fetch an image from Unsplash
+  // Example function to fetch players (you need to implement this based on your backend API)
+  const fetchPlayers = async () => {
+    try {
+      const response = await api.get("/game/players"); // Adjust the API endpoint as necessary
+      setPlayers(response.data);
+    } catch (error) {
+      console.error(`Could not fetch players: ${handleError(error)}`);
+    }
+  };
+
   useEffect(() => {
-    const fetchImage = async () => {
-      try {
-        const response = await axios.get('https://api.unsplash.com/photos/random', {
-          params: { query: 'Switzerland landscape' },
-          headers: {
-            Authorization: `Client-ID YOUR_UNSPLASH_ACCESS_KEY`
-          }
-        });
-        setImageUrl(response.data.urls.regular);
-      } catch (error) {
-        console.error('Failed to fetch image from Unsplash:', error);
-      }
-    };
-
-    fetchImage();
+    fetchPlayers();
   }, []);
 
   return (
-    <div style={{ display: 'flex', height: '100vh' }}>
-      <div style={{ flex: 1 }}>
-        {imageUrl && <img src={imageUrl} alt="Swiss Landscape" style={{ width: '100%', height: '100%', objectFit: 'cover' }} />}
-      </div>
-      <div style={{ flex: 1 }}>
-        <MapContainer center={[location.lat, location.lng]} zoom={8} style={{ height: '100%', width: '100%' }}>
-          <TileLayer
-            url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          />
-          <Marker position={[location.lat, location.lng]}>
-            <Popup>
-              A beautiful spot in Switzerland. Click to guess the location of the picture!
-            </Popup>
-          </Marker>
-        </MapContainer>
-      </div>
+    <div className="flex-center-wrapper">
+      <BaseContainer title="Game setup" className="game container">
+        <div>Waiting for other players to join ...</div>
+        <ul>
+          {players.map((player) => (
+            <li key={player.id}>{player.username}</li>
+          ))}
+        </ul>
+        <Button width="100%" onClick={() => navigate("/lobby")}>Back to Lobby
+        </Button> 
+      </BaseContainer>
     </div>
   );
 };
 
-export default GameRound;
+export default GameSetup;
