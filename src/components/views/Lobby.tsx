@@ -41,9 +41,10 @@ const Lobby = () => {
 
   const initiateGame = async () => {
     try {
-      // const response = await api.post("/games", { username: "yourUsername" }); // COMMENTED OUT FOR TESTING PURPOSES
-      // setGames([...games, response.data]); // Add the new game to the list // COMMENTED OUT FOR TESTING PURPOSES
-      navigate("/gamesetup"); // Navigate to the GameSetup view
+      const currentUserId = localStorage.getItem("userId");
+      // const response = await api.post("/games", { gameMasterId: currentUserId }); // COMMENTED OUT FOR TESTING PURPOSES
+      // setGames([...games, { ...response.data, gameMasterId: currentUserId }]); // COMMENTED OUT FOR TESTING PURPOSES
+      // navigate("/gamesetup", { state: { gameMasterId: currentUserId } });
     } catch (error) {
       console.error(`Game creation failed: ${handleError(error)}`);
     }
@@ -66,13 +67,6 @@ const Lobby = () => {
 
         // Get the returned users and update the state.
         setUsers(response.data);
-
-        // This is just some data for you to see what is available.
-        // Feel free to remove it.
-        console.log("request to:", response.request.responseURL);
-        console.log("status code:", response.status);
-        console.log("status text:", response.statusText);
-        console.log("requested data:", response.data);
 
         // See here to get more data.
         console.log(response);
@@ -128,7 +122,7 @@ const Lobby = () => {
           </div>
           <Button className="align-self-end" width="100%" onClick={initiateGame}>
             Initiate new game
-          </Button>
+          </Button> 
         </BaseContainer>
       </div>
     </div>
