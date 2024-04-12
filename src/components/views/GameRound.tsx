@@ -4,9 +4,9 @@ import BaseContainer from "components/ui/BaseContainer";
 import { api, handleError } from "helpers/api";
 import { User } from "types"; // If you have a User type defined
 import { Button } from "components/ui/Button";
-import "styles/views/Game.scss";
+import "styles/views/GameRound.scss";
 
-const GameSetup = () => {
+const GameRound = () => {
   const [players, setPlayers] = useState<User[]>([]);
   const navigate = useNavigate();
 
@@ -26,18 +26,15 @@ const GameSetup = () => {
 
   return (
     <div className="flex-center-wrapper">
-      <BaseContainer title="Game setup" className="game container">
-        <div>Waiting for other players to join ...</div>
+      <BaseContainer title="Make your guess!" className="game container">
         <ul>
           {players.map((player) => (
             <li key={player.id}>{player.username}</li>
           ))}
         </ul>
-        <Button width="100%" onClick={() => navigate("/lobby")}>Back to Lobby
-        </Button> 
       </BaseContainer>
     </div>
   );
 };
 
-export default GameSetup;
+export default GameRound;
