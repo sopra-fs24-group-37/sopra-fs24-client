@@ -10,7 +10,7 @@ const GameSetup = () => {
   const [players, setPlayers] = useState<User[]>([]);
   const { state } = useLocation();
   const navigate = useNavigate();
-  const currentUser = localStorage.getItem("userId");
+  const currentUser = localStorage.getItem('userId');
 
   const isGamemaster = state?.gameMasterId === currentUser;
 
@@ -43,20 +43,15 @@ const GameSetup = () => {
           ))}
         </ul>
         {isGamemaster && players.length > 1 && (
-          <Button
-            width="100%"
-            onClick={startGame}
-            disabled={players.length <= 1}
-          >
+          <Button width="100%" onClick={startGame} disabled={players.length <= 1}>
             Start Game
           </Button>
         )}
-        <Button width="100%" onClick={() => navigate("/lobby")}>
-          Back to Lobby
-        </Button>
+        <Button width="100%" onClick={() => navigate("/lobby")}>Back to Lobby</Button>
       </BaseContainer>
     </div>
   );
 };
+
 
 export default GameSetup;

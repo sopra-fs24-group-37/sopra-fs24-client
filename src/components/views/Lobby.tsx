@@ -44,7 +44,7 @@ const Lobby = () => {
       const currentUserId = localStorage.getItem("userId");
       // const response = await api.post("/games", { gameMasterId: currentUserId }); // COMMENTED OUT FOR TESTING PURPOSES
       // setGames([...games, { ...response.data, gameMasterId: currentUserId }]); // COMMENTED OUT FOR TESTING PURPOSES
-      // navigate("/gamesetup", { state: { gameMasterId: currentUserId } });
+      navigate("/gamesetup", { state: { gameMasterId: currentUserId } });
     } catch (error) {
       console.error(`Game creation failed: ${handleError(error)}`);
     }

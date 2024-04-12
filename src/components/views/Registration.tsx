@@ -39,12 +39,12 @@ FormField.propTypes = {
 
 const Registration = () => {
   const navigate = useNavigate();
-  const [name, setName] = useState<string>(null);
+  const [password, setPassword] = useState<string>(null);
   const [username, setUsername] = useState<string>(null);
 
   const doRegistration = async () => {
     try {
-      const requestBody = JSON.stringify({ username, name });
+      const requestBody = JSON.stringify({ username, password });
       const response = await api.post("/users", requestBody);
 
       // Get the returned user and update a new object.
@@ -52,7 +52,6 @@ const Registration = () => {
 
       // Store the token into the local storage.
       localStorage.setItem("token", user.token);
-      localStorage.setItem("userId", user.id);
 
       // Registration successfully worked --> navigate to the route /lobby in the LobbyRouter
       navigate("/lobby");
@@ -83,12 +82,12 @@ const Registration = () => {
           />
           <FormField
             label="Password"
-            value={name}
-            onChange={(n) => setName(n)}
+            value={password}
+            onChange={(n) => setPassword(n)}
           />
           <div className="login button-container">
             <Button
-              disabled={!username || !name}
+              disabled={!username || !password}
               width="100%" // controls size of register button
               onClick={() => doRegistration()}
             >
