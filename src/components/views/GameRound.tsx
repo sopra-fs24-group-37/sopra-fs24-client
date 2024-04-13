@@ -24,14 +24,19 @@ const GameRound = () => {
             Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`
           }
         });
-        if (response.data && response.data.urls && response.data.urls.regular) {
-          setImageUrl(response.data.urls.regular);
-          if (response.data.location && response.data.location.position) {
-            setLocation({
-              lat: response.data.location.position.latitude,
-              lng: response.data.location.position.longitude
-            });
-          }
+        // Check if location data is available in the response
+        if (response.data && response.data.urls && response.data.urls.regular &&
+        response.data.location && response.data.location.position &&
+        response.data.location.position.latitude &&
+        response.data.location.position.longitude) {
+
+          setImageUrl(response.data.urls.regular); // Set the image URL
+
+          // Set the location state
+          setLocation({
+            lat: response.data.location.position.latitude,
+            lng: response.data.location.position.longitude
+          });
         }
       } catch (error) {
         console.error("Failed to fetch image from Unsplash:", error);
@@ -72,8 +77,8 @@ const GameRound = () => {
             </MapContainer>
           </div>
         </BaseContainer>
+      </div>
     </div>
-  </div>
   );
 };
 
