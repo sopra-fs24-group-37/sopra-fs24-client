@@ -21,7 +21,7 @@ const GameRound = () => {
         const response = await axios.get("https://api.unsplash.com/photos/random", {
           params: { query: "Switzerland landscape" },
           headers: {
-            Authorization: "Client-ID ACCESS_KEY"
+            Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`
           }
         });
         if (response.data && response.data.urls && response.data.urls.regular) {
