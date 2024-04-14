@@ -50,9 +50,15 @@ const GameSetup = () => {
               <li key={player.id}>{player.username}</li>
             ))}
           </ul>
-          <Button width="100%" onClick={showSettingsContainer}>
-            Game Settings
-          </Button>
+          {
+            /**isGamemaster && */ <Button
+              width="100%"
+              onClick={showSettingsContainer}
+            >
+              Game Settings
+            </Button>
+          }
+          <br></br>
           {isGamemaster && players.length > 1 && (
             <Button
               width="100%"
