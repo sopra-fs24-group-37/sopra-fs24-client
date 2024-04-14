@@ -20,7 +20,6 @@ Player.propTypes = {
   user: PropTypes.object,
 };
 
-
 const Lobby = () => {
   // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
   const navigate = useNavigate();
@@ -44,7 +43,8 @@ const Lobby = () => {
       const currentUserId = localStorage.getItem("userId");
       // const response = await api.post("/games", { gameMasterId: currentUserId }); // COMMENTED OUT FOR TESTING PURPOSES
       // setGames([...games, { ...response.data, gameMasterId: currentUserId }]); // COMMENTED OUT FOR TESTING PURPOSES
-      navigate("/gamesetup", { state: { gameMasterId: currentUserId } });
+      // navigate("/gamesetup", { state: { gameMasterId: currentUserId } });
+      navigate("/gamesetup");
     } catch (error) {
       console.error(`Game creation failed: ${handleError(error)}`);
     }
@@ -109,7 +109,9 @@ const Lobby = () => {
     <div className="flex-center-wrapper">
       <div className="lobby side-by-side-containers">
         <BaseContainer title="Registered users" className="lobby container">
-          <p className="lobby paragraph">The following users have registered:</p>
+          <p className="lobby paragraph">
+            The following users have registered:
+          </p>
           {content}
         </BaseContainer>
         <BaseContainer title="Games" className="lobby container">
@@ -120,9 +122,13 @@ const Lobby = () => {
               </div>
             ))}
           </div>
-          <Button className="align-self-end" width="100%" onClick={initiateGame}>
+          <Button
+            className="align-self-end"
+            width="100%"
+            onClick={initiateGame}
+          >
             Initiate new game
-          </Button> 
+          </Button>
         </BaseContainer>
       </div>
     </div>
