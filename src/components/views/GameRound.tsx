@@ -61,21 +61,17 @@ const GameRound = () => {
   }, []);
 
   return (
-    <div style={{ display: "flex" }}>
-      <div className="flex-center-wrapper">
-        <BaseContainer title="Make your guess!" className="game container">
-          {imageUrl && <img src={imageUrl} alt="Swiss Landscape" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+    <div className="flex-center-wrapper">
+      <div className="gameround side-by-side-containers">
+        <BaseContainer title="Make your guess!" className="gameround container">
+          {imageUrl && <img src={imageUrl} alt="Swiss Landscape" style={{ width: "90%", height: "90%", objectFit: "cover" }} />}
         </BaseContainer>
-      </div>
-      <div className="flex-center-wrapper">
-        <BaseContainer title="Map" className="game container">
-          <div style={{ flex: 1 }}>
-            <MapContainer center={[location.lat, location.lng]} zoom={8} style={{ height: "100%", width: "100%" }}>
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-            </MapContainer>
-          </div>
+        <BaseContainer title="Map" className="gameround container">
+          <MapContainer center={[location.lat, location.lng]} zoom={8} style={{ height: "100%", width: "100%" }}>
+            <TileLayer
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+          </MapContainer>
         </BaseContainer>
       </div>
     </div>
