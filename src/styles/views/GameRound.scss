@@ -8,7 +8,7 @@
  */
 
  // 
-.gameround {
+ .gameround {
   &.container {
     background: $background;
     padding: 1.5em;
@@ -17,19 +17,18 @@
     flex-direction: column;
     align-items: center;
     box-shadow: $dropShadow;
-    flex: 1 1 auto; // This makes each container grow and shrink equally
+    flex: 1 1 50%; // Take up half the width
     min-width: 350px;
-    width: 100%; // Ensure the container can expand fully within its parent
-  }
-  & p,h2 {
-    margin: 0.5em 0;
+    max-width: 50%;
   }
   &.side-by-side-containers {
     display: flex;
-    gap: 50px; // Keeps the gap between the two containers
-    width: 100%; // Ensures this parent container takes full width
-    justify-content: stretch; // Stretch children to fill the parent container
-  }
+    flex-direction: row; // Ensures side-by-side layout
+    justify-content: center; // Center the items horizontally
+    align-items: center; // Center the items vertically, important for your requirement
+    width: 100%; // Full width to the container
+    gap: 50px; // Space between the containers
+    }
 }
 
 .map {

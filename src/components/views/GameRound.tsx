@@ -3,10 +3,9 @@ import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import { api, handleError } from "helpers/api";
 import { User } from "types"; // If you have a User type defined
-import { Button } from "components/ui/Button";
 import "styles/views/GameRound.scss";
 import axios from "axios";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import SwissMap from "components/ui/SwissMap";
 import "leaflet/dist/leaflet.css";
 
 const GameRound = () => {
@@ -64,14 +63,12 @@ const GameRound = () => {
     <div className="flex-center-wrapper">
       <div className="gameround side-by-side-containers">
         <BaseContainer title="Make your guess!" className="gameround container">
-          {imageUrl && <img src={imageUrl} alt="Swiss Landscape" style={{ width: "90%", height: "90%", objectFit: "cover" }} />}
+          {imageUrl && (
+            <img src={imageUrl} alt="Swiss Landscape" style={{ width: "100%", height: "auto", objectFit: "cover" }} />
+          )}
         </BaseContainer>
-        <BaseContainer title="Map" className="gameround container">
-          <MapContainer center={[location.lat, location.lng]} zoom={8} style={{ height: "100%", width: "100%" }}>
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-            />
-          </MapContainer>
+        <BaseContainer title="Map" className="gameround container" style={{ height: "600px" }}>
+          <SwissMap />
         </BaseContainer>
       </div>
     </div>
