@@ -11,7 +11,7 @@ const GameSetup = () => {
   const [showGameSettings, setShowGameSettings] = useState(false); // State to manage visibility of game settings
   const { state } = useLocation();
   const navigate = useNavigate();
-  const currentUser = localStorage.getItem("userId");
+  const currentUser = sessionStorage.getItem("userId");
 
   const isGamemaster = state?.gameMasterId === currentUser;
 

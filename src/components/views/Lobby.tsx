@@ -32,7 +32,7 @@ const Lobby = () => {
   const [users, setUsers] = useState<User[]>(null);
 
   const logout = (): void => {
-    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     navigate("/login");
   };
 
@@ -40,7 +40,7 @@ const Lobby = () => {
 
   const initiateGame = async () => {
     try {
-      const currentUserId = localStorage.getItem("userId");
+      const currentUserId = sessionStorage.getItem("userId");
       // const response = await api.post("/games", { gameMasterId: currentUserId }); // COMMENTED OUT FOR TESTING PURPOSES
       // setGames([...games, { ...response.data, gameMasterId: currentUserId }]); // COMMENTED OUT FOR TESTING PURPOSES
       // navigate("/gamesetup", { state: { gameMasterId: currentUserId } });

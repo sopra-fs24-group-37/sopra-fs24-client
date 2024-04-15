@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
@@ -14,14 +14,14 @@ As a rule of thumb, use one file per component and only add small,
 specific components that belong to the main one in the same file.
  */
 const FormField = (props) => {
-
-  const inputType = props.label.toLowerCase() === "password" ? "password" : "text";
+  const inputType =
+    props.label.toLowerCase() === "password" ? "password" : "text";
 
   return (
     <div className="login field">
       <label className="login label">{props.label}</label>
       <input
-        type={inputType} 
+        type={inputType}
         className="login input"
         placeholder="enter here.."
         value={props.value}
@@ -51,15 +51,13 @@ const Login = () => {
       const user = new User(response.data);
 
       // Store the token into the local storage.
-      localStorage.setItem("token", user.token);
-      localStorage.setItem("userId", user.id);
+      sessionStorage.setItem("token", user.token);
+      sessionStorage.setItem("userId", user.id);
 
       // Login successfully worked --> navigate to the route /lobby in the LobbyRouter
       navigate("/lobby");
     } catch (error) {
-      alert(
-        `Something went wrong during the login: \n${handleError(error)}`
-      );
+      alert(`Something went wrong during the login: \n${handleError(error)}`);
     }
   };
 
@@ -98,7 +96,7 @@ const Login = () => {
               width="100%" // controls size of register button
               onClick={goToRegistration}
             >
-            Go to Registration
+              Go to Registration
             </Button>
           </div>
         </div>

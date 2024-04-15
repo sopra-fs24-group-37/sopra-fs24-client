@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
@@ -14,14 +14,14 @@ As a rule of thumb, use one file per component and only add small,
 specific components that belong to the main one in the same file.
  */
 const FormField = (props) => {
-
-  const inputType = props.label.toLowerCase() === "password" ? "password" : "text";
+  const inputType =
+    props.label.toLowerCase() === "password" ? "password" : "text";
 
   return (
     <div className="login field">
       <label className="login label">{props.label}</label>
       <input
-        type={inputType} 
+        type={inputType}
         className="login input"
         placeholder="enter here.."
         value={props.value}
@@ -51,7 +51,7 @@ const Registration = () => {
       const user = new User(response.data);
 
       // Store the token into the local storage.
-      localStorage.setItem("token", user.token);
+      sessionStorage.setItem("token", user.token);
 
       // Registration successfully worked --> navigate to the route /lobby in the LobbyRouter
       navigate("/lobby");
@@ -61,7 +61,7 @@ const Registration = () => {
       );
     }
   };
-  
+
   const goToLogin = () => {
     navigate("/login");
   };
@@ -70,9 +70,7 @@ const Registration = () => {
     <BaseContainer className="flex-center-wrapper">
       <div className="login container">
         <div className="login form">
-          <div className="login explanation">
-              Please register as a new user
-          </div>
+          <div className="login explanation">Please register as a new user</div>
           <br></br>
           <br></br>
           <FormField
@@ -97,7 +95,7 @@ const Registration = () => {
               width="100%" // controls size of register button
               onClick={goToLogin}
             >
-            Go to Login
+              Go to Login
             </Button>
           </div>
         </div>
