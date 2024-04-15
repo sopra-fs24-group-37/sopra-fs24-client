@@ -20,6 +20,13 @@
     flex: 1 1 50%; // Take up half the width
     min-width: 350px;
     max-width: 50%;
+    text-align: center; // This will center-align text within the container
+
+    h2 { // Assuming the title uses an <h2> tag or adjust accordingly
+      width: 100%;
+      text-align: center;
+    }
+  
   }
   &.side-by-side-containers {
     display: flex;
@@ -29,6 +36,12 @@
     width: 100%; // Full width to the container
     gap: 50px; // Space between the containers
     }
+
+  .title-font {
+    font-family: 'Helvetica', sans-serif;  // Example font family
+    font-size: 24px;  // Example font size
+    font-weight: bold;  // Example font weight
+  }     
 }
 
 .map {
