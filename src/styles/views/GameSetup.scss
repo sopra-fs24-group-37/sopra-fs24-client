@@ -8,7 +8,7 @@
  */
 
  // 
-.game {
+.gamesetup {
   &.container {
     background: $background;
     padding: 1.5em;
@@ -45,7 +45,31 @@
     display: flex;
     gap: 50px; // creates gap between the two containers
   }
-}
+  &.explanation {
+    color: $boxText;
+    font-size: 20px;
+    text-align: left;
+    display: inline-block;
+    margin-right: 10px;
+    }
+  &.gamesetup-row {
+      display: flex; 
+      align-items: center; 
+      margin-bottom: 10px; 
+    }
+  & select {
+    background-color:$buttonColor;
+    color: white;
+    font-family: inherit; 
+    font-size: 16px; 
+    padding: 10px;
+    border-color: $buttonColor; 
+    border-radius: 5px; 
+    &:hover {
+      transform: translateY(-2px);
+      cursor: pointer;
+      transition: transform 0.2s ease; }
+}}
 
 .align-self-end {
   margin-top: auto;
