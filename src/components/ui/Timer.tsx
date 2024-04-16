@@ -1,25 +1,32 @@
-// Timer.tsx
 import React, { useEffect, useState } from "react";
 
-// Extend the interface to include className
 interface TimerProps {
   initialCount: number;
+  onTimeUp: () => void;
   className?: string;
 }
 
-const Timer: React.FC<TimerProps> = ({ initialCount, className }) => {
+const Timer: React.FC<TimerProps> = ({ initialCount, onTimeUp, className }) => {
   const [timer, setTimer] = useState(initialCount);
-  const [timeIsUp, setTimeIsUp] = useState(false);
 
   useEffect(() => {
-    if (timer > 0) {
-      const timeout = setTimeout(() => setTimer(timer - 1), 1000);
+    // Create an interval that ticks every second
+    const interval = setInterval(() => {
+      setTimer(prevTimer => {
+        if (prevTimer > 1) {
+          return prevTimer - 1;
+        } else {
+          clearInterval(interval); // Clear interval when reaching zero
+          onTimeUp();              // Call the onTimeUp callback
+          
+          return 0;                // Ensure timer is set to zero
+        }
+      });
+    }, 1000);
 
-      return () => clearTimeout(timeout);
-    } else {
-      setTimeIsUp(true);
-    }
-  }, [timer]);
+    // Clear the interval when the component unmounts
+    return () => clearInterval(interval);
+  }, [onTimeUp]);
 
   return (
     <div className={className}>

@@ -14,7 +14,8 @@ const GameRound = () => {
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState("");
   const [location, setLocation] = useState({ lat: 46.8182, lng: 8.2275 });
-  const [timer, setTimer] = useState(10);
+  const [selectedLocation, setSelectedLocation] = useState(null);
+  const [canInteract, setCanInteract] = useState(true); // State to control map interaction
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -28,7 +29,6 @@ const GameRound = () => {
             },
           }
         );
-        // Check if location data is available in the response
         if (
           response.data &&
           response.data.urls &&
@@ -38,14 +38,11 @@ const GameRound = () => {
           response.data.location.position.latitude &&
           response.data.location.position.longitude
         ) {
-          setImageUrl(response.data.urls.regular); // Set the image URL
-
-          // Set the location state
+          setImageUrl(response.data.urls.regular);
           setLocation({
             lat: response.data.location.position.latitude,
             lng: response.data.location.position.longitude,
           });
-          setTimer(10); // Reset and start the timer when a new image is fetched
         }
       } catch (error) {
         console.error("Failed to fetch image from Unsplash:", error);
@@ -55,10 +52,9 @@ const GameRound = () => {
     fetchImage();
   }, []);
 
-  // Example function to fetch players (you need to implement this based on your backend API)
   const fetchPlayers = async () => {
     try {
-      const response = await api.get("/game/players"); // Adjust the API endpoint as necessary
+      const response = await api.get("/game/players");
       setPlayers(response.data);
     } catch (error) {
       console.error(`Could not fetch players: ${handleError(error)}`);
@@ -69,27 +65,35 @@ const GameRound = () => {
     fetchPlayers();
   }, []);
 
+  const handleMapClick = (latlng) => {
+    if (canInteract) {
+      setSelectedLocation(latlng);
+    }
+  };
+
+  const handleTimeUp = () => {
+    setCanInteract(false);  // This will disable map interaction when the timer expires
+  };
+
   return (
     <div className="flex-center-wrapper">
       <div className="gameround side-by-side-containers">
-        <BaseContainer className="gameround container">
-          {imageUrl && (
-            <img
-              src={imageUrl}
-              alt="Swiss Landscape"
-              style={{ width: "100%", height: "auto", objectFit: "cover" }}
-            />
-          )}
+        <BaseContainer className="gameround container" style={{ height: "650px" }}>
+          {imageUrl && <img src={imageUrl} alt="Swiss Landscape" />}
         </BaseContainer>
         <BaseContainer
           title="Where was this image taken? Make your guess by clicking on the map!"
           className="gameround container"
-          style={{ height: "600px" }}
+          style={{ height: "650px" }}
         >
           <>
-            <SwissMap />
+            <SwissMap
+              onMapClick={handleMapClick}
+              selectedLocation={selectedLocation}
+              imageLocation={!canInteract ? location : undefined}  // Pass the image location when the interaction is disabled
+            />
             <br />
-            <Timer initialCount={10} className="gameround title-font" />
+            <Timer initialCount={10} onTimeUp={handleTimeUp} className="gameround title-font" />
           </>
         </BaseContainer>
       </div>
