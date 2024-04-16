@@ -1,6 +1,6 @@
 import React from "react";
 import { MapContainer, TileLayer, ImageOverlay, useMapEvents, Marker, Popup } from "react-leaflet";
-import 'leaflet/dist/leaflet.css';
+import "leaflet/dist/leaflet.css";
 
 const imageUrl = "/map.png";
 const bounds = [
@@ -21,6 +21,7 @@ const SwissMap: React.FC<SwissMapProps> = ({ onMapClick, selectedLocation, image
         onMapClick(e.latlng);
       },
     });
+    
     return null;
   }
 

@@ -18,6 +18,7 @@ const Timer: React.FC<TimerProps> = ({ initialCount, onTimeUp, className }) => {
         } else {
           clearInterval(interval); // Clear interval when reaching zero
           onTimeUp();              // Call the onTimeUp callback
+          
           return 0;                // Ensure timer is set to zero
         }
       });

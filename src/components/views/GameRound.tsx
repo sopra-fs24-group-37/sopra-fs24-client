@@ -87,11 +87,11 @@ const GameRound = () => {
           style={{ height: "650px" }}
         >
           <>
-          <SwissMap
-  onMapClick={handleMapClick}
-  selectedLocation={selectedLocation}
-  imageLocation={!canInteract ? location : undefined}  // Pass the image location when the interaction is disabled
-/>
+            <SwissMap
+              onMapClick={handleMapClick}
+              selectedLocation={selectedLocation}
+              imageLocation={!canInteract ? location : undefined}  // Pass the image location when the interaction is disabled
+            />
             <br />
             <Timer initialCount={10} onTimeUp={handleTimeUp} className="gameround title-font" />
           </>
