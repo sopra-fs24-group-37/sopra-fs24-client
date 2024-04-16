@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { api, handleError } from "helpers/api";
 import { Spinner } from "components/ui/Spinner";
 import { Button } from "components/ui/Button";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Profile.scss";
@@ -22,17 +22,13 @@ Player.propTypes = {
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [users, setUsers] = useState<User[]>(null);
+  const [user, setUsers] = useState<User[]>(null);
+  const { userId } = useParams();
   useEffect(() => {
     // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
-        const response = await api.get("/users");
-
-        // delays continuous execution of an async operation for 1 second.
-        // This is just a fake async call, so that the spinner can be displayed
-        // feel free to remove it :)
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        const response = await api.get("/users/" + userId);
 
         // Get the returned users and update the state.
         setUsers(response.data);
@@ -60,53 +56,35 @@ const Profile = () => {
     }
 
     fetchData();
-  }, []);
+  }, [userId]);
 
   let content = <Spinner />;
 
-  if (users) {
+  if (user) {
     content = (
-      <div className="lobby">
-        <ul className="lobby user-list">
-          {users.map((user: User) => (
-            <li key={user.id}>
-              <Player user={user} />
-            </li>
-          ))}
-        </ul>
+      <div className="profile container">
+        <div className="profile title">{user.username}&apos;s Profile </div>
+        <p>
+          <strong>Status:</strong> {user.status}
+        </p>
+        <p>
+          <strong>Games played:</strong> {user.gamesPlayed}
+        </p>
+        <p>
+          <strong>Games won:</strong> {user.gamesWon}
+        </p>
+        <p>
+          <strong>Points scored:</strong> {user.pointsScored}
+        </p>
+        <Button width="100%" onClick={() => navigate("/lobby")}>
+          Go back to Lobby
+        </Button>
       </div>
     );
   }
 
   return (
-    <BaseContainer className="flex-center-wrapper">
-      <div className="profile container">
-        <div className="profile title">User Profile </div>
-        <div style={{ textAlign: "left" }}>
-          <p>
-            <strong>Name:</strong> xxxx
-          </p>
-          <p>
-            <strong>Name:</strong> xxxx
-          </p>
-          <p>
-            <strong>Status:</strong> xxxx
-          </p>
-          <p>
-            <strong>Games played:</strong> xxxx
-          </p>
-          <p>
-            <strong>Games won:</strong> xxxx
-          </p>
-          <p>
-            <strong>Points scored:</strong> xxxx
-          </p>
-        </div>
-        <Button width="100%" onClick={() => navigate("/lobby")}>
-          Go back to Lobby
-        </Button>
-      </div>
-    </BaseContainer>
+    <BaseContainer className="flex-center-wrapper">{content}</BaseContainer>
   );
 };
 
