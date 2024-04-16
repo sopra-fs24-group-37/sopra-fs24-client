@@ -14,6 +14,7 @@ const Timer: React.FC<TimerProps> = ({ initialCount, className }) => {
   useEffect(() => {
     if (timer > 0) {
       const timeout = setTimeout(() => setTimer(timer - 1), 1000);
+
       return () => clearTimeout(timeout);
     } else {
       setTimeIsUp(true);
