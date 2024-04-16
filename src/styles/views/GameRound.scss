@@ -10,6 +10,8 @@
  // 
  .gameround {
   &.container {
+    justify-content: center;
+    align-items: center;
     background: $background;
     padding: 1.5em;
     border-radius: $borderRadius;
@@ -22,6 +24,12 @@
     max-width: 50%;
     text-align: center; // This will center-align text within the container
 
+    img {
+      max-height: 100%; // Maximum height of the image is 100% of its container
+      max-width: 100%; // Maximum width of the image is 100% of its container
+      object-fit: contain; // Ensures the image is scaled to maintain its aspect ratio while fitting within the element’s content box
+    }
+
     h2 { // Assuming the title uses an <h2> tag or adjust accordingly
       width: 100%;
       text-align: center;
@@ -30,11 +38,10 @@
   }
   &.side-by-side-containers {
     display: flex;
-    flex-direction: row; // Ensures side-by-side layout
-    justify-content: center; // Center the items horizontally
-    align-items: center; // Center the items vertically, important for your requirement
-    width: 100%; // Full width to the container
-    gap: 50px; // Space between the containers
+    flex-direction: row;
+    align-items: stretch; // Make sure containers stretch to fill the parent's height
+    width: 100%;
+    gap: 50px;
     }
 
   .title-font {

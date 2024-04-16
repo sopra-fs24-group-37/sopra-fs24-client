@@ -1,3 +1,4 @@
+// GameRound.js
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
@@ -15,6 +16,7 @@ const GameRound = () => {
   const [imageUrl, setImageUrl] = useState("");
   const [location, setLocation] = useState({ lat: 46.8182, lng: 8.2275 });
   const [timer, setTimer] = useState(10);
+  const [selectedLocation, setSelectedLocation] = useState(null);
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -28,7 +30,6 @@ const GameRound = () => {
             },
           }
         );
-        // Check if location data is available in the response
         if (
           response.data &&
           response.data.urls &&
@@ -38,14 +39,12 @@ const GameRound = () => {
           response.data.location.position.latitude &&
           response.data.location.position.longitude
         ) {
-          setImageUrl(response.data.urls.regular); // Set the image URL
-
-          // Set the location state
+          setImageUrl(response.data.urls.regular);
           setLocation({
             lat: response.data.location.position.latitude,
             lng: response.data.location.position.longitude,
           });
-          setTimer(10); // Reset and start the timer when a new image is fetched
+          setTimer(10);
         }
       } catch (error) {
         console.error("Failed to fetch image from Unsplash:", error);
@@ -54,6 +53,11 @@ const GameRound = () => {
 
     fetchImage();
   }, []);
+
+  // Callback function to handle map clicks and update selected location state
+  const handleMapClick = (e) => {
+    setSelectedLocation(e.latlng);
+  };
 
   // Example function to fetch players (you need to implement this based on your backend API)
   const fetchPlayers = async () => {
@@ -72,22 +76,22 @@ const GameRound = () => {
   return (
     <div className="flex-center-wrapper">
       <div className="gameround side-by-side-containers">
-        <BaseContainer className="gameround container">
-          {imageUrl && (
-            <img
-              src={imageUrl}
-              alt="Swiss Landscape"
-              style={{ width: "100%", height: "auto", objectFit: "cover" }}
-            />
-          )}
-        </BaseContainer>
+      <BaseContainer className="gameround container" style={{ height: "600px" }}>
+  {imageUrl && (
+    <img
+      src={imageUrl}
+      alt="Swiss Landscape"
+    />
+  )}
+</BaseContainer>
         <BaseContainer
           title="Where was this image taken? Make your guess by clicking on the map!"
           className="gameround container"
           style={{ height: "600px" }}
         >
           <>
-            <SwissMap />
+            {/* Pass handleMapClick as onClick prop to SwissMap */}
+            <SwissMap onClick={handleMapClick} selectedLocation={selectedLocation} />
             <br />
             <Timer initialCount={10} className="gameround title-font" />
           </>

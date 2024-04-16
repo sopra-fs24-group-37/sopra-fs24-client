@@ -1,7 +1,5 @@
-// Timer.tsx
 import React, { useEffect, useState } from "react";
 
-// Extend the interface to include className
 interface TimerProps {
   initialCount: number;
   className?: string;
