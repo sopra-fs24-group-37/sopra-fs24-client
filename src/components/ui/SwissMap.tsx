@@ -1,5 +1,6 @@
-import React, { useEffect } from "react";
-import { MapContainer, TileLayer, useMap, ImageOverlay } from "react-leaflet";
+import React from "react";
+import { MapContainer, TileLayer, ImageOverlay, useMapEvents, Marker, Popup } from "react-leaflet";
+import 'leaflet/dist/leaflet.css';
 
 const imageUrl = "/map.png";
 const bounds = [
@@ -7,7 +8,22 @@ const bounds = [
   [50.69, 16.65],
 ];
 
-const SwissMap = () => {
+interface SwissMapProps {
+  onMapClick: (latlng: L.LatLng) => void;
+  selectedLocation?: L.LatLng;
+  imageLocation?: L.LatLng;
+}
+
+const SwissMap: React.FC<SwissMapProps> = ({ onMapClick, selectedLocation, imageLocation }) => {
+  function LocationMarker() {
+    useMapEvents({
+      click(e) {
+        onMapClick(e.latlng);
+      },
+    });
+    return null;
+  }
+
   return (
     <MapContainer
       center={[46.8, 8.2]}
@@ -21,6 +37,17 @@ const SwissMap = () => {
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <ImageOverlay url={imageUrl} bounds={bounds} />
+      <LocationMarker />
+      {selectedLocation && (
+        <Marker position={selectedLocation}>
+          <Popup>Your guess</Popup>
+        </Marker>
+      )}
+      {imageLocation && (
+        <Marker position={imageLocation}>
+          <Popup>Actual location</Popup>
+        </Marker>
+      )}
     </MapContainer>
   );
 };
