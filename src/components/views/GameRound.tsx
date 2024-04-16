@@ -2,24 +2,26 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import { api, handleError } from "helpers/api";
-import { User } from "types"; // If you have a User type defined
-import { Button } from "components/ui/Button";
+import { User } from "types";
 import "styles/views/GameRound.scss";
 import axios from "axios";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import SwissMap from "components/ui/SwissMap";
 import "leaflet/dist/leaflet.css";
+import Timer from "components/ui/Timer";
+
 
 const GameRound = () => {
   const [players, setPlayers] = useState<User[]>([]);
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState("");
   const [location, setLocation] = useState({ lat: 46.8182, lng: 8.2275 });
+  const [timer, setTimer] = useState(10); 
 
   useEffect(() => {
     const fetchImage = async () => {
       try {
         const response = await axios.get("https://api.unsplash.com/photos/random", {
-          params: { query: "Switzerland landscape" },
+          params: { query: "Switzerland landscape cityscape" },
           headers: {
             Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`
           }
@@ -37,6 +39,7 @@ const GameRound = () => {
             lat: response.data.location.position.latitude,
             lng: response.data.location.position.longitude
           });
+          setTimer(10); // Reset and start the timer when a new image is fetched
         }
       } catch (error) {
         console.error("Failed to fetch image from Unsplash:", error);
@@ -61,21 +64,19 @@ const GameRound = () => {
   }, []);
 
   return (
-    <div style={{ display: "flex" }}>
-      <div className="flex-center-wrapper">
-        <BaseContainer title="Make your guess!" className="game container">
-          {imageUrl && <img src={imageUrl} alt="Swiss Landscape" style={{ width: "100%", height: "100%", objectFit: "cover" }} />}
+    <div className="flex-center-wrapper">
+      <div className="gameround side-by-side-containers">
+        <BaseContainer className="gameround container">
+          {imageUrl && (
+              <img src={imageUrl} alt="Swiss Landscape" style={{ width: "100%", height: "auto", objectFit: "cover" }} />
+          )}
         </BaseContainer>
-      </div>
-      <div className="flex-center-wrapper">
-        <BaseContainer title="Map" className="game container">
-          <div style={{ flex: 1 }}>
-            <MapContainer center={[location.lat, location.lng]} zoom={8} style={{ height: "100%", width: "100%" }}>
-              <TileLayer
-                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              />
-            </MapContainer>
-          </div>
+        <BaseContainer title="Where was this image taken? Make your guess by clicking on the map!" className="gameround container" style={{ height: "600px" }}>
+          <>
+            <SwissMap />
+            <br/>
+            <Timer initialCount={10} className="gameround title-font" />
+          </>
         </BaseContainer>
       </div>
     </div>

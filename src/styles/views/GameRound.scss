@@ -8,7 +8,7 @@
  */
 
  // 
-.game {
+ .gameround {
   &.container {
     background: $background;
     padding: 1.5em;
@@ -17,41 +17,34 @@
     flex-direction: column;
     align-items: center;
     box-shadow: $dropShadow;
-    min-width: 350px; 
-  }
-  &.user-list {
-    list-style: none;
-    padding-left: 0;
+    flex: 1 1 50%; // Take up half the width
+    min-width: 350px;
+    max-width: 50%;
+    text-align: center; // This will center-align text within the container
 
-    li {
-      cursor: pointer;
-      transition: transform 0.2s ease; // Smooth transition for the transform
-
-      &:hover {
-        transform: translateX(-2px);
-      }
+    h2 { // Assuming the title uses an <h2> tag or adjust accordingly
+      width: 100%;
+      text-align: center;
     }
-  }
-  &.user-item {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
-  & p,h2 {
-    margin: 0.5em 0;
+  
   }
   &.side-by-side-containers {
     display: flex;
-    gap: 50px; // creates gap between the two containers
-  }
+    flex-direction: row; // Ensures side-by-side layout
+    justify-content: center; // Center the items horizontally
+    align-items: center; // Center the items vertically, important for your requirement
+    width: 100%; // Full width to the container
+    gap: 50px; // Space between the containers
+    }
+
+  .title-font {
+    font-family: 'Helvetica', sans-serif;  // Example font family
+    font-size: 24px;  // Example font size
+    font-weight: bold;  // Example font weight
+  }     
 }
 
-.align-self-end {
-  margin-top: auto;
-}
-
-.player {
+.map {
   &.container {
     margin: 0.5em 0;
     width: 20em;
