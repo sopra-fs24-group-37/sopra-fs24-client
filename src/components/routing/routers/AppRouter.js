@@ -9,6 +9,7 @@ import Landing from "../../views/Landing";
 import Profile from "../../views/Profile";
 import GameSetup from "../../views/GameSetup";
 import GameRound from "../../views/GameRound";
+import GamePodium from "../../views/GamePodium";
 
 /**
  * Main router of your application.
@@ -42,11 +43,15 @@ const AppRouter = () => {
         </Route>
 
         <Route path="/gamesetup" element={<LobbyGuard />}>
-          <Route path="" element={<GameSetup />} />
+          <Route path="/gamesetup" element={<GameSetup />} />
         </Route>
 
         <Route path="/gameround" element={<LobbyGuard />}>
-          <Route path="" element={<GameRound />} />
+          <Route path="/gameround" element={<GameRound />} />
+        </Route>
+
+        <Route path="/gamepodium" element={<LobbyGuard />}>
+          <Route path="/gamepodium" element={<GamePodium />} />
         </Route>
 
         <Route path="/" element={
