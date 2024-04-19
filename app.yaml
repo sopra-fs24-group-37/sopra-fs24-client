@@ -20,6 +20,3 @@ handlers:
   - url: /.*
     static_files: build/index.html
     upload: build/index.html
-  - url: /(.*\.(png|jpg|jpeg|gif))
-    static_files: public/\1
-    upload: public/.*\.(png|jpg|jpeg|gif)
