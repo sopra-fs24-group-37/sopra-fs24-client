@@ -6,7 +6,7 @@
   // defines special background image for landing page (attention: must NOT be nested inside landing for inheritance to work!)
   .background {
     background-image: url("../../images/background_landing.png");
-    background-size: cover; // Ensure the background covers the entire element
+    background-size: cover; // Ensure  the background covers the entire element
     background-position: center; // Center the background image
     background-repeat: no-repeat; // Do not repeat the background image
     width: 100%; // Ensure the div takes up the full width

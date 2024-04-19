@@ -5,6 +5,9 @@ handlers:
   - url: /(.*\.(png|jpg|jpeg|gif))
     static_files: public/\1
     upload: public/.*\.(png|jpg|jpeg|gif)
+  - url: /images/(.*\.(png|jpg|jpeg|gif))
+    static_files: build/images/\1
+    upload: build/images/.*\.(png|jpg|jpeg|gif)    
   - url: /static/js/(.*)
     static_files: build/static/js/\1
     upload: build/static/js/(.*)
