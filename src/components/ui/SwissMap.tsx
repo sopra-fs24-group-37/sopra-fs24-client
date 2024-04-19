@@ -1,7 +1,7 @@
 import React from "react";
 import { MapContainer, TileLayer, ImageOverlay, useMapEvents, Marker, Popup } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
-import imageUrl from '../../images/map.png';  // Adjust the relative path as necessary
+import imageUrl from "../../images/map.png";  // Adjust the relative path as necessary
 
 const bounds = [
   [43.48, 0.065],
