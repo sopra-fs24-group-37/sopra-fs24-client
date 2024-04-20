@@ -40,7 +40,7 @@ const Lobby = () => {
       const response = await api.post("/games", { gameMaster: currentUserId });
       if (response.status === 201) {
         // Game created successfully, navigate to the game setup page
-        navigate(`/gamesetup/${gameId}`);
+        navigate("/gamesetup");
       } else {
         // Handle other HTTP status codes if needed
         console.error(`Game creation failed with status: ${response.status}`);
@@ -58,7 +58,7 @@ const Lobby = () => {
       const response = await api.put(`/games/${gameId}/join`, currentUserId);
       if (response.status === 200) {
         // Game created successfully, navigate to the game setup page
-        navigate(`/gamesetup/${gameId}`);
+        navigate("/gamesetup");
       } else {
         // Handle other HTTP status codes if needed
         console.error(`Joining game failed with status: ${response.status}`);
@@ -67,6 +67,12 @@ const Lobby = () => {
       // Handle network errors or other exceptions
       console.error(`Joining game failed: ${handleError(error)}`);
     }
+  };
+
+  const getUserUsername = (userId: number): string => {
+    const user = users.find((user) => user.id === userId);
+
+    return user ? user.username : "Unknown";
   };
 
   useEffect(() => {
@@ -138,7 +144,9 @@ const Lobby = () => {
       <div className="lobby game-list">
         {games.map((game: Game) => (
           <li key={game.gameId} onClick={() => joinGame(game.gameId)}>
-            <div className="lobby game-container">{game.gameMaster}</div>
+            <div className="lobby game-container">
+              {getUserUsername(game.gameMaster)}&apos;s Game
+            </div>
           </li>
         ))}
       </div>
