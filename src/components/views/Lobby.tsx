@@ -6,7 +6,7 @@ import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Lobby.scss";
-import { User } from "types";
+import { User, Game } from "types";
 
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
@@ -30,14 +30,13 @@ const Lobby = () => {
   // a component can have as many state variables as you like.
   // more information can be found under https://react.dev/learn/state-a-components-memory and https://react.dev/reference/react/useState
   const [users, setUsers] = useState<User[]>(null);
+  const [games, setGames] = useState<Game[]>(null);
 
   const logout = (): void => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("userId");
     navigate("/login");
   };
-
-  const [games, setGames] = useState([]);
 
   const initiateGame = async () => {
     try {
@@ -93,7 +92,10 @@ const Lobby = () => {
       try {
         const response = await api.get("/games");
         await new Promise((resolve) => setTimeout(resolve, 1000));
-        setGames(response.data);
+        const filteredGames = response.data.filter(
+          (game) => game.gameStatus === "WAITING"
+        );
+        setGames(filteredGames);
         console.log(response);
       } catch (error) {
         console.error(
@@ -127,11 +129,11 @@ const Lobby = () => {
   let gamesContent = <Spinner />;
   if (games) {
     gamesContent = (
-      <div className="games-list">
+      <div className="lobby game-list">
         {games.map((game: Game) => (
-          <div key={game.id} onClick={() => navigate("/gamesetup")}>
-            {game.name}
-          </div>
+          <li key={game.gameId} onClick={() => navigate("/gamesetup")}>
+            <div className="lobby game-container">{game.gameMaster}</div>
+          </li>
         ))}
       </div>
     );
