@@ -21,16 +21,11 @@ Player.propTypes = {
 };
 
 const Lobby = () => {
-  // use react-router-dom's hook to access navigation, more info: https://reactrouter.com/en/main/hooks/use-navigate
   const navigate = useNavigate();
-
-  // define a state variable (using the state hook).
-  // if this variable changes, the component will re-render, but the variable will
-  // keep its value throughout render cycles.
-  // a component can have as many state variables as you like.
-  // more information can be found under https://react.dev/learn/state-a-components-memory and https://react.dev/reference/react/useState
   const [users, setUsers] = useState<User[]>(null);
   const [games, setGames] = useState<Game[]>(null);
+
+  /*  Here come a bunch of functions used in the components further down this file. */
 
   const logout = (): void => {
     sessionStorage.removeItem("token");
@@ -56,24 +51,26 @@ const Lobby = () => {
     }
   };
 
-  // the effect hook can be used to react to change in your component.
-  // in this case, the effect hook is only run once, the first time the component is mounted
-  // this can be achieved by leaving the second argument an empty array.
-  // for more information on the effect hook, please see https://react.dev/reference/react/useEffect
+  const joinGame = async (gameId: string) => {
+    try {
+      const currentUserId = sessionStorage.getItem("userId");
+      console.log("Current GameID:", gameId);
+      const response = await api.put(`/games/${gameId}/join`, currentUserId);
+    } catch (error) {
+      // Handle network errors or other exceptions
+      console.error(`Joining game failed: ${handleError(error)}`);
+    }
+  };
+
   useEffect(() => {
-    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
         const response = await api.get("/users");
-
-        // delays continuous execution of an async operation for 1 second.
-        // This is just a fake async call, so that the spinner can be displayed
-        // feel free to remove it :)
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-
+        await new Promise((resolve) =>
+          setTimeout(resolve, 1000)
+        ); /* Can be removed */
         // Get the returned users and update the state.
         setUsers(response.data);
-
         // See here to get more data.
         console.log(response);
       } catch (error) {
@@ -88,6 +85,7 @@ const Lobby = () => {
         );
       }
     }
+
     async function fetchGames() {
       try {
         const response = await api.get("/games");
@@ -109,6 +107,7 @@ const Lobby = () => {
         );
       }
     }
+
     fetchData();
     fetchGames();
   }, []);
@@ -131,7 +130,7 @@ const Lobby = () => {
     gamesContent = (
       <div className="lobby game-list">
         {games.map((game: Game) => (
-          <li key={game.gameId} onClick={() => navigate("/gamesetup")}>
+          <li key={game.gameId} onClick={() => joinGame(game.gameId)}>
             <div className="lobby game-container">{game.gameMaster}</div>
           </li>
         ))}
