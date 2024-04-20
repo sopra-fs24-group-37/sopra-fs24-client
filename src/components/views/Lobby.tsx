@@ -40,7 +40,7 @@ const Lobby = () => {
       const response = await api.post("/games", { gameMaster: currentUserId });
       if (response.status === 201) {
         // Game created successfully, navigate to the game setup page
-        navigate("/gamesetup");
+        navigate(`/gamesetup/${gameId}`);
       } else {
         // Handle other HTTP status codes if needed
         console.error(`Game creation failed with status: ${response.status}`);
@@ -56,6 +56,13 @@ const Lobby = () => {
       const currentUserId = sessionStorage.getItem("userId");
       console.log("Current GameID:", gameId);
       const response = await api.put(`/games/${gameId}/join`, currentUserId);
+      if (response.status === 200) {
+        // Game created successfully, navigate to the game setup page
+        navigate(`/gamesetup/${gameId}`);
+      } else {
+        // Handle other HTTP status codes if needed
+        console.error(`Joining game failed with status: ${response.status}`);
+      }
     } catch (error) {
       // Handle network errors or other exceptions
       console.error(`Joining game failed: ${handleError(error)}`);
