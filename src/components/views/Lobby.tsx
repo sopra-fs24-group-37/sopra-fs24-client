@@ -33,6 +33,7 @@ const Lobby = () => {
 
   const logout = (): void => {
     sessionStorage.removeItem("token");
+    sessionStorage.removeItem("userId");
     navigate("/login");
   };
 
@@ -41,11 +42,17 @@ const Lobby = () => {
   const initiateGame = async () => {
     try {
       const currentUserId = sessionStorage.getItem("userId");
-      // const response = await api.post("/games", { gameMasterId: currentUserId }); // COMMENTED OUT FOR TESTING PURPOSES
-      // setGames([...games, { ...response.data, gameMasterId: currentUserId }]); // COMMENTED OUT FOR TESTING PURPOSES
-      // navigate("/gamesetup", { state: { gameMasterId: currentUserId } });
-      navigate("/gamesetup");
+      console.log("Current UserID:", currentUserId); // Log the value of currentUserId
+      const response = await api.post("/games", { gameMaster: currentUserId });
+      if (response.status === 201) {
+        // Game created successfully, navigate to the game setup page
+        navigate("/gamesetup");
+      } else {
+        // Handle other HTTP status codes if needed
+        console.error(`Game creation failed with status: ${response.status}`);
+      }
     } catch (error) {
+      // Handle network errors or other exceptions
       console.error(`Game creation failed: ${handleError(error)}`);
     }
   };
@@ -82,25 +89,50 @@ const Lobby = () => {
         );
       }
     }
-
+    async function fetchGames() {
+      try {
+        const response = await api.get("/games");
+        await new Promise((resolve) => setTimeout(resolve, 1000));
+        setGames(response.data);
+        console.log(response);
+      } catch (error) {
+        console.error(
+          `Something went wrong while fetching the games: \n${handleError(
+            error
+          )}`
+        );
+        console.error("Details:", error);
+        alert(
+          "Something went wrong while fetching the games! See the console for details."
+        );
+      }
+    }
     fetchData();
+    fetchGames();
   }, []);
 
-  let content = <Spinner />;
-
+  let usersContent = <Spinner />;
   if (users) {
-    content = (
-      <div className="lobby">
-        <ul className="lobby user-list">
-          {users.map((user: User) => (
-            <li key={user.id} onClick={() => navigate("/profile/" + user.id)}>
-              <Player user={user} />
-            </li>
-          ))}
-        </ul>
-        <Button width="100%" onClick={() => logout()}>
-          Logout
-        </Button>
+    usersContent = (
+      <ul className="lobby user-list">
+        {users.map((user: User) => (
+          <li key={user.id} onClick={() => navigate(`/profile/${user.id}`)}>
+            <Player user={user} />
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  let gamesContent = <Spinner />;
+  if (games) {
+    gamesContent = (
+      <div className="games-list">
+        {games.map((game: Game) => (
+          <div key={game.id} onClick={() => navigate("/gamesetup")}>
+            {game.name}
+          </div>
+        ))}
       </div>
     );
   }
@@ -112,16 +144,13 @@ const Lobby = () => {
           <p className="lobby paragraph">
             The following users have registered:
           </p>
-          {content}
+          {usersContent}
+          <Button width="100%" onClick={() => logout()}>
+            Logout
+          </Button>
         </BaseContainer>
         <BaseContainer title="Games" className="lobby container">
-          <div className="games-list">
-            {games.map((game) => (
-              <div key={game.id} onClick={() => navigate("/gamesetup")}>
-                {game.name}
-              </div>
-            ))}
-          </div>
+          {gamesContent}
           <Button
             className="align-self-end"
             width="100%"
