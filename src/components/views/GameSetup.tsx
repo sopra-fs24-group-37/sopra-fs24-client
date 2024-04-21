@@ -29,8 +29,35 @@ const GameSetup = () => {
     }
   };
 
-  const startGame = () => {
-    console.log("Game is starting...");
+  const startGame = async (gameId: string) => {
+    try {
+      const response = await api.put(`/games/${gameId}/start`);
+      if (response.status === 200) {
+        // Game started successfully
+        navigate("/gameround");
+      } else {
+        // Handle other HTTP status codes if needed
+        console.error(`Starting game failed with status: ${response.status}`);
+      }
+    } catch (error) {
+      // Handle network errors or other exceptions
+      console.error(`Starting game failed: ${handleError(error)}`);
+    }
+  };
+
+  const leaveGame = async (gameId: string) => {
+    try {
+      const currentUserId = sessionStorage.getItem("userId");
+      const response = await api.put(`/games/${gameId}/leave`, currentUserId);
+      if (response.status === 200) {
+        navigate("/lobby");
+      } else {
+        console.error(`Leaving game failed with status: ${response.status}`);
+      }
+    } catch (error) {
+      // Handle network errors or other exceptions
+      console.error(`Leaving game failed: ${handleError(error)}`);
+    }
   };
 
   const showSettingsContainer = () => {
@@ -60,16 +87,17 @@ const GameSetup = () => {
             </Button>
           }
           <br></br>
-          {isGamemaster && players.length > 1 && (
-            <Button
+          {
+            /*isGamemaster && players.length > 1 &&*/ <Button
               width="100%"
               onClick={startGame}
-              disabled={players.length <= 1}
+              //disabled={players.length <= 1}
             >
               Start Game
             </Button>
-          )}
-          <Button width="100%" onClick={() => navigate("/lobby")}>
+          }
+          <br></br>
+          <Button width="100%" onClick={leaveGame}>
             Back to Lobby
           </Button>
         </BaseContainer>

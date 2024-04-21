@@ -42,12 +42,12 @@ const AppRouter = () => {
           <Route path="/profile/:userId" element={<Profile/>} />
         </Route>
 
-        <Route path="/gamesetup" element={<LobbyGuard />}>
-          <Route path="/gamesetup" element={<GameSetup />} />
+        <Route path="/gamesetup/:gameId" element={<LobbyGuard />}>
+          <Route path="/gamesetup/:gameId" element={<GameSetup />} />
         </Route>
 
-        <Route path="/gameround" element={<LobbyGuard />}>
-          <Route path="/gameround" element={<GameRound />} />
+        <Route path="/gameround/:gameId" element={<LobbyGuard />}>
+          <Route path="/gameround/:gameId" element={<GameRound />} />
         </Route>
 
         <Route path="/gamepodium" element={<LobbyGuard />}>

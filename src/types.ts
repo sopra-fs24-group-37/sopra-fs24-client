@@ -3,3 +3,8 @@ export type User = {
   name: string;
   id: number;
 };
+
+export type Game = {
+  gameMaster: any;
+  gameId: string;
+};
