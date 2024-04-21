@@ -1,7 +1,13 @@
 import React from "react";
 import { MapContainer, TileLayer, ImageOverlay, useMapEvents, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import imageUrl from "../../images/map.png";  // Adjust the relative path as necessary
+import imageUrl from "../../images/map.png";
+import blackIcon from "../../images/black_icon.svg";
+import blueIcon from "../../images/blue_icon.svg";
+import greenIcon from "../../images/green_icon.svg";
+import pinkIcon from "../../images/pink_icon.svg";
+import purpleIcon from "../../images/purple_icon.svg";
 
 const bounds = [
   [43.48, 0.065],
@@ -14,6 +20,14 @@ interface SwissMapProps {
   imageLocation?: L.LatLng;
 }
 
+// Function to create custom icons
+const createIcon = (iconUrl: string) => new L.Icon({
+  iconUrl,
+  iconSize: [30, 42], // Size of the icon
+  iconAnchor: [15, 42], // Point of the icon which will correspond to marker's location
+  popupAnchor: [0, -42] // Point from which the popup should open relative to the iconAnchor
+});
+
 const SwissMap: React.FC<SwissMapProps> = ({ onMapClick, selectedLocation, imageLocation }) => {
   function LocationMarker() {
     useMapEvents({
@@ -21,9 +35,16 @@ const SwissMap: React.FC<SwissMapProps> = ({ onMapClick, selectedLocation, image
         onMapClick(e.latlng);
       },
     });
-    
+
     return null;
   }
+
+  // Create icons for each marker
+  const blackMarkerIcon = createIcon(blackIcon);
+  const blueMarkerIcon = createIcon(blueIcon);
+  const greenMarkerIcon = createIcon(greenIcon);
+  const pinkMarkerIcon = createIcon(pinkIcon);
+  const purpleMarkerIcon = createIcon(purpleIcon);
 
   return (
     <MapContainer
@@ -40,12 +61,12 @@ const SwissMap: React.FC<SwissMapProps> = ({ onMapClick, selectedLocation, image
       <ImageOverlay url={imageUrl} bounds={bounds} />
       <LocationMarker />
       {selectedLocation && (
-        <Marker position={selectedLocation}>
+        <Marker position={selectedLocation} icon={pinkMarkerIcon}>
           <Popup>Your guess</Popup>
         </Marker>
       )}
       {imageLocation && (
-        <Marker position={imageLocation}>
+        <Marker position={imageLocation} icon={blackMarkerIcon}>
           <Popup>Actual location</Popup>
         </Marker>
       )}
