@@ -6,7 +6,8 @@ import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Lobby.scss";
-import { User, Game } from "types";
+import { User } from "types";
+import Game from "models/Game";
 
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
@@ -38,9 +39,11 @@ const Lobby = () => {
       const currentUserId = sessionStorage.getItem("userId");
       console.log("Current UserID:", currentUserId); // Log the value of currentUserId
       const response = await api.post("/games", { gameMaster: currentUserId });
+      const games = new Game(response.data);
+      sessionStorage.setItem("gameId", games.gameId);
       if (response.status === 201) {
         // Game created successfully, navigate to the game setup page
-        navigate("/gamesetup");
+        navigate(`/gamesetup/${games.gameId}`);
       } else {
         // Handle other HTTP status codes if needed
         console.error(`Game creation failed with status: ${response.status}`);
@@ -56,9 +59,12 @@ const Lobby = () => {
       const currentUserId = sessionStorage.getItem("userId");
       console.log("Current GameID:", gameId);
       const response = await api.put(`/games/${gameId}/join`, currentUserId);
+      const games = new Game(response.data);
+      sessionStorage.setItem("gameId", games.gameId);
+
       if (response.status === 200) {
         // Game created successfully, navigate to the game setup page
-        navigate("/gamesetup");
+        navigate(`/gamesetup/${games.gameId}`);
       } else {
         // Handle other HTTP status codes if needed
         console.error(`Joining game failed with status: ${response.status}`);
