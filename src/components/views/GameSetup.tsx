@@ -6,6 +6,9 @@ import { User } from "types";
 import { Button } from "components/ui/Button";
 import "styles/views/GameSetup.scss";
 import PropTypes from "prop-types";
+import { Client, Message } from '@stomp/stompjs';
+import { WebSocket } from 'ws';
+
 
 const GameSetup = () => {
   const [players, setPlayers] = useState<User[]>([]);
@@ -13,11 +16,22 @@ const GameSetup = () => {
   const { state } = useLocation();
   const navigate = useNavigate();
   const currentUser = sessionStorage.getItem("userId");
+  const gameId = sessionStorage.getItem("gameId")
 
   const isGamemaster = state?.gameMasterId === currentUser;
 
   useEffect(() => {
-    fetchPlayers();
+    const client = new Client({
+      brokerURL: "ws://localhost:8080/ws",
+      onConnect: () => {
+        client.subscribe("/topic/games/" + gameId, message =>
+          console.log(`Received: ${message.body}`)
+        );
+        client.publish({ destination: "/app/games/" + gameId + "/joined", body: gameId });
+      },
+    });
+    
+    client.activate();
   }, []);
 
   const fetchPlayers = async () => {
