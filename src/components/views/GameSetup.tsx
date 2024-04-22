@@ -7,8 +7,6 @@ import { Button } from "components/ui/Button";
 import "styles/views/GameSetup.scss";
 import PropTypes from "prop-types";
 import { Client, Message } from '@stomp/stompjs';
-import { WebSocket } from 'ws';
-
 
 const GameSetup = () => {
   const [players, setPlayers] = useState<User[]>([]);
@@ -33,15 +31,6 @@ const GameSetup = () => {
     
     client.activate();
   }, []);
-
-  const fetchPlayers = async () => {
-    try {
-      const response = await api.get("/game/players");
-      setPlayers(response.data);
-    } catch (error) {
-      console.error(`Could not fetch players: ${handleError(error)}`);
-    }
-  };
 
   const startGame = async (gameId: string) => {
     try {
