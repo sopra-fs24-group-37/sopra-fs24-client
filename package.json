@@ -3,6 +3,7 @@
   "version": "0.24.0",
   "private": true,
   "dependencies": {
+    "@stomp/stompjs": "^7.0.0",
     "axios": "^1.6.8",
     "eslint-config-react-app": "^7.0.1",
     "leaflet": "^1.9.4",
@@ -12,7 +13,8 @@
     "react-router-dom": "^6.21.3",
     "react-scripts": "^5.0.1",
     "serve": "^14.2.1",
-    "typescript": "^3.2.1"
+    "typescript": "^3.2.1",
+    "ws": "^8.16.0"
   },
   "scripts": {
     "dev": "react-scripts start",

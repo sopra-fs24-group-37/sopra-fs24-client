@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import {LobbyGuard} from "../routeProtectors/LobbyGuard";
 import {LoginGuard} from "../routeProtectors/LoginGuard";
+import { connectWebSocket, disconnectWebSocket } from '../../../helpers/stomp.js';
 import Lobby from "../../views/Lobby";
 import Login from "../../views/Login";
 import Registration from "../../views/Registration";
@@ -21,6 +22,17 @@ import GamePodium from "../../views/GamePodium";
  * Documentation about routing in React: https://reactrouter.com/en/main/start/tutorial 
  */
 const AppRouter = () => {
+  const [client, setClient] = useState(null);
+
+  useEffect(() => {
+    const newClient = connectWebSocket();
+    setClient(newClient);
+
+    return () => {
+      disconnectWebSocket();
+    };
+  }, []);
+
   return (
     <BrowserRouter>
       <Routes>
@@ -43,7 +55,7 @@ const AppRouter = () => {
         </Route>
 
         <Route path="/gamesetup/:gameId" element={<LobbyGuard />}>
-          <Route path="/gamesetup/:gameId" element={<GameSetup />} />
+          <Route path="/gamesetup/:gameId" element={<GameSetup client={client}/>} />
         </Route>
 
         <Route path="/gameround/:gameId" element={<LobbyGuard />}>

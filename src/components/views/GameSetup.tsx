@@ -7,34 +7,34 @@ import { Button } from "components/ui/Button";
 import "styles/views/GameSetup.scss";
 import PropTypes from "prop-types";
 
-const GameSetup = () => {
+const GameSetup = ({client}) => {
   const [players, setPlayers] = useState<User[]>([]);
   const [showGameSettings, setShowGameSettings] = useState(false); // State to manage visibility of game settings
   const { state } = useLocation();
   const navigate = useNavigate();
   const currentUser = sessionStorage.getItem("userId");
-
+  const gameId = sessionStorage.getItem("gameId")
   const isGamemaster = state?.gameMasterId === currentUser;
 
   useEffect(() => {
-    fetchPlayers();
+    const updateSubscription = client.subscribe("/topic/games/" + gameId, message =>
+      console.log(`Received: ${message.body}`)
+    );
+    const startSubscription = client.subscribe("/topic/games/" + gameId + "/started", message =>{
+      console.log(`Received: ${message.body}`);
+      console.log("random");
+      navigate("/gameround/"+gameId);
+  });
+    client.publish({ destination: "/app/games/" + gameId + "/joined", body: gameId });
   }, []);
 
-  const fetchPlayers = async () => {
-    try {
-      const response = await api.get("/game/players");
-      setPlayers(response.data);
-    } catch (error) {
-      console.error(`Could not fetch players: ${handleError(error)}`);
-    }
-  };
-
-  const startGame = async (gameId: string) => {
+  const startGame = async () => {
     try {
       const response = await api.put(`/games/${gameId}/start`);
+      client.publish({ destination: "/app/games/" + gameId + "/started", body: gameId });
       if (response.status === 200) {
         // Game started successfully
-        navigate("/gameround");
+        navigate("/gameround/"+gameId);
       } else {
         // Handle other HTTP status codes if needed
         console.error(`Starting game failed with status: ${response.status}`);
@@ -45,11 +45,13 @@ const GameSetup = () => {
     }
   };
 
-  const leaveGame = async (gameId: string) => {
+  const leaveGame = async () => {
     try {
       const currentUserId = sessionStorage.getItem("userId");
       const response = await api.put(`/games/${gameId}/leave`, currentUserId);
       if (response.status === 200) {
+        client.publish({ destination: "/app/games/" + gameId + "/joined", body: gameId });
+        sessionStorage.removeItem("gameId")
         navigate("/lobby");
       } else {
         console.error(`Leaving game failed with status: ${response.status}`);
@@ -111,6 +113,10 @@ const GameSetup = () => {
       )}
     </div>
   );
+};
+
+GameSetup.propTypes = {
+  client: PropTypes.object.isRequired,// Validate prop type
 };
 
 /**The following part is for adjusting the game parameters and could be a seperate component */
