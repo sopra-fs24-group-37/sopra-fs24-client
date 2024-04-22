@@ -15,7 +15,7 @@ const GameSetup = () => {
   const navigate = useNavigate();
   const currentUser = sessionStorage.getItem("userId");
   const gameId = sessionStorage.getItem("gameId")
-
+  let client;
   const isGamemaster = state?.gameMasterId === currentUser;
 
   useEffect(() => {
@@ -32,12 +32,12 @@ const GameSetup = () => {
     client.activate();
   }, []);
 
-  const startGame = async (gameId: string) => {
+  const startGame = async () => {
     try {
       const response = await api.put(`/games/${gameId}/start`);
       if (response.status === 200) {
         // Game started successfully
-        navigate("/gameround");
+        navigate("/gameround/"+gameId);
       } else {
         // Handle other HTTP status codes if needed
         console.error(`Starting game failed with status: ${response.status}`);
@@ -48,11 +48,12 @@ const GameSetup = () => {
     }
   };
 
-  const leaveGame = async (gameId: string) => {
+  const leaveGame = async () => {
     try {
       const currentUserId = sessionStorage.getItem("userId");
       const response = await api.put(`/games/${gameId}/leave`, currentUserId);
       if (response.status === 200) {
+        sessionStorage.removeItem("gameId")
         navigate("/lobby");
       } else {
         console.error(`Leaving game failed with status: ${response.status}`);
