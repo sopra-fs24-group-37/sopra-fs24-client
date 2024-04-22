@@ -12,8 +12,8 @@ import Game from "models/Game";
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
     <div className="player username">{user.username}</div>
-    {/* <div className="player name">{user.name}</div> */}
-    {/* <div className="player id">id: {user.id}</div> */}
+
+
   </div>
 );
 
@@ -76,7 +76,7 @@ const Lobby = () => {
   };
 
   const getUserUsername = (userId: number): string => {
-    const user = users.find((user) => user.id === userId);
+    const user = users.find((user) => user.userId === userId);
 
     return user ? user.username : "Unknown";
   };
@@ -135,8 +135,8 @@ const Lobby = () => {
   if (users) {
     usersContent = (
       <ul className="lobby user-list">
-        {users.map((user: User) => (
-          <li key={user.id} onClick={() => navigate(`/profile/${user.id}`)}>
+        {users.map((user: User & { userId: number }) => (
+          <li key={user.userId} onClick={() => navigate(`/profile/${user.userId}`)}>
             <Player user={user} />
           </li>
         ))}

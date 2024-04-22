@@ -52,7 +52,7 @@ const Login = () => {
 
       // Store the token into the local storage.
       sessionStorage.setItem("token", user.token);
-      sessionStorage.setItem("userId", user.id);
+      sessionStorage.setItem("userId", user.userId);
 
       // Login successfully worked --> navigate to the route /lobby in the LobbyRouter
       navigate("/lobby");
