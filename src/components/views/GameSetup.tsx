@@ -14,8 +14,8 @@ const GameSetup = ({ client }) => {
   const navigate = useNavigate();
   const currentUser = sessionStorage.getItem("userId");
   const gameId = sessionStorage.getItem("gameId");
-  const isGamemaster = state?.gameMasterId === currentUser;
   const [users, setUsers] = useState<User[]>(null);
+  const [isGamemaster, setIsGamemaster] = useState(false);
 
   useEffect(() => {
     const updateSubscription = client.subscribe(
@@ -27,6 +27,7 @@ const GameSetup = ({ client }) => {
           userId: player.playerId,
         }));
         setUsers(updatedUsers);
+        setIsGamemaster(gameData.gameMaster === parseInt(currentUser));
       }
     );
     const startSubscription = client.subscribe(
@@ -114,20 +115,19 @@ const GameSetup = ({ client }) => {
             /**isGamemaster && */ <Button
               width="100%"
               onClick={showSettingsContainer}
+              disabled={!isGamemaster || showGameSettings}
             >
               Game Settings
             </Button>
           }
           <br></br>
-          {
-            /*isGamemaster && players.length > 1 &&*/ <Button
-              width="100%"
-              onClick={startGame}
-              //disabled={players.length <= 1}
-            >
-              Start Game
-            </Button>
-          }
+          <Button
+            width="100%"
+            onClick={startGame}
+            disabled={!isGamemaster || showGameSettings || users.length <= 1}
+          >
+            Start Game
+          </Button>
           <br></br>
           <Button width="100%" onClick={leaveGame}>
             Back to Lobby
