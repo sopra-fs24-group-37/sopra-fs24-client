@@ -8,22 +8,23 @@ import axios from "axios";
 import SwissMap from "components/ui/SwissMap";
 import "leaflet/dist/leaflet.css";
 import Timer from "components/ui/Timer";
+import PropTypes from "prop-types";
 
-const GameRound = () => {
+const GameRound = ({client}) => {
   const [players, setPlayers] = useState<User[]>([]);
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState("");
   const [location, setLocation] = useState({ lat: 46.8182, lng: 8.2275 });
   const [selectedLocation, setSelectedLocation] = useState(null);
   const [canInteract, setCanInteract] = useState(true); // State to control map interaction
+  const gameId = sessionStorage.getItem("gameId")
 
   useEffect(() => {
-    const fetchImage = async () => {
+    const fetchImage = async (message) => {
       try {
         const response = await axios.get(
-          "https://api.unsplash.com/photos/random",
+          "https://api.unsplash.com/photos/"+message,
           {
-            params: { query: "Switzerland landscape cityscape" },
             headers: {
               Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`,
             },
@@ -48,8 +49,11 @@ const GameRound = () => {
         console.error("Failed to fetch image from Unsplash:", error);
       }
     };
-
-    fetchImage();
+    const roundSubscription = client.subscribe("/topic/games/" + gameId + "/round" , message =>{
+      console.log(`Received: ${message.body}`);
+      fetchImage(message.body);
+    });
+    client.publish({ destination: "/app/games/" + gameId + "/round", body: gameId });
   }, []);
 
   const fetchPlayers = async () => {
@@ -99,6 +103,10 @@ const GameRound = () => {
       </div>
     </div>
   );
+};
+
+GameRound.propTypes = {
+  client: PropTypes.object.isRequired,// Validate prop type
 };
 
 export default GameRound;
