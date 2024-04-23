@@ -20,17 +20,11 @@ const GameRound = ({client}) => {
   const gameId = sessionStorage.getItem("gameId")
 
   useEffect(() => {
-    const fetchImage = async () => {
-      const roundSubscription = client.subscribe("/topic/games/" + gameId + "/round" , message =>{
-        console.log(`Received: ${message.body}`);
-      });
-      client.publish({ destination: "/app/games/" + gameId + "/round", body: gameId });
-      /*
+    const fetchImage = async (message) => {
       try {
         const response = await axios.get(
-          "https://api.unsplash.com/photos/random",
+          "https://api.unsplash.com/photos/"+message,
           {
-            params: { query: "Switzerland landscape cityscape" },
             headers: {
               Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`,
             },
@@ -54,10 +48,12 @@ const GameRound = ({client}) => {
       } catch (error) {
         console.error("Failed to fetch image from Unsplash:", error);
       }
-    
-    */
     };
-    fetchImage();
+    const roundSubscription = client.subscribe("/topic/games/" + gameId + "/round" , message =>{
+      console.log(`Received: ${message.body}`);
+      fetchImage(message.body);
+    });
+    client.publish({ destination: "/app/games/" + gameId + "/round", body: gameId });
   }, []);
 
   const fetchPlayers = async () => {
