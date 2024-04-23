@@ -22,15 +22,6 @@
   &.user-list {
     list-style: none;
     padding-left: 0;
-
-    li {
-      cursor: pointer;
-      transition: transform 0.2s ease; // Smooth transition for the transform
-
-      &:hover {
-        transform: translateX(-2px);
-      }
-    }
   }
   &.user-item {
     display: flex;
