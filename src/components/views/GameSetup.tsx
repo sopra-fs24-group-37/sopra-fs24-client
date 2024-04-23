@@ -22,7 +22,6 @@ const GameSetup = ({client}) => {
     );
     const startSubscription = client.subscribe("/topic/games/" + gameId + "/started", message =>{
       console.log(`Received: ${message.body}`);
-      console.log("random");
       navigate("/gameround/"+gameId);
   });
     client.publish({ destination: "/app/games/" + gameId + "/joined", body: gameId });
