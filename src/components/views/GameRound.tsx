@@ -19,6 +19,7 @@ const GameRound = ({ client }) => {
   const [canInteract, setCanInteract] = useState(true); // State to control map interaction
   const gameId = sessionStorage.getItem("gameId");
   const [timerExpired, setTimerExpired] = useState(false);
+  const userId = sessionStorage.getItem("userId")
 
   useEffect(() => {
     const fetchImage = async (message) => {
@@ -50,31 +51,15 @@ const GameRound = ({ client }) => {
         console.error("Failed to fetch image from Unsplash:", error);
       }
     };
-    const roundSubscription = client.subscribe(
-      "/topic/games/" + gameId + "/round",
-      (message) => {
-        console.log(`Received: ${message.body}`);
-        fetchImage(message.body);
-      }
-    );
-    client.publish({
-      destination: "/app/games/" + gameId + "/round",
-      body: gameId,
+    const roundSubscription = client.subscribe("/topic/games/" + gameId + "/round",(message) => {
+      console.log(`Received: ${message.body}`);
+      fetchImage(message.body);
     });
-    client.publish({ destination: "/app/games/" + gameId + "/checkin", body: gameId });
-  }, []);
-
-  const fetchPlayers = async () => {
-    try {
-      const response = await api.get("/game/players");
-      setPlayers(response.data);
-    } catch (error) {
-      console.error(`Could not fetch players: ${handleError(error)}`);
-    }
-  };
-
-  useEffect(() => {
-    fetchPlayers();
+    const gameEndSubscription = client.subscribe("/topic/games/" + gameId + "/ended",(message) => {
+      console.log(`Received: ${message.body}`);
+      navigate("/gamepodium/"+gameId)
+    });
+    client.publish({destination: "/app/games/" + gameId + "/checkin", body: gameId });
   }, []);
 
   const handleMapClick = (latlng) => {
@@ -86,10 +71,12 @@ const GameRound = ({ client }) => {
   const handleTimeUp = () => {
     setCanInteract(false); // This will disable map interaction when the timer expires
     setTimerExpired(true);
+    const { latitude, longitude } = location; //needs to be selected location
+    client.publish({destination: "/app/games/" + gameId + "/guess",body: latitude,longitude,userId });
   };
 
   const doStuff = () => {
-    console.log("stuff is being done");
+    client.publish({destination: "/app/games/" + gameId + "/checkin", body: gameId });
   };
 
   return (

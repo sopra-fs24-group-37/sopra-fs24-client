@@ -34,7 +34,6 @@ const GameSetup = ({ client }) => {
       "/topic/games/" + gameId + "/started",
       (message) => {
         console.log(`Received: ${message.body}`);
-        console.log("random");
         navigate("/gameround/" + gameId);
       }
     );
