@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {BrowserRouter, Navigate, Route, Routes} from "react-router-dom";
 import {LobbyGuard} from "../routeProtectors/LobbyGuard";
 import {LoginGuard} from "../routeProtectors/LoginGuard";
-import { connectWebSocket, disconnectWebSocket } from '../../../helpers/stomp.js';
+import { connectWebSocket, disconnectWebSocket } from "../../../helpers/stomp.js";
 import Lobby from "../../views/Lobby";
 import Login from "../../views/Login";
 import Registration from "../../views/Registration";

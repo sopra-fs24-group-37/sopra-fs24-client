@@ -1,4 +1,4 @@
-import { Client } from '@stomp/stompjs';
+import { Client } from "@stomp/stompjs";
 
 const client = new Client({
   brokerURL: "ws://localhost:8080/ws",
@@ -6,6 +6,7 @@ const client = new Client({
 
 export const connectWebSocket = () => {
   client.activate();
+  
   return client;
 };
 
