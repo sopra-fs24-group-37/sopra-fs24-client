@@ -23,6 +23,19 @@
     list-style: none;
     padding-left: 0;
   }
+  &.user-container {
+    text-align: center; // Center the text
+    margin-bottom: 10px; // Add some spacing between user elements
+    font-size: 1.2rem; // Increase font size
+    font-weight: bold; // Make the text bold
+    margin: 0.5em 0;
+    width: 20em;
+    padding: 10px;
+    border-radius: $borderRadius;
+    display: flex;
+    align-items: center;
+    background: lighten($accent, 5);
+  }
   &.user-item {
     display: flex;
     flex-direction: column;

@@ -24,7 +24,7 @@ const GameSetup = ({ client }) => {
         console.log(`Received: ${message.body}`);
         const gameData = JSON.parse(message.body);
         const updatedUsers = gameData.players.map((player) => ({
-          userId: player.playerId,
+          username: player.user.username,
         }));
         setUsers(updatedUsers);
         setIsGamemaster(gameData.gameMaster === parseInt(currentUser));
@@ -100,7 +100,9 @@ const GameSetup = ({ client }) => {
     usersContent = (
       <ul className="gamesetup user-list">
         {users.map((user, index) => (
-          <li key={index}>User ID: {user.userId}</li>
+          <div className="gamesetup user-container" key={index}>
+            <li>{user.username}</li>
+          </div>
         ))}
       </ul>
     );
@@ -109,7 +111,10 @@ const GameSetup = ({ client }) => {
   return (
     <div className="flex-center-wrapper">
       {!showGameSettings && (
-        <BaseContainer title="Game setup" className="gamesetup container">
+        <BaseContainer
+          title="Users ready to play:"
+          className="gamesetup container"
+        >
           {usersContent}
           <br></br>
           <Button
