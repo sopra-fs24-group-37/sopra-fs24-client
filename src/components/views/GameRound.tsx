@@ -61,6 +61,7 @@ const GameRound = ({ client }) => {
       destination: "/app/games/" + gameId + "/round",
       body: gameId,
     });
+    client.publish({ destination: "/app/games/" + gameId + "/checkin", body: gameId });
   }, []);
 
   const fetchPlayers = async () => {
