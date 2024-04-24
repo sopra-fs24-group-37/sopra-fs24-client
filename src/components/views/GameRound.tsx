@@ -53,7 +53,7 @@ const GameRound = ({client}) => {
       console.log(`Received: ${message.body}`);
       fetchImage(message.body);
     });
-    client.publish({ destination: "/app/games/" + gameId + "/round", body: gameId });
+    client.publish({ destination: "/app/games/" + gameId + "/checkin", body: gameId });
   }, []);
 
   const fetchPlayers = async () => {
