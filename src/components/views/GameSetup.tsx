@@ -7,33 +7,53 @@ import { Button } from "components/ui/Button";
 import "styles/views/GameSetup.scss";
 import PropTypes from "prop-types";
 
-const GameSetup = ({client}) => {
+const GameSetup = ({ client }) => {
   const [players, setPlayers] = useState<User[]>([]);
   const [showGameSettings, setShowGameSettings] = useState(false); // State to manage visibility of game settings
   const { state } = useLocation();
   const navigate = useNavigate();
   const currentUser = sessionStorage.getItem("userId");
-  const gameId = sessionStorage.getItem("gameId")
-  const isGamemaster = state?.gameMasterId === currentUser;
+  const gameId = sessionStorage.getItem("gameId");
+  const [users, setUsers] = useState<User[]>(null);
+  const [isGamemaster, setIsGamemaster] = useState(false);
 
   useEffect(() => {
-    const updateSubscription = client.subscribe("/topic/games/" + gameId, message =>
-      console.log(`Received: ${message.body}`)
+    const updateSubscription = client.subscribe(
+      "/topic/games/" + gameId,
+      (message) => {
+        console.log(`Received: ${message.body}`);
+        const gameData = JSON.parse(message.body);
+        const updatedUsers = gameData.players.map((player) => ({
+          userId: player.playerId,
+        }));
+        setUsers(updatedUsers);
+        setIsGamemaster(gameData.gameMaster === parseInt(currentUser));
+      }
     );
-    const startSubscription = client.subscribe("/topic/games/" + gameId + "/started", message =>{
-      console.log(`Received: ${message.body}`);
-      navigate("/gameround/"+gameId);
-  });
-    client.publish({ destination: "/app/games/" + gameId + "/joined", body: gameId });
+    const startSubscription = client.subscribe(
+      "/topic/games/" + gameId + "/started",
+      (message) => {
+        console.log(`Received: ${message.body}`);
+        console.log("random");
+        navigate("/gameround/" + gameId);
+      }
+    );
+    client.publish({
+      destination: "/app/games/" + gameId + "/joined",
+      body: gameId,
+    });
   }, []);
 
   const startGame = async () => {
     try {
       const response = await api.put(`/games/${gameId}/start`);
-      client.publish({ destination: "/app/games/" + gameId + "/started", body: gameId });
+      client.publish({
+        destination: "/app/games/" + gameId + "/started",
+        body: gameId,
+      });
       if (response.status === 200) {
         // Game started successfully
-        navigate("/gameround/"+gameId);
+        navigate("/gameround/" + gameId);
       } else {
         // Handle other HTTP status codes if needed
         console.error(`Starting game failed with status: ${response.status}`);
@@ -45,19 +65,25 @@ const GameSetup = ({client}) => {
   };
 
   const leaveGame = async () => {
-    try {
-      const currentUserId = sessionStorage.getItem("userId");
-      const response = await api.put(`/games/${gameId}/leave`, currentUserId);
-      if (response.status === 200) {
-        client.publish({ destination: "/app/games/" + gameId + "/joined", body: gameId });
-        sessionStorage.removeItem("gameId")
-        navigate("/lobby");
-      } else {
-        console.error(`Leaving game failed with status: ${response.status}`);
+    const confirmLeave = window.confirm("Do you want to leave this Lobby?");
+    if (confirmLeave) {
+      try {
+        const currentUserId = sessionStorage.getItem("userId");
+        const response = await api.put(`/games/${gameId}/leave`, currentUserId);
+        if (response.status === 200) {
+          client.publish({
+            destination: "/app/games/" + gameId + "/joined",
+            body: gameId,
+          });
+          sessionStorage.removeItem("gameId");
+          navigate("/lobby");
+        } else {
+          console.error(`Leaving game failed with status: ${response.status}`);
+        }
+      } catch (error) {
+        // Handle network errors or other exceptions
+        console.error(`Leaving game failed: ${handleError(error)}`);
       }
-    } catch (error) {
-      // Handle network errors or other exceptions
-      console.error(`Leaving game failed: ${handleError(error)}`);
     }
   };
 
@@ -69,32 +95,38 @@ const GameSetup = ({client}) => {
     setShowGameSettings(false);
   };
 
+  let usersContent = <div>Waiting for other players to join...</div>;
+  if (users) {
+    usersContent = (
+      <ul className="gamesetup user-list">
+        {users.map((user, index) => (
+          <li key={index}>User ID: {user.userId}</li>
+        ))}
+      </ul>
+    );
+  }
+
   return (
     <div className="flex-center-wrapper">
       {!showGameSettings && (
         <BaseContainer title="Game setup" className="gamesetup container">
-          <div>Waiting for other players to join...</div>
-          <ul>
-            {players.map((player) => (
-              <li key={player.id}>{player.username}</li>
-            ))}
-          </ul>
-          {
-            /**isGamemaster && */ <Button
-              width="100%"
-              onClick={showSettingsContainer}
-            >
-              Game Settings
-            </Button>
-          }
+          {usersContent}
+          <br></br>
+          <Button
+            width="100%"
+            onClick={startGame}
+            disabled={!isGamemaster || showGameSettings || users.length <= 1}
+          >
+            Start Game
+          </Button>
           <br></br>
           {
-            /*isGamemaster && players.length > 1 &&*/ <Button
+            <Button
               width="100%"
-              onClick={startGame}
-              //disabled={players.length <= 1}
+              onClick={showSettingsContainer}
+              disabled={!isGamemaster || showGameSettings}
             >
-              Start Game
+              Game Settings
             </Button>
           }
           <br></br>
@@ -115,7 +147,7 @@ const GameSetup = ({client}) => {
 };
 
 GameSetup.propTypes = {
-  client: PropTypes.object.isRequired,// Validate prop type
+  client: PropTypes.object.isRequired, // Validate prop type
 };
 
 /**The following part is for adjusting the game parameters and could be a seperate component */
