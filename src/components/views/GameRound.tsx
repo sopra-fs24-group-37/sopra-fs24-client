@@ -71,11 +71,12 @@ const GameRound = ({ client }) => {
   const handleTimeUp = () => {
     setCanInteract(false); // This will disable map interaction when the timer expires
     setTimerExpired(true);
-    const { latitude, longitude } = location; //needs to be selected location
+    const { lat, lng } = selectedLocation; //needs to be selected location
+    console.log(lat,lng)
     client.publish({destination: "/app/games/" + gameId + "/guess",
       body: JSON.stringify({
-        latitude: latitude,
-        longitude: longitude,
+        latitude: lat,
+        longitude: lng,
         userId: userId
       })
     });
