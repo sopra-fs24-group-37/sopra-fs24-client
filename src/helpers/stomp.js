@@ -1,7 +1,8 @@
 import { Client } from "@stomp/stompjs";
+import { getWSDomain } from "./getDomain";
 
 const client = new Client({
-  brokerURL: "ws://localhost:8080/ws",
+  brokerURL: getWSDomain(),
 });
 
 export const connectWebSocket = () => {
