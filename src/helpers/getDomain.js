@@ -14,7 +14,7 @@ export const getDomain = () => {
 }
 
 export const getWSDomain = () => {
-  const prodUrl = "ws://sopra-fs24-group-37-server.oa.r.appspot.com/ws" // TODO: insert your prod url for server (once deployed)
+  const prodUrl = "wss://sopra-fs24-group-37-server.oa.r.appspot.com/ws" // TODO: insert your prod url for server (once deployed)
   const devUrl = "ws://localhost:8080/ws"
 
   return isProduction() ? prodUrl : devUrl
