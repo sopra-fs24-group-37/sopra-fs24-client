@@ -56,7 +56,6 @@ const GameRound = ({ client }) => {
       (message) => {
         console.log(`Received: ${message.body}`);
         fetchImage(message.body);
-        startTimer();
       }
     );
     const gameEndSubscription = client.subscribe(
