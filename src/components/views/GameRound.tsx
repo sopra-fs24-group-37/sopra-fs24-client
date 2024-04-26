@@ -28,7 +28,7 @@ const GameRound = ({ client }) => {
           "https://api.unsplash.com/photos/" + message,
           {
             headers: {
-              Authorization: "Client-ID xxxx",
+              Authorization: "Client-ID vzUYuzlG1QUpgAi-uyHM0Rdm9uEwmf6YCbUwHS6TVXI",
             },
           }
         );
@@ -118,7 +118,7 @@ const GameRound = ({ client }) => {
             />
             <br />
             <Timer
-              initialCount={timerCount}
+              initialCount={10}
               onTimeUp={handleTimeUp}
               className="gameround title-font"
             />
