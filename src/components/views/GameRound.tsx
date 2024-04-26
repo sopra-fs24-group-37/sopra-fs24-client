@@ -9,6 +9,7 @@ import SwissMap from "components/ui/SwissMap";
 import "leaflet/dist/leaflet.css";
 import Timer from "components/ui/Timer";
 import PropTypes from "prop-types";
+import { Button } from "components/ui/Button";
 
 const GameRound = ({ client }) => {
   const [players, setPlayers] = useState<User[]>([]);
@@ -96,6 +97,7 @@ const GameRound = ({ client }) => {
 
   const resetComponents = () => {
     setSeed(Math.random());
+    setSelectedLocation(null);
     setCanInteract(true);
     setTimerExpired(false);
   };
@@ -136,7 +138,7 @@ const GameRound = ({ client }) => {
               className="gameround title-font"
             />
           </>
-          {timerExpired && <button onClick={() => doStuff()}>Button</button>}
+          {timerExpired && <Button onClick={() => doStuff()}>Ready?</Button>}
         </BaseContainer>
       </div>
     </div>
