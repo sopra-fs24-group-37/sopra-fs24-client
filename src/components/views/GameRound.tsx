@@ -9,17 +9,17 @@ import SwissMap from "components/ui/SwissMap";
 import "leaflet/dist/leaflet.css";
 import Timer from "components/ui/Timer";
 import PropTypes from "prop-types";
+import { Button } from "components/ui/Button";
 
 const GameRound = ({ client }) => {
-  const [players, setPlayers] = useState<User[]>([]);
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState("");
   const [location, setLocation] = useState({ lat: 46.8182, lng: 8.2275 });
-  const [selectedLocation, setSelectedLocation] = useState(null);
-  const [canInteract, setCanInteract] = useState(true); // State to control map interaction
+  const [selectedLocation, setSelectedLocation] = useState({ lat: 0, lng: 0 });
+  const [canInteract, setCanInteract] = useState(true);
   const gameId = sessionStorage.getItem("gameId");
   const [timerExpired, setTimerExpired] = useState(false);
-  const userId = sessionStorage.getItem("userId")
+  const userId = sessionStorage.getItem("userId");
 
   useEffect(() => {
     const fetchImage = async (message) => {
@@ -28,7 +28,7 @@ const GameRound = ({ client }) => {
           "https://api.unsplash.com/photos/" + message,
           {
             headers: {
-              Authorization: `Client-ID ${process.env.REACT_APP_UNSPLASH_ACCESS_KEY}`,
+              Authorization: "Client-ID xxxx",
             },
           }
         );
@@ -51,15 +51,25 @@ const GameRound = ({ client }) => {
         console.error("Failed to fetch image from Unsplash:", error);
       }
     };
-    const roundSubscription = client.subscribe("/topic/games/" + gameId + "/round",(message) => {
-      console.log(`Received: ${message.body}`);
-      fetchImage(message.body);
+    const roundSubscription = client.subscribe(
+      "/topic/games/" + gameId + "/round",
+      (message) => {
+        console.log(`Received: ${message.body}`);
+        fetchImage(message.body);
+        startTimer();
+      }
+    );
+    const gameEndSubscription = client.subscribe(
+      "/topic/games/" + gameId + "/ended",
+      (message) => {
+        console.log(`Received: ${message.body}`);
+        navigate("/gamepodium/" + gameId);
+      }
+    );
+    client.publish({
+      destination: "/app/games/" + gameId + "/checkin",
+      body: gameId,
     });
-    const gameEndSubscription = client.subscribe("/topic/games/" + gameId + "/ended",(message) => {
-      console.log(`Received: ${message.body}`);
-      navigate("/gamepodium/"+gameId)
-    });
-    client.publish({destination: "/app/games/" + gameId + "/checkin", body: gameId });
   }, []);
 
   const handleMapClick = (latlng) => {
@@ -72,18 +82,18 @@ const GameRound = ({ client }) => {
     setCanInteract(false); // This will disable map interaction when the timer expires
     setTimerExpired(true);
     const { lat, lng } = selectedLocation; //needs to be selected location
-    console.log(lat,lng)
-    client.publish({destination: "/app/games/" + gameId + "/guess",
+    console.log(lat, lng);
+    client.publish({
+      destination: "/app/games/" + gameId + "/guess",
       body: JSON.stringify({
         latitude: lat,
         longitude: lng,
-        userId: userId
-      })
+        userId: userId,
+      }),
     });
-  };
-
-  const doStuff = () => {
-    client.publish({destination: "/app/games/" + gameId + "/checkin", body: gameId });
+    setTimeout(() => {
+      navigate("/gameround/" + gameId + "/waiting");
+    }, 5000);
   };
 
   return (
@@ -108,12 +118,11 @@ const GameRound = ({ client }) => {
             />
             <br />
             <Timer
-              initialCount={10}
+              initialCount={timerCount}
               onTimeUp={handleTimeUp}
               className="gameround title-font"
             />
           </>
-          {timerExpired && <button onClick={() => doStuff()}>Button</button>}
         </BaseContainer>
       </div>
     </div>

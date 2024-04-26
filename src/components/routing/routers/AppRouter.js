@@ -11,6 +11,7 @@ import Profile from "../../views/Profile";
 import GameSetup from "../../views/GameSetup";
 import GameRound from "../../views/GameRound";
 import GamePodium from "../../views/GamePodium";
+import Waiting from "../../views/Waiting";
 
 /**
  * Main router of your application.
@@ -60,6 +61,10 @@ const AppRouter = () => {
 
         <Route path="/gameround/:gameId" element={<LobbyGuard />}>
           <Route path="/gameround/:gameId" element={<GameRound client={client}/>} />
+        </Route>
+
+        <Route path="/gameround/:gameId/waiting" element={<LobbyGuard />}>
+          <Route path="/gameround/:gameId/waiting" element={<Waiting/>} />
         </Route>
 
         <Route path="/gamepodium/:gameId" element={<LobbyGuard />}>

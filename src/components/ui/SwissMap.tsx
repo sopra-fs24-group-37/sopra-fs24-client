@@ -1,5 +1,12 @@
 import React from "react";
-import { MapContainer, TileLayer, ImageOverlay, useMapEvents, Marker, Popup } from "react-leaflet";
+import {
+  MapContainer,
+  TileLayer,
+  ImageOverlay,
+  useMapEvents,
+  Marker,
+  Popup,
+} from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import imageUrl from "../../images/map.png";
@@ -21,14 +28,19 @@ interface SwissMapProps {
 }
 
 // Function to create custom icons
-const createIcon = (iconUrl: string) => new L.Icon({
-  iconUrl,
-  iconSize: [30, 42], // Size of the icon
-  iconAnchor: [15, 42], // Point of the icon which will correspond to marker's location
-  popupAnchor: [0, -42] // Point from which the popup should open relative to the iconAnchor
-});
+const createIcon = (iconUrl: string) =>
+  new L.Icon({
+    iconUrl,
+    iconSize: [30, 42], // Size of the icon
+    iconAnchor: [15, 42], // Point of the icon which will correspond to marker's location
+    popupAnchor: [0, -42], // Point from which the popup should open relative to the iconAnchor
+  });
 
-const SwissMap: React.FC<SwissMapProps> = ({ onMapClick, selectedLocation, imageLocation }) => {
+const SwissMap: React.FC<SwissMapProps> = ({
+  onMapClick,
+  selectedLocation,
+  imageLocation,
+}) => {
   function LocationMarker() {
     useMapEvents({
       click(e) {
