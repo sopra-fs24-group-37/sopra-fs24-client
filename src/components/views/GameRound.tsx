@@ -19,7 +19,9 @@ const GameRound = ({ client }) => {
   const [canInteract, setCanInteract] = useState(true); // State to control map interaction
   const gameId = sessionStorage.getItem("gameId");
   const [timerExpired, setTimerExpired] = useState(false);
-  const userId = sessionStorage.getItem("userId")
+  const userId = sessionStorage.getItem("userId");
+  const [seed, setSeed] = useState(1);
+  const [timerCount, setTimerCount] = useState(10);
 
   useEffect(() => {
     const fetchImage = async (message) => {
@@ -51,15 +53,25 @@ const GameRound = ({ client }) => {
         console.error("Failed to fetch image from Unsplash:", error);
       }
     };
-    const roundSubscription = client.subscribe("/topic/games/" + gameId + "/round",(message) => {
-      console.log(`Received: ${message.body}`);
-      fetchImage(message.body);
+    const roundSubscription = client.subscribe(
+      "/topic/games/" + gameId + "/round",
+      (message) => {
+        console.log(`Received: ${message.body}`);
+        resetComponents();
+        fetchImage(message.body);
+      }
+    );
+    const gameEndSubscription = client.subscribe(
+      "/topic/games/" + gameId + "/ended",
+      (message) => {
+        console.log(`Received: ${message.body}`);
+        navigate("/gamepodium/" + gameId);
+      }
+    );
+    client.publish({
+      destination: "/app/games/" + gameId + "/checkin",
+      body: gameId,
     });
-    const gameEndSubscription = client.subscribe("/topic/games/" + gameId + "/ended",(message) => {
-      console.log(`Received: ${message.body}`);
-      navigate("/gamepodium/"+gameId)
-    });
-    client.publish({destination: "/app/games/" + gameId + "/checkin", body: gameId });
   }, []);
 
   const handleMapClick = (latlng) => {
@@ -72,23 +84,34 @@ const GameRound = ({ client }) => {
     setCanInteract(false); // This will disable map interaction when the timer expires
     setTimerExpired(true);
     const { latitude, longitude } = location; //needs to be selected location
-    client.publish({destination: "/app/games/" + gameId + "/guess",
+    client.publish({
+      destination: "/app/games/" + gameId + "/guess",
       body: JSON.stringify({
         latitude: latitude,
         longitude: longitude,
-        userId: userId
-      })
+        userId: userId,
+      }),
     });
   };
 
+  const resetComponents = () => {
+    setSeed(Math.random());
+    setCanInteract(true);
+    setTimerExpired(false);
+  };
+
   const doStuff = () => {
-    client.publish({destination: "/app/games/" + gameId + "/checkin", body: gameId });
+    client.publish({
+      destination: "/app/games/" + gameId + "/checkin",
+      body: gameId,
+    });
   };
 
   return (
     <div className="flex-center-wrapper">
       <div className="gameround side-by-side-containers">
         <BaseContainer
+          key={seed}
           className="gameround container"
           style={{ height: "650px" }}
         >
@@ -107,6 +130,7 @@ const GameRound = ({ client }) => {
             />
             <br />
             <Timer
+              key={seed}
               initialCount={10}
               onTimeUp={handleTimeUp}
               className="gameround title-font"
