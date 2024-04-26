@@ -9,6 +9,7 @@ import SwissMap from "components/ui/SwissMap";
 import "leaflet/dist/leaflet.css";
 import Timer from "components/ui/Timer";
 import PropTypes from "prop-types";
+import { Button } from "components/ui/Button";
 
 const GameRound = ({ client }) => {
   const [players, setPlayers] = useState<User[]>([]);
@@ -19,7 +20,9 @@ const GameRound = ({ client }) => {
   const [canInteract, setCanInteract] = useState(true); // State to control map interaction
   const gameId = sessionStorage.getItem("gameId");
   const [timerExpired, setTimerExpired] = useState(false);
-  const userId = sessionStorage.getItem("userId")
+  const userId = sessionStorage.getItem("userId");
+  const [seed, setSeed] = useState(1);
+  const [timerCount, setTimerCount] = useState(10);
 
   useEffect(() => {
     const fetchImage = async (message) => {
@@ -51,15 +54,25 @@ const GameRound = ({ client }) => {
         console.error("Failed to fetch image from Unsplash:", error);
       }
     };
-    const roundSubscription = client.subscribe("/topic/games/" + gameId + "/round",(message) => {
-      console.log(`Received: ${message.body}`);
-      fetchImage(message.body);
+    const roundSubscription = client.subscribe(
+      "/topic/games/" + gameId + "/round",
+      (message) => {
+        console.log(`Received: ${message.body}`);
+        resetComponents();
+        fetchImage(message.body);
+      }
+    );
+    const gameEndSubscription = client.subscribe(
+      "/topic/games/" + gameId + "/ended",
+      (message) => {
+        console.log(`Received: ${message.body}`);
+        navigate("/gamepodium/" + gameId);
+      }
+    );
+    client.publish({
+      destination: "/app/games/" + gameId + "/checkin",
+      body: gameId,
     });
-    const gameEndSubscription = client.subscribe("/topic/games/" + gameId + "/ended",(message) => {
-      console.log(`Received: ${message.body}`);
-      navigate("/gamepodium/"+gameId)
-    });
-    client.publish({destination: "/app/games/" + gameId + "/checkin", body: gameId });
   }, []);
 
   const handleMapClick = (latlng) => {
@@ -82,14 +95,25 @@ const GameRound = ({ client }) => {
     });
   };
 
+  const resetComponents = () => {
+    setSeed(Math.random());
+    setSelectedLocation(null);
+    setCanInteract(true);
+    setTimerExpired(false);
+  };
+
   const doStuff = () => {
-    client.publish({destination: "/app/games/" + gameId + "/checkin", body: gameId });
+    client.publish({
+      destination: "/app/games/" + gameId + "/checkin",
+      body: gameId,
+    });
   };
 
   return (
     <div className="flex-center-wrapper">
       <div className="gameround side-by-side-containers">
         <BaseContainer
+          key={seed}
           className="gameround container"
           style={{ height: "650px" }}
         >
@@ -108,12 +132,13 @@ const GameRound = ({ client }) => {
             />
             <br />
             <Timer
+              key={seed}
               initialCount={10}
               onTimeUp={handleTimeUp}
               className="gameround title-font"
             />
           </>
-          {timerExpired && <button onClick={() => doStuff()}>Button</button>}
+          {timerExpired && <Button onClick={() => doStuff()}>Ready?</Button>}
         </BaseContainer>
       </div>
     </div>
