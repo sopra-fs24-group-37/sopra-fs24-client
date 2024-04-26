@@ -118,7 +118,7 @@ const GameRound = ({ client }) => {
             />
             <br />
             <Timer
-              initialCount={10}
+              initialCount={15}
               onTimeUp={handleTimeUp}
               className="gameround title-font"
             />
