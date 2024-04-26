@@ -37,7 +37,7 @@ const GamePodium = () => {
 
   return (
     <div className="flex-center-wrapper">
-      <BaseContainer title="Podium view" className="gamepodium container">
+      <BaseContainer title="And the winner is ..." className="gamepodium container">
         <ol>
           {players.map((player, index) => (
             <li key={index}>{player.user.username}: {player.score}</li>
