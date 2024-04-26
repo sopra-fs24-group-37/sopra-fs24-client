@@ -28,8 +28,7 @@ const GameRound = ({ client }) => {
           "https://api.unsplash.com/photos/" + message,
           {
             headers: {
-              Authorization:
-                "Client-ID S65zj1IttPxsMT5yrzWsgLnC6PZT6XfSVxN9a5FX2U4",
+              Authorization: "Client-ID xxxx",
             },
           }
         );
@@ -57,6 +56,7 @@ const GameRound = ({ client }) => {
       (message) => {
         console.log(`Received: ${message.body}`);
         fetchImage(message.body);
+        startTimer();
       }
     );
     const gameEndSubscription = client.subscribe(
@@ -118,7 +118,7 @@ const GameRound = ({ client }) => {
             />
             <br />
             <Timer
-              initialCount={20}
+              initialCount={timerCount}
               onTimeUp={handleTimeUp}
               className="gameround title-font"
             />
