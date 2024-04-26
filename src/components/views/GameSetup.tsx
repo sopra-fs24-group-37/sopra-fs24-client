@@ -119,7 +119,7 @@ const GameSetup = ({ client }) => {
           <Button
             width="100%"
             onClick={startGame}
-            disabled={!isGamemaster || showGameSettings || users.length <= 1}
+            disabled={!isGamemaster || showGameSettings || users.length === 2}
           >
             Start Game
           </Button>
