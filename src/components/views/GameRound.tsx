@@ -20,6 +20,9 @@ const GameRound = ({ client }) => {
   const gameId = sessionStorage.getItem("gameId");
   const [timerExpired, setTimerExpired] = useState(false);
   const userId = sessionStorage.getItem("userId");
+  const [gameEnd, setGameEnd] = useState(false);
+  const [roundSubscription, setRoundSubscription] = useState(null);
+  const [endSubscription, setEndSubscription] = useState(null);
 
   useEffect(() => {
     const fetchImage = async (message) => {
@@ -51,20 +54,24 @@ const GameRound = ({ client }) => {
         console.error("Failed to fetch image from Unsplash:", error);
       }
     };
-    const roundSubscription = client.subscribe(
+    const roundSub = client.subscribe(
       "/topic/games/" + gameId + "/round",
       (message) => {
         console.log(`Received: ${message.body}`);
         fetchImage(message.body);
       }
     );
+    setRoundSubscription(roundSub)
+
     const gameEndSubscription = client.subscribe(
       "/topic/games/" + gameId + "/ended",
       (message) => {
         console.log(`Received: ${message.body}`);
-        navigate("/gamepodium/" + gameId);
+        setGameEnd(true)
       }
     );
+    setEndSubscription(gameEndSubscription)
+
     client.publish({
       destination: "/app/games/" + gameId + "/checkin",
       body: gameId,
@@ -90,9 +97,21 @@ const GameRound = ({ client }) => {
         userId: userId,
       }),
     });
-    setTimeout(() => {
-      navigate("/gameround/" + gameId + "/waiting");
-    }, 5000);
+    if(roundSubscription){
+      roundSubscription.unsubscribe();
+    } 
+    if(endSubscription){
+      endSubscription.unsubscribe()
+    }
+    if (gameEnd) {
+      setTimeout(() => {
+        navigate("/gamepodium/" + gameId)
+      }, 5000);
+    } else {
+      setTimeout(() => {
+        navigate("/gameround/" + gameId + "/waiting");
+      }, 5000);
+    }
   };
 
   return (
