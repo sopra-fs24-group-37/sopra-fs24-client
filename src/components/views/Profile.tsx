@@ -74,7 +74,7 @@ const Profile = () => {
           <strong>Games won:</strong> {user.gamesWon}
         </p>
         <p>
-          <strong>Points scored:</strong> {user.pointsScored}
+          <strong>Points scored:</strong> {user.totalScores}
         </p>
         <Button width="100%" onClick={() => navigate("/lobby")}>
           Go back to Lobby
