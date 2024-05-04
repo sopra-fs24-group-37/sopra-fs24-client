@@ -12,8 +12,6 @@ import Game from "models/Game";
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
     <div className="player username">{user.username}</div>
-
-
   </div>
 );
 
@@ -21,11 +19,36 @@ Player.propTypes = {
   user: PropTypes.object,
 };
 
-const Lobby = () => {
+const Lobby = ({ client }) => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>(null);
   const [games, setGames] = useState<Game[]>(null);
 
+  useEffect(() => {
+    if (!client) {
+      console.error("WebSocket client not provided!");
+      return;
+    }
+  
+    const userSubscription = client.subscribe("/topic/users/getUsers", message => {
+      const updatedUsers = JSON.parse(message.body);
+      setUsers(updatedUsers);
+      console.log("Updated users list received:", updatedUsers);
+    });
+  
+    const gameSubscription = client.subscribe("/topic/games/getGames", message => {
+      const updatedGames = JSON.parse(message.body);
+      setGames(updatedGames);
+      console.log("Updated games list received:", updatedGames);
+    });
+  
+    // Clean up the subscriptions when the component unmounts
+    return () => {
+      userSubscription.unsubscribe();
+      gameSubscription.unsubscribe();
+    };
+  }, [client]);
+  
   /*  Here come a bunch of functions used in the components further down this file. */
 
   const logout = (): void => {
@@ -184,6 +207,10 @@ const Lobby = () => {
       </div>
     </div>
   );
+};
+
+Lobby.propTypes = {
+  client: PropTypes.object.isRequired, // Ensure the client is passed as a prop
 };
 
 export default Lobby;
