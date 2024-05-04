@@ -25,8 +25,9 @@ const Lobby = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>(null);
   const [games, setGames] = useState<Game[]>(null);
-  const [showInfo, setShowInfo] = useState(false);
+  const [showInfo, setShowInfo] = useState(false); // handels state of info screen
 
+  // shows info screen upon click
   const toggleInfo = () => {
     setShowInfo(!showInfo);
   };
