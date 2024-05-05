@@ -27,6 +27,7 @@ const Lobby = ({ client }) => {
   useEffect(() => {
     if (!client) {
       console.error("WebSocket client not provided!");
+      
       return;
     }
   
