@@ -15,6 +15,8 @@ const GameRound = ({ client }) => {
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState("");
   const [location, setLocation] = useState({ lat: 46.8182, lng: 8.2275 });
+  const [photographer, setPhotographer] = useState("unknown");
+  const [photographer_username, setPhotographerUsername] = useState("");
   const [selectedLocation, setSelectedLocation] = useState({ lat: 0, lng: 0 });
   const [canInteract, setCanInteract] = useState(true);
   const gameId = sessionStorage.getItem("gameId");
@@ -31,7 +33,8 @@ const GameRound = ({ client }) => {
           "https://api.unsplash.com/photos/" + message,
           {
             headers: {
-              Authorization: "Client-ID vzUYuzlG1QUpgAi-uyHM0Rdm9uEwmf6YCbUwHS6TVXI",
+              Authorization:
+                "Client-ID S65zj1IttPxsMT5yrzWsgLnC6PZT6XfSVxN9a5FX2U4",
             },
           }
         );
@@ -49,6 +52,12 @@ const GameRound = ({ client }) => {
             lat: response.data.location.position.latitude,
             lng: response.data.location.position.longitude,
           });
+          if (response.data.user.name) {
+            setPhotographer(response.data.user.name);
+          }
+          if (response.data.user.username) {
+            setPhotographerUsername(response.data.user.username);
+          }
         }
       } catch (error) {
         console.error("Failed to fetch image from Unsplash:", error);
@@ -61,16 +70,16 @@ const GameRound = ({ client }) => {
         fetchImage(message.body);
       }
     );
-    setRoundSubscription(roundSub)
+    setRoundSubscription(roundSub);
 
     const gameEndSubscription = client.subscribe(
       "/topic/games/" + gameId + "/ended",
       (message) => {
         console.log(`Received: ${message.body}`);
-        setGameEnd(true)
+        setGameEnd(true);
       }
     );
-    setEndSubscription(gameEndSubscription)
+    setEndSubscription(gameEndSubscription);
 
     client.publish({
       destination: "/app/games/" + gameId + "/checkin",
@@ -97,15 +106,15 @@ const GameRound = ({ client }) => {
         userId: userId,
       }),
     });
-    if(roundSubscription){
+    if (roundSubscription) {
       roundSubscription.unsubscribe();
-    } 
-    if(endSubscription){
-      endSubscription.unsubscribe()
+    }
+    if (endSubscription) {
+      endSubscription.unsubscribe();
     }
     if (gameEnd) {
       setTimeout(() => {
-        navigate("/gamepodium/" + gameId)
+        navigate("/gamepodium/" + gameId);
       }, 5000);
     } else {
       setTimeout(() => {
@@ -122,6 +131,21 @@ const GameRound = ({ client }) => {
           style={{ height: "650px" }}
         >
           {imageUrl && <img src={imageUrl} alt="Swiss Landscape" />}
+          <br></br>
+          {photographer_username !== "" && (
+            <div>
+              Photo by{" "}
+              <a
+                href={`https://unsplash.com/@${photographer_username}?utm_source=swissquiz&utm_medium=referral`}
+              >
+                {photographer}
+              </a>{" "}
+              on{" "}
+              <a href="https://unsplash.com/?utm_source=swissquiz&utm_medium=referral">
+                Unsplash
+              </a>
+            </div>
+          )}
         </BaseContainer>
         <BaseContainer
           title="Where was this image taken? Make your guess by clicking on the map!"
@@ -136,7 +160,7 @@ const GameRound = ({ client }) => {
             />
             <br />
             <Timer
-              initialCount={15}
+              initialCount={1000005}
               onTimeUp={handleTimeUp}
               className="gameround title-font"
             />
