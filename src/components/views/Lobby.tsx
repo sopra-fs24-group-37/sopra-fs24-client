@@ -25,12 +25,6 @@ const Lobby = ({ client }) => {
   const [games, setGames] = useState<Game[]>(null);
 
   useEffect(() => {
-    if (!client) {
-      console.error("WebSocket client not provided!");
-      
-      return;
-    }
-  
     const userSubscription = client.subscribe("/topic/users/getUsers", message => {
       const updatedUsers = JSON.parse(message.body);
       setUsers(updatedUsers);
@@ -41,6 +35,14 @@ const Lobby = ({ client }) => {
       const updatedGames = JSON.parse(message.body);
       setGames(updatedGames);
       console.log("Updated games list received:", updatedGames);
+    });
+
+    client.publish({
+      destination: "/app/users/updateUsers"
+    });
+
+    client.publish({
+      destination: "/app/games/updateGames"
     });
   
     // Clean up the subscriptions when the component unmounts
@@ -66,6 +68,9 @@ const Lobby = ({ client }) => {
       const games = new Game(response.data);
       sessionStorage.setItem("gameId", games.gameId);
       if (response.status === 201) {
+        client.publish({
+          destination: "/app/games/updateGames"
+        });
         // Game created successfully, navigate to the game setup page
         navigate(`/gamesetup/${games.gameId}`);
       } else {
