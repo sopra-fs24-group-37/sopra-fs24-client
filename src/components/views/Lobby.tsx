@@ -8,6 +8,8 @@ import PropTypes from "prop-types";
 import "styles/views/Lobby.scss";
 import { User } from "types";
 import Game from "models/Game";
+import infoIcon from "../../images/info_icon.svg";
+import InfoWindow from "./InfoWindow";
 
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
@@ -23,7 +25,9 @@ const Lobby = ({ client }) => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>(null);
   const [games, setGames] = useState<Game[]>(null);
+  const [showInfo, setShowInfo] = useState(false); // handels state of info screen
 
+<<<<<<< HEAD
   useEffect(() => {
     if (!client) {
       console.error("WebSocket client not provided!");
@@ -50,6 +54,13 @@ const Lobby = ({ client }) => {
     };
   }, [client]);
   
+=======
+  // shows info screen upon click
+  const toggleInfo = () => {
+    setShowInfo(!showInfo);
+  };
+    
+>>>>>>> b007d32a468de2a5e288d2aa5cb6b172ef28ae62
   /*  Here come a bunch of functions used in the components further down this file. */
 
   const logout = (): void => {
@@ -185,6 +196,8 @@ const Lobby = ({ client }) => {
 
   return (
     <div className="flex-center-wrapper">
+      <img src={infoIcon} alt="Info" className="info-icon" onClick={toggleInfo} />
+      {showInfo && <InfoWindow onClose={() => setShowInfo(false)} />}
       <div className="lobby side-by-side-containers">
         <BaseContainer title="Registered users" className="lobby container">
           <p className="lobby paragraph">
@@ -210,8 +223,11 @@ const Lobby = ({ client }) => {
   );
 };
 
+<<<<<<< HEAD
 Lobby.propTypes = {
   client: PropTypes.object.isRequired, // Ensure the client is passed as a prop
 };
 
+=======
+>>>>>>> b007d32a468de2a5e288d2aa5cb6b172ef28ae62
 export default Lobby;

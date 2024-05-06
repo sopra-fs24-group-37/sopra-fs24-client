@@ -38,7 +38,7 @@ const LobbyRouter = () => {
  */
 
 LobbyRouter.propTypes = {
-  base: PropTypes.string
+  base: PropTypes.stringn 
 }
 
 export default LobbyRouter;
