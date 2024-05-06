@@ -117,55 +117,57 @@ const Lobby = ({ client }) => {
     return user ? user.username : "Unknown";
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await api.get("/users");
-        await new Promise((resolve) =>
-          setTimeout(resolve, 1000)
-        ); /* Can be removed */
-        // Get the returned users and update the state.
-        setUsers(response.data);
-        // See here to get more data.
-        console.log(response);
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the users: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the users! See the console for details."
-        );
-      }
-    }
+  /*  OLD ENDPOINTS FOR USER AND GAME IMPORT. CAN BE DELETED ONCE WS WORK FINE! */
+  
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const response = await api.get("/users");
+  //       await new Promise((resolve) =>
+  //         setTimeout(resolve, 1000)
+  //       ); /* Can be removed */
+  //       // Get the returned users and update the state.
+  //       setUsers(response.data);
+  //       // See here to get more data.
+  //       console.log(response);
+  //     } catch (error) {
+  //       console.error(
+  //         `Something went wrong while fetching the users: \n${handleError(
+  //           error
+  //         )}`
+  //       );
+  //       console.error("Details:", error);
+  //       alert(
+  //         "Something went wrong while fetching the users! See the console for details."
+  //       );
+  //     }
+  //   }
 
-    async function fetchGames() {
-      try {
-        const response = await api.get("/games");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        const filteredGames = response.data.filter(
-          (game) => game.gameStatus === "WAITING"
-        );
-        setGames(filteredGames);
-        console.log(response);
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the games: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the games! See the console for details."
-        );
-      }
-    }
+  //   async function fetchGames() {
+  //     try {
+  //       const response = await api.get("/games");
+  //       await new Promise((resolve) => setTimeout(resolve, 1000));
+  //       const filteredGames = response.data.filter(
+  //         (game) => game.gameStatus === "WAITING"
+  //       );
+  //       setGames(filteredGames);
+  //       console.log(response);
+  //     } catch (error) {
+  //       console.error(
+  //         `Something went wrong while fetching the games: \n${handleError(
+  //           error
+  //         )}`
+  //       );
+  //       console.error("Details:", error);
+  //       alert(
+  //         "Something went wrong while fetching the games! See the console for details."
+  //       );
+  //     }
+  //   }
 
-    fetchData();
-    fetchGames();
-  }, []);
+  //   fetchData();
+  //   fetchGames();
+  // }, []);
 
   let usersContent = <Spinner />;
   if (users) {
