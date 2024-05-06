@@ -25,9 +25,8 @@ const Lobby = ({ client }) => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>(null);
   const [games, setGames] = useState<Game[]>(null);
-  const [showInfo, setShowInfo] = useState(false); // handels state of info screen
+  const [showInfo, setShowInfo] = useState(false); // handles state of info screen
 
-<<<<<<< HEAD
   useEffect(() => {
     const userSubscription = client.subscribe("/topic/users/getUsers", message => {
       const updatedUsers = JSON.parse(message.body);
@@ -49,20 +48,17 @@ const Lobby = ({ client }) => {
       destination: "/app/games/updateGames"
     });
   
-    // Clean up the subscriptions when the component unmounts
     return () => {
       userSubscription.unsubscribe();
       gameSubscription.unsubscribe();
     };
   }, [client]);
   
-=======
   // shows info screen upon click
   const toggleInfo = () => {
     setShowInfo(!showInfo);
   };
     
->>>>>>> b007d32a468de2a5e288d2aa5cb6b172ef28ae62
   /*  Here come a bunch of functions used in the components further down this file. */
 
   const logout = (): void => {
@@ -228,11 +224,8 @@ const Lobby = ({ client }) => {
   );
 };
 
-<<<<<<< HEAD
 Lobby.propTypes = {
-  client: PropTypes.object.isRequired, // Ensure the client is passed as a prop
+  client: PropTypes.object.isRequired,
 };
 
-=======
->>>>>>> b007d32a468de2a5e288d2aa5cb6b172ef28ae62
 export default Lobby;
