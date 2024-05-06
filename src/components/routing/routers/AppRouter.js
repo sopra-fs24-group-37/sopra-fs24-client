@@ -40,7 +40,7 @@ const AppRouter = () => {
         <Route path="/" element={<Landing />} />
 
         <Route path="/lobby/*" element={<LobbyGuard />}>
-          <Route path="/lobby/*" element={<Lobby base="/lobby"/>} />
+          <Route path="/lobby/*" element={<Lobby client={client} base="/lobby"/>} />
         </Route>
 
         <Route path="/login" element={<LoginGuard />}>
