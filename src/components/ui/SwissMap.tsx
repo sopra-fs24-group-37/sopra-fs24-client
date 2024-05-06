@@ -21,6 +21,9 @@ const bounds = [
   [50.69, 16.65],
 ];
 
+const minZoom = 7; // Adjust according to your needs
+const maxZoom = 3; // Adjust according to your needs
+
 interface SwissMapProps {
   onMapClick: (latlng: L.LatLng) => void;
   selectedLocation?: L.LatLng;
@@ -68,6 +71,8 @@ const SwissMap: React.FC<SwissMapProps> = ({
       touchZoom={false}
       doubleClickZoom={false}
       scrollWheelZoom={false}
+      minZoom={minZoom}
+      maxZoom={maxZoom}
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <ImageOverlay url={imageUrl} bounds={bounds} />

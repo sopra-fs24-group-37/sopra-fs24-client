@@ -8,6 +8,8 @@ import PropTypes from "prop-types";
 import "styles/views/Lobby.scss";
 import { User } from "types";
 import Game from "models/Game";
+import infoIcon from "../../images/info_icon.svg";
+import InfoWindow from "./InfoWindow";
 
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
@@ -23,7 +25,13 @@ const Lobby = () => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>(null);
   const [games, setGames] = useState<Game[]>(null);
+  const [showInfo, setShowInfo] = useState(false); // handels state of info screen
 
+  // shows info screen upon click
+  const toggleInfo = () => {
+    setShowInfo(!showInfo);
+  };
+    
   /*  Here come a bunch of functions used in the components further down this file. */
 
   const logout = (): void => {
@@ -159,6 +167,8 @@ const Lobby = () => {
 
   return (
     <div className="flex-center-wrapper">
+      <img src={infoIcon} alt="Info" className="info-icon" onClick={toggleInfo} />
+      {showInfo && <InfoWindow onClose={() => setShowInfo(false)} />}
       <div className="lobby side-by-side-containers">
         <BaseContainer title="Registered users" className="lobby container">
           <p className="lobby paragraph">
