@@ -12,8 +12,6 @@ import Game from "models/Game";
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
     <div className="player username">{user.username}</div>
-
-
   </div>
 );
 

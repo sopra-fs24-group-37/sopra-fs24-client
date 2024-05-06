@@ -61,24 +61,8 @@ const GameRound = ({ client }) => {
   };
 
   const handleBeforeUnload = (event) => {
-    /*
-    try {
-      api.put(`/games/${gameId}/leave`, userId);
-      sessionStorage.removeItem("gameId");
-      navigate("/lobby")
-    } catch (error) {
-      // Handle network errors or other exceptions
-      console.error(`Leaving game failed: ${handleError(error)}`);
-    }
-    */
-    client.publish({
-      destination: "/app/games/" + gameId + "/leaving",
-      body: JSON.stringify({
-        userId: userId,
-      }),
-    });
-    sessionStorage.removeItem(gameId)
-
+    api.put("/games/" + gameId + "/leave", userId);
+    sessionStorage.removeItem("gameId");
   };
 
 

@@ -3,17 +3,29 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Landing.scss";
 import BaseContainer from "components/ui/BaseContainer";
+import { api } from "helpers/api";
 
 const Waiting = () => {
   const gameId = sessionStorage.getItem("gameId");
+  const userId = sessionStorage.getItem("userId");
   const navigate = useNavigate();
   useEffect(() => {
     const timer = setTimeout(() => {
       navigate("/gameround/" + gameId);
     }, 5000);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
-    return () => clearTimeout(timer);
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    }
   }, [gameId, navigate]);
+
+
+  const handleBeforeUnload = (event) => {
+    api.put("/games/" + gameId + "/leave", userId);
+    sessionStorage.removeItem("gameId");
+  };
 
   return (
     <div className="flex-center-wrapper">
