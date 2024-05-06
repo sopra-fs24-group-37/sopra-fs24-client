@@ -6,6 +6,7 @@
     "@stomp/stompjs": "^7.0.0",
     "axios": "^1.6.8",
     "eslint-config-react-app": "^7.0.1",
+    "howler": "^2.2.4",
     "leaflet": "^1.9.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
