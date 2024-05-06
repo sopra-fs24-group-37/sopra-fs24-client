@@ -38,7 +38,7 @@ const GameSetup = ({ client }) => {
       }
     );
     client.publish({
-      destination: "/app/games/" + gameId + "/joined",
+      destination: "/app/games/" + gameId + "/joining",
       body: gameId,
     });
   }, []);
@@ -71,7 +71,7 @@ const GameSetup = ({ client }) => {
         const response = await api.put(`/games/${gameId}/leave`, currentUserId);
         if (response.status === 200) {
           client.publish({
-            destination: "/app/games/" + gameId + "/joined",
+            destination: "/app/games/" + gameId + "/joining",
             body: gameId,
           });
           sessionStorage.removeItem("gameId");
