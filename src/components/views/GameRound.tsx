@@ -34,6 +34,10 @@ const GameRound = ({ client }) => {
         try {
           const jsonObject = JSON.parse(message.body);
           setImageUrl(jsonObject.urls.regular);
+          setLocation({
+            lat: jsonObject.location.position.latitude,
+            lng: jsonObject.location.position.longitude,
+          });
           if (jsonObject.user.name) {
             setPhotographer(jsonObject.user.name);
           }
