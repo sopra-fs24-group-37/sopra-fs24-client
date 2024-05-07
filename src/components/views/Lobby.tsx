@@ -8,6 +8,8 @@ import PropTypes from "prop-types";
 import "styles/views/Lobby.scss";
 import { User } from "types";
 import Game from "models/Game";
+import infoIcon from "../../images/info_icon.svg";
+import InfoWindow from "./InfoWindow";
 
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
@@ -19,11 +21,44 @@ Player.propTypes = {
   user: PropTypes.object,
 };
 
-const Lobby = () => {
+const Lobby = ({ client }) => {
   const navigate = useNavigate();
   const [users, setUsers] = useState<User[]>(null);
   const [games, setGames] = useState<Game[]>(null);
+  const [showInfo, setShowInfo] = useState(false); // handles state of info screen
 
+  useEffect(() => {
+    const userSubscription = client.subscribe("/topic/users/getUsers", message => {
+      const updatedUsers = JSON.parse(message.body);
+      setUsers(updatedUsers);
+      console.log("Updated users list received:", updatedUsers);
+    });
+  
+    const gameSubscription = client.subscribe("/topic/games/getGames", message => {
+      const updatedGames = JSON.parse(message.body);
+      setGames(updatedGames);
+      console.log("Updated games list received:", updatedGames);
+    });
+
+    client.publish({
+      destination: "/app/users/updateUsers"
+    });
+
+    client.publish({
+      destination: "/app/games/updateGames"
+    });
+  
+    return () => {
+      userSubscription.unsubscribe();
+      gameSubscription.unsubscribe();
+    };
+  }, [client]);
+  
+  // shows info screen upon click
+  const toggleInfo = () => {
+    setShowInfo(!showInfo);
+  };
+    
   /*  Here come a bunch of functions used in the components further down this file. */
 
   const logout = (): void => {
@@ -40,6 +75,9 @@ const Lobby = () => {
       const games = new Game(response.data);
       sessionStorage.setItem("gameId", games.gameId);
       if (response.status === 201) {
+        client.publish({
+          destination: "/app/games/updateGames"
+        });
         // Game created successfully, navigate to the game setup page
         navigate(`/gamesetup/${games.gameId}`);
       } else {
@@ -79,55 +117,57 @@ const Lobby = () => {
     return user ? user.username : "Unknown";
   };
 
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        const response = await api.get("/users");
-        await new Promise((resolve) =>
-          setTimeout(resolve, 1000)
-        ); /* Can be removed */
-        // Get the returned users and update the state.
-        setUsers(response.data);
-        // See here to get more data.
-        console.log(response);
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the users: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the users! See the console for details."
-        );
-      }
-    }
+  /*  OLD ENDPOINTS FOR USER AND GAME IMPORT. CAN BE DELETED ONCE WS WORK FINE! */
+  
+  // useEffect(() => {
+  //   async function fetchData() {
+  //     try {
+  //       const response = await api.get("/users");
+  //       await new Promise((resolve) =>
+  //         setTimeout(resolve, 1000)
+  //       ); /* Can be removed */
+  //       // Get the returned users and update the state.
+  //       setUsers(response.data);
+  //       // See here to get more data.
+  //       console.log(response);
+  //     } catch (error) {
+  //       console.error(
+  //         `Something went wrong while fetching the users: \n${handleError(
+  //           error
+  //         )}`
+  //       );
+  //       console.error("Details:", error);
+  //       alert(
+  //         "Something went wrong while fetching the users! See the console for details."
+  //       );
+  //     }
+  //   }
 
-    async function fetchGames() {
-      try {
-        const response = await api.get("/games");
-        await new Promise((resolve) => setTimeout(resolve, 1000));
-        const filteredGames = response.data.filter(
-          (game) => game.gameStatus === "WAITING"
-        );
-        setGames(filteredGames);
-        console.log(response);
-      } catch (error) {
-        console.error(
-          `Something went wrong while fetching the games: \n${handleError(
-            error
-          )}`
-        );
-        console.error("Details:", error);
-        alert(
-          "Something went wrong while fetching the games! See the console for details."
-        );
-      }
-    }
+  //   async function fetchGames() {
+  //     try {
+  //       const response = await api.get("/games");
+  //       await new Promise((resolve) => setTimeout(resolve, 1000));
+  //       const filteredGames = response.data.filter(
+  //         (game) => game.gameStatus === "WAITING"
+  //       );
+  //       setGames(filteredGames);
+  //       console.log(response);
+  //     } catch (error) {
+  //       console.error(
+  //         `Something went wrong while fetching the games: \n${handleError(
+  //           error
+  //         )}`
+  //       );
+  //       console.error("Details:", error);
+  //       alert(
+  //         "Something went wrong while fetching the games! See the console for details."
+  //       );
+  //     }
+  //   }
 
-    fetchData();
-    fetchGames();
-  }, []);
+  //   fetchData();
+  //   fetchGames();
+  // }, []);
 
   let usersContent = <Spinner />;
   if (users) {
@@ -159,6 +199,8 @@ const Lobby = () => {
 
   return (
     <div className="flex-center-wrapper">
+      <img src={infoIcon} alt="Info" className="info-icon" onClick={toggleInfo} />
+      {showInfo && <InfoWindow onClose={() => setShowInfo(false)} />}
       <div className="lobby side-by-side-containers">
         <BaseContainer title="Registered users" className="lobby container">
           <p className="lobby paragraph">
@@ -182,6 +224,10 @@ const Lobby = () => {
       </div>
     </div>
   );
+};
+
+Lobby.propTypes = {
+  client: PropTypes.object.isRequired,
 };
 
 export default Lobby;
