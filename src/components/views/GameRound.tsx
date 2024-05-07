@@ -14,7 +14,6 @@ import { Button } from "components/ui/Button";
 const GameRound = ({ client }) => {
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState("");
-  const [imageUrlneu, setImageUrlneu] = useState("");
   const [location, setLocation] = useState({ lat: 46.8182, lng: 8.2275 });
   const [photographer, setPhotographer] = useState("unknown");
   const [photographer_username, setPhotographerUsername] = useState("");
@@ -34,9 +33,7 @@ const GameRound = ({ client }) => {
         console.log(`Received: ${message.body}`);
         try {
           const jsonObject = JSON.parse(message.body);
-          const regularUrl = jsonObject.urls.regular;
-          console.log("Regular URL:", regularUrl);
-          setImageUrlneu(regularUrl);
+          setImageUrl(jsonObject.urls.regular);
         } catch (error) {
           console.error("Error parsing JSON:", error);
         }
@@ -149,7 +146,7 @@ const GameRound = ({ client }) => {
           className="gameround container"
           style={{ height: "650px" }}
         >
-          {imageUrlneu && <img src={imageUrlneu} alt="Swiss Landscape" />}
+          {imageUrl && <img src={imageUrl} alt="Swiss Landscape" />}
           <br></br>
           {photographer_username !== "" && (
             <div>
