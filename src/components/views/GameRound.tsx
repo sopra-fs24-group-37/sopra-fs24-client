@@ -34,6 +34,12 @@ const GameRound = ({ client }) => {
         try {
           const jsonObject = JSON.parse(message.body);
           setImageUrl(jsonObject.urls.regular);
+          if (jsonObject.user.name) {
+            setPhotographer(jsonObject.user.name);
+          }
+          if (jsonObject.user.username) {
+            setPhotographerUsername(jsonObject.user.username);
+          }
         } catch (error) {
           console.error("Error parsing JSON:", error);
         }
