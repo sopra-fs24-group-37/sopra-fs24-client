@@ -14,6 +14,7 @@ import { Button } from "components/ui/Button";
 const GameRound = ({ client }) => {
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState("");
+  const [imageUrlneu, setImageUrlneu] = useState("");
   const [location, setLocation] = useState({ lat: 46.8182, lng: 8.2275 });
   const [photographer, setPhotographer] = useState("unknown");
   const [photographer_username, setPhotographerUsername] = useState("");
@@ -31,7 +32,14 @@ const GameRound = ({ client }) => {
       "/topic/games/" + gameId + "/round",
       (message) => {
         console.log(`Received: ${message.body}`);
-        fetchImage(message.body);
+        try {
+          const jsonObject = JSON.parse(message.body);
+          const regularUrl = jsonObject.urls.regular;
+          console.log("Regular URL:", regularUrl);
+          setImageUrlneu(regularUrl);
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        }
       }
     );
     setRoundSubscription(roundSub);
@@ -66,7 +74,7 @@ const GameRound = ({ client }) => {
     api.put("/games/" + gameId + "/leave", userId);
     sessionStorage.removeItem("gameId");
   };
-
+  /*
   const fetchImage = async (message) => {
     try {
       const response = await axios.get(
@@ -102,7 +110,7 @@ const GameRound = ({ client }) => {
     } catch (error) {
       console.error("Failed to fetch image from Unsplash:", error);
     }
-  };
+  }; */
 
   const handleTimeUp = () => {
     setCanInteract(false); // This will disable map interaction when the timer expires
@@ -141,7 +149,7 @@ const GameRound = ({ client }) => {
           className="gameround container"
           style={{ height: "650px" }}
         >
-          {imageUrl && <img src={imageUrl} alt="Swiss Landscape" />}
+          {imageUrlneu && <img src={imageUrlneu} alt="Swiss Landscape" />}
           <br></br>
           {photographer_username !== "" && (
             <div>
@@ -171,7 +179,7 @@ const GameRound = ({ client }) => {
             />
             <br />
             <Timer
-              initialCount={1000005}
+              initialCount={15}
               onTimeUp={handleTimeUp}
               className="gameround title-font"
             />
