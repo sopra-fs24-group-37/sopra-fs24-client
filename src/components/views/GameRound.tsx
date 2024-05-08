@@ -15,6 +15,8 @@ const GameRound = ({ client }) => {
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState("");
   const [location, setLocation] = useState({ lat: 46.8182, lng: 8.2275 });
+  const [photographer, setPhotographer] = useState("unknown");
+  const [photographer_username, setPhotographerUsername] = useState("");
   const [selectedLocation, setSelectedLocation] = useState({ lat: 0, lng: 0 });
   const [canInteract, setCanInteract] = useState(true);
   const gameId = sessionStorage.getItem("gameId");
@@ -29,19 +31,34 @@ const GameRound = ({ client }) => {
       "/topic/games/" + gameId + "/round",
       (message) => {
         console.log(`Received: ${message.body}`);
-        fetchImage(message.body);
+        try {
+          const jsonObject = JSON.parse(message.body);
+          setImageUrl(jsonObject.urls.regular);
+          setLocation({
+            lat: jsonObject.location.position.latitude,
+            lng: jsonObject.location.position.longitude,
+          });
+          if (jsonObject.user.name) {
+            setPhotographer(jsonObject.user.name);
+          }
+          if (jsonObject.user.username) {
+            setPhotographerUsername(jsonObject.user.username);
+          }
+        } catch (error) {
+          console.error("Error parsing JSON:", error);
+        }
       }
     );
-    setRoundSubscription(roundSub)
+    setRoundSubscription(roundSub);
 
     const gameEndSubscription = client.subscribe(
       "/topic/games/" + gameId + "/ended",
       (message) => {
         console.log(`Received: ${message.body}`);
-        setGameEnd(true)
+        setGameEnd(true);
       }
     );
-    setEndSubscription(gameEndSubscription)
+    setEndSubscription(gameEndSubscription);
 
     client.publish({
       destination: "/app/games/" + gameId + "/checkin",
@@ -64,15 +81,15 @@ const GameRound = ({ client }) => {
     api.put("/games/" + gameId + "/leave", userId);
     sessionStorage.removeItem("gameId");
   };
-
-
+  /*
   const fetchImage = async (message) => {
     try {
       const response = await axios.get(
         "https://api.unsplash.com/photos/" + message,
         {
           headers: {
-            Authorization: "Client-ID vzUYuzlG1QUpgAi-uyHM0Rdm9uEwmf6YCbUwHS6TVXI",
+            Authorization:
+              "Client-ID vzUYuzlG1QUpgAi-uyHM0Rdm9uEwmf6YCbUwHS6TVXI",
           },
         }
       );
@@ -90,11 +107,17 @@ const GameRound = ({ client }) => {
           lat: response.data.location.position.latitude,
           lng: response.data.location.position.longitude,
         });
+        if (response.data.user.name) {
+          setPhotographer(response.data.user.name);
+        }
+        if (response.data.user.username) {
+          setPhotographerUsername(response.data.user.username);
+        }
       }
     } catch (error) {
       console.error("Failed to fetch image from Unsplash:", error);
     }
-  };
+  }; */
 
   const handleTimeUp = () => {
     setCanInteract(false); // This will disable map interaction when the timer expires
@@ -109,15 +132,15 @@ const GameRound = ({ client }) => {
         userId: userId,
       }),
     });
-    if(roundSubscription){
+    if (roundSubscription) {
       roundSubscription.unsubscribe();
-    } 
-    if(endSubscription){
-      endSubscription.unsubscribe()
+    }
+    if (endSubscription) {
+      endSubscription.unsubscribe();
     }
     if (gameEnd) {
       setTimeout(() => {
-        navigate("/gamepodium/" + gameId)
+        navigate("/gamepodium/" + gameId);
       }, 5000);
     } else {
       setTimeout(() => {
@@ -134,6 +157,21 @@ const GameRound = ({ client }) => {
           style={{ height: "650px" }}
         >
           {imageUrl && <img src={imageUrl} alt="Swiss Landscape" />}
+          <br></br>
+          {photographer_username !== "" && (
+            <div>
+              Photo by{" "}
+              <a
+                href={`https://unsplash.com/@${photographer_username}?utm_source=swissquiz&utm_medium=referral`}
+              >
+                {photographer}
+              </a>{" "}
+              on{" "}
+              <a href="https://unsplash.com/?utm_source=swissquiz&utm_medium=referral">
+                Unsplash
+              </a>
+            </div>
+          )}
         </BaseContainer>
         <BaseContainer
           title="Where was this image taken? Make your guess by clicking on the map!"
