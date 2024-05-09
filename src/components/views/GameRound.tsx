@@ -20,7 +20,6 @@ const GameRound = ({ client }) => {
   const [selectedLocation, setSelectedLocation] = useState({ lat: 0, lng: 0 });
   const [canInteract, setCanInteract] = useState(true);
   const gameId = sessionStorage.getItem("gameId");
-  const [timerExpired, setTimerExpired] = useState(false);
   const userId = sessionStorage.getItem("userId");
   const [gameEnd, setGameEnd] = useState(false);
   const [roundSubscription, setRoundSubscription] = useState(null);
@@ -81,48 +80,10 @@ const GameRound = ({ client }) => {
     api.put("/games/" + gameId + "/leave", userId);
     sessionStorage.removeItem("gameId");
   };
-  /*
-  const fetchImage = async (message) => {
-    try {
-      const response = await axios.get(
-        "https://api.unsplash.com/photos/" + message,
-        {
-          headers: {
-            Authorization:
-              "Client-ID vzUYuzlG1QUpgAi-uyHM0Rdm9uEwmf6YCbUwHS6TVXI",
-          },
-        }
-      );
-      if (
-        response.data &&
-        response.data.urls &&
-        response.data.urls.regular &&
-        response.data.location &&
-        response.data.location.position &&
-        response.data.location.position.latitude &&
-        response.data.location.position.longitude
-      ) {
-        setImageUrl(response.data.urls.regular);
-        setLocation({
-          lat: response.data.location.position.latitude,
-          lng: response.data.location.position.longitude,
-        });
-        if (response.data.user.name) {
-          setPhotographer(response.data.user.name);
-        }
-        if (response.data.user.username) {
-          setPhotographerUsername(response.data.user.username);
-        }
-      }
-    } catch (error) {
-      console.error("Failed to fetch image from Unsplash:", error);
-    }
-  }; */
 
   const handleTimeUp = () => {
     setCanInteract(false); // This will disable map interaction when the timer expires
-    setTimerExpired(true);
-    const { lat, lng } = selectedLocation; //needs to be selected location
+    const { lat, lng } = selectedLocation; // needs to be selected location
     console.log(lat, lng);
     client.publish({
       destination: "/app/games/" + gameId + "/guess",
