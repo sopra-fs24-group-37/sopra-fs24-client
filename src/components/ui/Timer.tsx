@@ -9,6 +9,7 @@ interface TimerProps {
 const Timer: React.FC<TimerProps> = ({ initialCount, onTimeUp, className }) => {
   const [endTime, setEndTime] = useState(Date.now() + initialCount * 1000);
   const [remainingTime, setRemainingTime] = useState(initialCount);
+  const [timeUpTriggered, setTimeUpTriggered] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -18,12 +19,15 @@ const Timer: React.FC<TimerProps> = ({ initialCount, onTimeUp, className }) => {
         setRemainingTime(remaining);
       } else {
         clearInterval(interval);
-        onTimeUp();
+        if (!timeUpTriggered) {
+          setTimeUpTriggered(true);
+          onTimeUp();
+        }
       }
     }, 100);
 
     return () => clearInterval(interval);
-  }, [endTime, onTimeUp]);
+  }, [endTime, onTimeUp, timeUpTriggered]);
 
   return (
     <div className={className}>
