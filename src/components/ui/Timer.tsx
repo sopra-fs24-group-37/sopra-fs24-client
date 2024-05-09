@@ -7,30 +7,33 @@ interface TimerProps {
 }
 
 const Timer: React.FC<TimerProps> = ({ initialCount, onTimeUp, className }) => {
-  const [timer, setTimer] = useState(initialCount);
+  const [endTime, setEndTime] = useState(Date.now() + initialCount * 1000);
+  const [remainingTime, setRemainingTime] = useState(initialCount);
+  const [timeUpTriggered, setTimeUpTriggered] = useState(false);
 
   useEffect(() => {
-    // Create an interval that ticks every second
     const interval = setInterval(() => {
-      setTimer(prevTimer => {
-        if (prevTimer > 1) {
-          return prevTimer - 1;
-        } else {
-          clearInterval(interval); // Clear interval when reaching zero
-          onTimeUp();              // Call the onTimeUp callback
-          
-          return 0;                // Ensure timer is set to zero
+      const currentTime = Date.now();
+      if (currentTime < endTime) {
+        const remaining = Math.round((endTime - currentTime) / 1000);
+        setRemainingTime(remaining);
+      } else {
+        clearInterval(interval);
+        if (!timeUpTriggered) {
+          setTimeUpTriggered(true);
+          onTimeUp();
         }
-      });
-    }, 1000);
+      }
+    }, 100);
 
-    // Clear the interval when the component unmounts
     return () => clearInterval(interval);
-  }, [onTimeUp]);
+  }, [endTime, onTimeUp, timeUpTriggered]);
 
   return (
     <div className={className}>
-      {timer > 0 ? `Time left: ${timer} seconds` : "Time's up!"}
+      {endTime > Date.now()
+        ? `Time left: ${remainingTime} seconds`
+        : "Time's up!"}
     </div>
   );
 };
