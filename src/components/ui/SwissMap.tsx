@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   MapContainer,
   FeatureGroup,
@@ -11,11 +11,13 @@ import {
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import swissBoundaries from "../../geodata/switzerland.json";
+import swissCantons from "../../geodata/cantons.json";
 import blackIcon from "../../images/black_icon.svg";
 import blueIcon from "../../images/blue_icon.svg";
 import greenIcon from "../../images/green_icon.svg";
 import pinkIcon from "../../images/pink_icon.svg";
 import purpleIcon from "../../images/purple_icon.svg";
+import { point, polygon, booleanPointInPolygon } from "@turf/turf";
 
 const bounds = [
   [45.49, 5.73], // South-West
@@ -29,6 +31,11 @@ interface SwissMapProps {
   onMapClick: (latlng: L.LatLng) => void;
   selectedLocation?: L.LatLng;
   imageLocation?: L.LatLng;
+  showCanton?: boolean;
+  cantonLocation?: {
+    lat: number;
+    lng: number;
+  };
 }
 
 // Function to create custom icons
@@ -44,7 +51,31 @@ const SwissMap: React.FC<SwissMapProps> = ({
   onMapClick,
   selectedLocation,
   imageLocation,
+  showCanton,
+  cantonLocation
 }) => {
+  const [cantonHighlight, setCantonHighlight] = useState(null);
+  
+  useEffect(() => {
+    if (showCanton && cantonLocation) {
+      const clickedPoint = point([cantonLocation.lng, cantonLocation.lat]);
+      const foundCanton = swissCantons.features.find(feature => {
+        if (feature.geometry.type === "MultiPolygon") {
+          return feature.geometry.coordinates.some(polygonArray =>
+            booleanPointInPolygon(clickedPoint, polygon(polygonArray))
+          );
+        } else if (feature.geometry.type === "Polygon") {
+          return booleanPointInPolygon(clickedPoint, polygon(feature.geometry.coordinates));
+        }
+        return false;
+      });
+
+      setCantonHighlight(foundCanton);
+    } else {
+      setCantonHighlight(null);
+    }
+  }, [showCanton, cantonLocation]);
+
   function LocationMarker() {
     useMapEvents({
       click(e) {
@@ -61,6 +92,12 @@ const SwissMap: React.FC<SwissMapProps> = ({
     fillOpacity: 0.3, // 80% opacity for the area fill
     weight: 6, // Width of the boundary line
     opacity: 1 // Opacity of the boundary line
+  };
+
+  const cantonStyle = {
+    color: "#E993E6", // Color for the boundary
+    fillColor: "#F1BCEF", // Color for the fill
+    fillOpacity: 0.5, // 80% opacity for the area fill
   };
 
   // Create icons for each marker
@@ -89,6 +126,9 @@ const SwissMap: React.FC<SwissMapProps> = ({
       <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}" />
       <FeatureGroup>
         <GeoJSON data={swissBoundaries} style={swissStyle} />
+        {cantonHighlight && (
+          <GeoJSON key={cantonHighlight.properties.kan_code} data={cantonHighlight} style={cantonStyle} />
+        )}
       </FeatureGroup>
       <LocationMarker />
       {selectedLocation && (

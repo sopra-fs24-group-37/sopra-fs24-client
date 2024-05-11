@@ -24,6 +24,7 @@ const GameRound = ({ client }) => {
   const [gameEnd, setGameEnd] = useState(false);
   const [roundSubscription, setRoundSubscription] = useState(null);
   const [endSubscription, setEndSubscription] = useState(null);
+  const [showCanton, setShowCanton] = useState(false);  // State to manage "power-up" activation
 
   useEffect(() => {
     const roundSub = client.subscribe(
@@ -74,6 +75,10 @@ const GameRound = ({ client }) => {
     if (canInteract) {
       setSelectedLocation(latlng);
     }
+  };
+
+  const handlePowerUp = () => {
+    setShowCanton(true);  // Activate canton highlighting
   };
 
   const handleBeforeUnload = (event) => {
@@ -144,6 +149,8 @@ const GameRound = ({ client }) => {
               onMapClick={handleMapClick}
               selectedLocation={selectedLocation}
               imageLocation={!canInteract ? location : undefined} // Pass the image location when the interaction is disabled
+              showCanton={showCanton} // Pass the state to SwissMap
+              cantonLocation={location} // Assuming `location` is the canton's actual location
             />
             <br />
             <Timer
@@ -152,6 +159,8 @@ const GameRound = ({ client }) => {
               className="gameround title-font"
             />
           </>
+          <br />
+          <Button onClick={handlePowerUp}>Show Canton</Button> {/* Power-up button */}
         </BaseContainer>
       </div>
     </div>
