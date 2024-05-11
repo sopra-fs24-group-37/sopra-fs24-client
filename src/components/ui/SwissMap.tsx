@@ -18,8 +18,8 @@ import pinkIcon from "../../images/pink_icon.svg";
 import purpleIcon from "../../images/purple_icon.svg";
 
 const bounds = [
-  [43.48, 0.065],
-  [50.69, 16.65],
+  [45.49, 5.73], // South-West
+  [48.05, 10.71] // North-East
 ];
 
 const minZoom = 7.6; // Adjust according to your needs
@@ -76,13 +76,15 @@ const SwissMap: React.FC<SwissMapProps> = ({
       zoom={7.6}
       zoomSnap={0.1} // Allow fractional zoom levels at increments of 0.1
       style={{ height: "100%", width: "100%" }}
-      zoomControl={false}
-      dragging={false}
-      touchZoom={false}
-      doubleClickZoom={false}
-      scrollWheelZoom={false}
+      zoomControl={true}
+      dragging={true}
+      touchZoom={true}
+      doubleClickZoom={true}
+      scrollWheelZoom={true}
       minZoom={minZoom}
       maxZoom={maxZoom}
+      maxBounds={bounds} // Set the max bounds for movement on the map
+      maxBoundsViscosity={1.0} // Makes the bounds fully 'solid', preventing the user from dragging outside
     >
       <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}" />
       <FeatureGroup>
