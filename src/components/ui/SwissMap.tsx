@@ -1,15 +1,16 @@
 import React from "react";
 import {
   MapContainer,
+  FeatureGroup,
   TileLayer,
-  ImageOverlay,
+  GeoJSON,
   useMapEvents,
   Marker,
   Popup,
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import imageUrl from "../../images/map.png";
+import swissBoundaries from "../../geodata/switzerland.json";
 import blackIcon from "../../images/black_icon.svg";
 import blueIcon from "../../images/blue_icon.svg";
 import greenIcon from "../../images/green_icon.svg";
@@ -21,8 +22,8 @@ const bounds = [
   [50.69, 16.65],
 ];
 
-const minZoom = 7; // Adjust according to your needs
-const maxZoom = 3; // Adjust according to your needs
+const minZoom = 7.6; // Adjust according to your needs
+const maxZoom = 10; // Adjust according to your needs
 
 interface SwissMapProps {
   onMapClick: (latlng: L.LatLng) => void;
@@ -54,6 +55,14 @@ const SwissMap: React.FC<SwissMapProps> = ({
     return null;
   }
 
+  const swissStyle = {
+    color: "#E993E6", // Color for the boundary
+    fillColor: "#F1BCEF", // Color for the fill
+    fillOpacity: 0.3, // 80% opacity for the area fill
+    weight: 6, // Width of the boundary line
+    opacity: 1 // Opacity of the boundary line
+  };
+
   // Create icons for each marker
   const blackMarkerIcon = createIcon(blackIcon);
   const blueMarkerIcon = createIcon(blueIcon);
@@ -63,8 +72,9 @@ const SwissMap: React.FC<SwissMapProps> = ({
 
   return (
     <MapContainer
-      center={[46.8, 8.2]}
-      zoom={7}
+      center={[46.8, 8.225]}
+      zoom={7.6}
+      zoomSnap={0.1} // Allow fractional zoom levels at increments of 0.1
       style={{ height: "100%", width: "100%" }}
       zoomControl={false}
       dragging={false}
@@ -74,8 +84,10 @@ const SwissMap: React.FC<SwissMapProps> = ({
       minZoom={minZoom}
       maxZoom={maxZoom}
     >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <ImageOverlay url={imageUrl} bounds={bounds} />
+      <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}" />
+      <FeatureGroup>
+        <GeoJSON data={swissBoundaries} style={swissStyle} />
+      </FeatureGroup>
       <LocationMarker />
       {selectedLocation && (
         <Marker position={selectedLocation} icon={pinkMarkerIcon}>
