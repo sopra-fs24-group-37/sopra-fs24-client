@@ -1,15 +1,16 @@
 import React from "react";
 import {
   MapContainer,
+  FeatureGroup,
   TileLayer,
-  ImageOverlay,
+  GeoJSON,
   useMapEvents,
   Marker,
   Popup,
 } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import imageUrl from "../../images/map.png";
+import swissBoundaries from "../../geodata/switzerland.json";
 import blackIcon from "../../images/black_icon.svg";
 import blueIcon from "../../images/blue_icon.svg";
 import greenIcon from "../../images/green_icon.svg";
@@ -54,6 +55,14 @@ const SwissMap: React.FC<SwissMapProps> = ({
     return null;
   }
 
+  const swissStyle = {
+    color: "#E993E6", // Color for the boundary
+    fillColor: "#F1BCEF", // Color for the fill
+    fillOpacity: 0.3, // 80% opacity for the area fill
+    weight: 6, // Width of the boundary line
+    opacity: 1 // Opacity of the boundary line
+  };
+
   // Create icons for each marker
   const blackMarkerIcon = createIcon(blackIcon);
   const blueMarkerIcon = createIcon(blueIcon);
@@ -75,6 +84,9 @@ const SwissMap: React.FC<SwissMapProps> = ({
       maxZoom={maxZoom}
     >
       <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}" />
+      <FeatureGroup>
+        <GeoJSON data={swissBoundaries} style={swissStyle} />
+      </FeatureGroup>
       <LocationMarker />
       {selectedLocation && (
         <Marker position={selectedLocation} icon={pinkMarkerIcon}>
