@@ -74,8 +74,7 @@ const SwissMap: React.FC<SwissMapProps> = ({
       minZoom={minZoom}
       maxZoom={maxZoom}
     >
-      <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <ImageOverlay url={imageUrl} bounds={bounds} />
+      <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}" />
       <LocationMarker />
       {selectedLocation && (
         <Marker position={selectedLocation} icon={pinkMarkerIcon}>
