@@ -22,8 +22,8 @@ const bounds = [
   [50.69, 16.65],
 ];
 
-const minZoom = 7; // Adjust according to your needs
-const maxZoom = 3; // Adjust according to your needs
+const minZoom = 7.6; // Adjust according to your needs
+const maxZoom = 10; // Adjust according to your needs
 
 interface SwissMapProps {
   onMapClick: (latlng: L.LatLng) => void;
@@ -72,8 +72,9 @@ const SwissMap: React.FC<SwissMapProps> = ({
 
   return (
     <MapContainer
-      center={[46.8, 8.2]}
-      zoom={7}
+      center={[46.8, 8.225]}
+      zoom={7.6}
+      zoomSnap={0.1} // Allow fractional zoom levels at increments of 0.1
       style={{ height: "100%", width: "100%" }}
       zoomControl={false}
       dragging={false}
