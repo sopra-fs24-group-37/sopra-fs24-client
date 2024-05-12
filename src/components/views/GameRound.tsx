@@ -171,7 +171,7 @@ const GameRound = ({ client }) => {
           </>
           <br />
           <div className="button-container">
-            {/* <Button onClick={handleCantonHint}>Double Points</Button> */}
+            <Button onClick={handleCantonHint}>Double Score</Button>
             <Button onClick={handleCantonHint}>Canton Hint</Button>
             <Button onClick={handleTripleHint}>Triple Hint</Button>
           </div>
