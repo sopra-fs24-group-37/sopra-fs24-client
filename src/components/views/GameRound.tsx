@@ -79,7 +79,7 @@ const GameRound = ({ client }) => {
     }
   };
 
-  const handlePowerUp = () => {
+  const handleCantonHint = () => {
     setShowCanton(true);  // Activate canton highlighting
   };
 
@@ -129,7 +129,7 @@ const GameRound = ({ client }) => {
       <div className="gameround side-by-side-containers">
         <BaseContainer
           className="gameround container"
-          style={{ height: "650px" }}
+          style={{ height: "700px" }}
         >
           {imageUrl && <img src={imageUrl} alt="Swiss Landscape" />}
           <br></br>
@@ -151,7 +151,7 @@ const GameRound = ({ client }) => {
         <BaseContainer
           title="Where was this image taken? Make your guess by clicking on the map!"
           className="gameround container"
-          style={{ height: "650px" }}
+          style={{ height: "700px" }}
         >
           <>
             <SwissMap
@@ -161,7 +161,7 @@ const GameRound = ({ client }) => {
               showCanton={showCanton} // Pass the state to SwissMap
               cantonLocation={location} // Assuming `location` is the canton's actual location
               additionalCantons={additionalCantons}
-              />
+            />
             <br />
             <Timer
               initialCount={15}
@@ -170,8 +170,11 @@ const GameRound = ({ client }) => {
             />
           </>
           <br />
-          <Button onClick={handlePowerUp}>Canton Hint</Button> {/* Power-up button */}
-          <Button onClick={handleTripleHint}>Triple Hint</Button>
+          <div className="button-container">
+            <Button onClick={handleCantonHint}>Double Points</Button>
+            <Button onClick={handleCantonHint}>Canton Hint</Button>
+            <Button onClick={handleTripleHint}>Triple Hint</Button>
+          </div>
         </BaseContainer>
       </div>
     </div>
