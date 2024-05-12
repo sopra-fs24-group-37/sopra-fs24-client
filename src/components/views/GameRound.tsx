@@ -10,6 +10,7 @@ import "leaflet/dist/leaflet.css";
 import Timer from "components/ui/Timer";
 import PropTypes from "prop-types";
 import { Button } from "components/ui/Button";
+import swissCantons from "../../geodata/cantons.json";
 
 const GameRound = ({ client }) => {
   const navigate = useNavigate();
@@ -25,6 +26,7 @@ const GameRound = ({ client }) => {
   const [roundSubscription, setRoundSubscription] = useState(null);
   const [endSubscription, setEndSubscription] = useState(null);
   const [showCanton, setShowCanton] = useState(false);  // State to manage "power-up" activation
+  const [additionalCantons, setAdditionalCantons] = useState([]);
 
   useEffect(() => {
     const roundSub = client.subscribe(
@@ -81,6 +83,13 @@ const GameRound = ({ client }) => {
     setShowCanton(true);  // Activate canton highlighting
   };
 
+  const handleTripleHint = () => {
+    const otherCantons = swissCantons.features.filter(canton => canton.properties.kan_code !== location.kan_code);
+    const shuffled = otherCantons.sort(() => 0.5 - Math.random());
+    setAdditionalCantons(shuffled.slice(0, 2));
+    setShowCanton(true);
+  };
+  
   const handleBeforeUnload = (event) => {
     api.put("/games/" + gameId + "/leave", userId);
     sessionStorage.removeItem("gameId");
@@ -151,7 +160,8 @@ const GameRound = ({ client }) => {
               imageLocation={!canInteract ? location : undefined} // Pass the image location when the interaction is disabled
               showCanton={showCanton} // Pass the state to SwissMap
               cantonLocation={location} // Assuming `location` is the canton's actual location
-            />
+              additionalCantons={additionalCantons}
+              />
             <br />
             <Timer
               initialCount={15}
@@ -160,7 +170,8 @@ const GameRound = ({ client }) => {
             />
           </>
           <br />
-          <Button onClick={handlePowerUp}>Show Canton</Button> {/* Power-up button */}
+          <Button onClick={handlePowerUp}>Canton Hint</Button> {/* Power-up button */}
+          <Button onClick={handleTripleHint}>Triple Hint</Button>
         </BaseContainer>
       </div>
     </div>

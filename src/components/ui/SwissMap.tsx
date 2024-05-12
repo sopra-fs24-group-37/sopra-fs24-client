@@ -36,6 +36,7 @@ interface SwissMapProps {
     lat: number;
     lng: number;
   };
+  additionalCantons?: any[];  // Array to hold additional cantons to highlight
 }
 
 // Function to create custom icons
@@ -52,30 +53,31 @@ const SwissMap: React.FC<SwissMapProps> = ({
   selectedLocation,
   imageLocation,
   showCanton,
-  cantonLocation
+  cantonLocation,
+  additionalCantons
 }) => {
   const [cantonHighlight, setCantonHighlight] = useState(null);
   
   useEffect(() => {
+    let highlights = [];
     if (showCanton && cantonLocation) {
       const clickedPoint = point([cantonLocation.lng, cantonLocation.lat]);
-      const foundCanton = swissCantons.features.find(feature => {
-        if (feature.geometry.type === "MultiPolygon") {
-          return feature.geometry.coordinates.some(polygonArray =>
-            booleanPointInPolygon(clickedPoint, polygon(polygonArray))
-          );
-        } else if (feature.geometry.type === "Polygon") {
-          return booleanPointInPolygon(clickedPoint, polygon(feature.geometry.coordinates));
-        }
-        return false;
-      });
-
-      setCantonHighlight(foundCanton);
-    } else {
-      setCantonHighlight(null);
+      const foundCanton = swissCantons.features.find(feature =>
+        booleanPointInPolygon(clickedPoint, polygon(feature.geometry.type === "MultiPolygon" ? feature.geometry.coordinates[0] : feature.geometry.coordinates))
+      );
+  
+      if (foundCanton) {
+        highlights.push(foundCanton);
+      }
     }
-  }, [showCanton, cantonLocation]);
-
+    if (additionalCantons && additionalCantons.length > 0) {
+      additionalCantons.forEach(canton => {
+        highlights.push(canton);
+      });
+    }
+    setCantonHighlight(highlights); // Update to handle an array of highlights
+  }, [showCanton, cantonLocation, additionalCantons]);
+  
   function LocationMarker() {
     useMapEvents({
       click(e) {
@@ -126,9 +128,9 @@ const SwissMap: React.FC<SwissMapProps> = ({
       <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}" />
       <FeatureGroup>
         <GeoJSON data={swissBoundaries} style={swissStyle} />
-        {cantonHighlight && (
-          <GeoJSON key={cantonHighlight.properties.kan_code} data={cantonHighlight} style={cantonStyle} />
-        )}
+        {cantonHighlight && cantonHighlight.map((canton, index) => (
+          <GeoJSON key={canton.properties.kan_code} data={canton} style={cantonStyle} />
+        ))}
       </FeatureGroup>
       <LocationMarker />
       {selectedLocation && (
