@@ -10,6 +10,7 @@ import "leaflet/dist/leaflet.css";
 import Timer from "components/ui/Timer";
 import PropTypes from "prop-types";
 import { Button } from "components/ui/Button";
+import swissCantons from "../../geodata/cantons.json";
 
 const GameRound = ({ client }) => {
   const navigate = useNavigate();
@@ -24,6 +25,8 @@ const GameRound = ({ client }) => {
   const [gameEnd, setGameEnd] = useState(false);
   const [roundSubscription, setRoundSubscription] = useState(null);
   const [endSubscription, setEndSubscription] = useState(null);
+  const [showCanton, setShowCanton] = useState(false);  // State to manage "power-up" activation
+  const [additionalCantons, setAdditionalCantons] = useState([]);
 
   useEffect(() => {
     const roundSub = client.subscribe(
@@ -76,6 +79,17 @@ const GameRound = ({ client }) => {
     }
   };
 
+  const handleCantonHint = () => {
+    setShowCanton(true);  // Activate canton highlighting
+  };
+
+  const handleTripleHint = () => {
+    const otherCantons = swissCantons.features.filter(canton => canton.properties.kan_code !== location.kan_code);
+    const shuffled = otherCantons.sort(() => 0.5 - Math.random());
+    setAdditionalCantons(shuffled.slice(0, 2));
+    setShowCanton(true);
+  };
+  
   const handleBeforeUnload = (event) => {
     api.put("/games/" + gameId + "/leave", userId);
     sessionStorage.removeItem("gameId");
@@ -115,7 +129,7 @@ const GameRound = ({ client }) => {
       <div className="gameround side-by-side-containers">
         <BaseContainer
           className="gameround container"
-          style={{ height: "650px" }}
+          style={{ height: "700px" }}
         >
           {imageUrl && <img src={imageUrl} alt="Swiss Landscape" />}
           <br></br>
@@ -137,13 +151,16 @@ const GameRound = ({ client }) => {
         <BaseContainer
           title="Where was this image taken? Make your guess by clicking on the map!"
           className="gameround container"
-          style={{ height: "650px" }}
+          style={{ height: "700px" }}
         >
           <>
             <SwissMap
               onMapClick={handleMapClick}
               selectedLocation={selectedLocation}
               imageLocation={!canInteract ? location : undefined} // Pass the image location when the interaction is disabled
+              showCanton={showCanton} // Pass the state to SwissMap
+              cantonLocation={location} // Assuming `location` is the canton's actual location
+              additionalCantons={additionalCantons}
             />
             <br />
             <Timer
@@ -152,6 +169,12 @@ const GameRound = ({ client }) => {
               className="gameround title-font"
             />
           </>
+          <br />
+          <div className="button-container">
+            {/* <Button onClick={handleCantonHint}>Double Points</Button> */}
+            <Button onClick={handleCantonHint}>Canton Hint</Button>
+            <Button onClick={handleTripleHint}>Triple Hint</Button>
+          </div>
         </BaseContainer>
       </div>
     </div>

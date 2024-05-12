@@ -33,8 +33,27 @@
       width: 100%;
       text-align: center;
     }
-  
   }
+
+  .button-container { // Container for buttons
+    display: flex;  // Align children in a row
+    justify-content: space-around;  // Distribute space between and around buttons
+    width: 100%;  // Take up the full width of the parent container
+    margin-top: 20px;  // Space above the button container
+
+    button {
+      flex: 1;  // Each button takes equal space
+      padding: 10px 20px;  // Padding inside the button
+      margin: 0 10px;  // Margin between buttons
+      font-size: 16px;  // Larger text for better readability
+      background-color: $buttonColor;  // Use your theme accent color for background
+      color: $background;  // Contrast text color
+      border: none;  // No borders
+      border-radius: $borderRadius;  // Rounded corners
+      cursor: pointer;  // Cursor indicates button
+    }
+  }
+
   &.side-by-side-containers {
     display: flex;
     flex-direction: row;
