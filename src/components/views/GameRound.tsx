@@ -138,11 +138,17 @@ const GameRound = ({ client }) => {
               Photo by{" "}
               <a
                 href={`https://unsplash.com/@${photographer_username}?utm_source=swissquiz&utm_medium=referral`}
+                target="_blank"
+                rel="noopener noreferrer"          
               >
                 {photographer}
               </a>{" "}
               on{" "}
-              <a href="https://unsplash.com/?utm_source=swissquiz&utm_medium=referral">
+              <a 
+                href="https://unsplash.com/?utm_source=swissquiz&utm_medium=referral"
+                target="_blank" // Opens link in a new window/tab
+                rel="noopener noreferrer" // Security measure
+              >
                 Unsplash
               </a>
             </div>
