@@ -91,15 +91,15 @@ const SwissMap: React.FC<SwissMapProps> = ({
   const swissStyle = {
     color: "#E993E6", // Color for the boundary
     fillColor: "#F1BCEF", // Color for the fill
-    fillOpacity: 0.3, // 80% opacity for the area fill
+    fillOpacity: 0.3, // 30% opacity for the area fill
     weight: 6, // Width of the boundary line
     opacity: 1 // Opacity of the boundary line
   };
 
   const cantonStyle = {
-    color: "#E993E6", // Color for the boundary
-    fillColor: "#F1BCEF", // Color for the fill
-    fillOpacity: 0.5, // 80% opacity for the area fill
+    color: "#73E4BC", // Color for the boundary
+    fillColor: "#73E4BC", // Color for the fill
+    fillOpacity: 0.5, // 50% opacity for the area fill
   };
 
   // Create icons for each marker

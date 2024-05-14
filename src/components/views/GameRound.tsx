@@ -11,6 +11,7 @@ import Timer from "components/ui/Timer";
 import PropTypes from "prop-types";
 import { Button } from "components/ui/Button";
 import swissCantons from "../../geodata/cantons.json";
+import { point, polygon, booleanPointInPolygon } from "@turf/turf";
 
 const GameRound = ({ client }) => {
   const navigate = useNavigate();
@@ -84,12 +85,31 @@ const GameRound = ({ client }) => {
   };
 
   const handleTripleHint = () => {
-    const otherCantons = swissCantons.features.filter(canton => canton.properties.kan_code !== location.kan_code);
+    const cantonCode = getCantonCodeForLocation(location); // Get the kan_code for the current location
+    console.log("Location kan_code (cantonCode1):", cantonCode); // Log the location's kan_code
+
+    const otherCantons = swissCantons.features.filter(canton => canton.properties.kan_code[0] !== cantonCode);
+    console.log("Other cantons:", otherCantons); // Log the location's kan_code
     const shuffled = otherCantons.sort(() => 0.5 - Math.random());
     setAdditionalCantons(shuffled.slice(0, 2));
     setShowCanton(true);
   };
   
+  const getCantonCodeForLocation = (location) => {
+    const clickedPoint = point([location.lng, location.lat]);
+    const foundCanton = swissCantons.features.find(feature =>
+      booleanPointInPolygon(clickedPoint, polygon(feature.geometry.type === "MultiPolygon" ? feature.geometry.coordinates[0] : feature.geometry.coordinates))
+    );
+
+    if (foundCanton) {
+      console.log("Found canton:", foundCanton.properties.kan_code[0]); // Log the found canton's kan_code
+      return foundCanton.properties.kan_code[0]; // Access the first element of kan_code
+    } else {
+      console.log("No canton found for the given location");
+      return null;
+    }
+  };
+
   const handleBeforeUnload = (event) => {
     api.put("/games/" + gameId + "/leave", userId);
     sessionStorage.removeItem("gameId");
