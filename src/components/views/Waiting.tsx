@@ -10,6 +10,8 @@ const Waiting = () => {
   const userId = sessionStorage.getItem("userId");
   const navigate = useNavigate();
   useEffect(() => {
+    const response = api.get("round/" + gameId + "/leaderboard");
+    console.log(response)
     const timer = setTimeout(() => {
       navigate("/gameround/" + gameId);
     }, 5000);
