@@ -1,0 +1,33 @@
+@import "../theme";
+
+.waiting-container {
+  background: $background;
+  padding: 1.5em;
+  border-radius: $borderRadius;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  box-shadow: $dropShadow;
+  min-width: 350px;
+
+  // Set font style for the whole container
+  font-family: $fontDefault;
+  font-size: 16px;
+}
+
+.no-bullets {
+  list-style-type: none;
+  padding: 0; /* Remove default padding */
+}
+
+.bold-helvetica {
+  font-family: 'Helvetica', sans-serif;
+  font-weight: bold;
+  font-size: 18pt;
+}
+
+li {
+  font-family: Helvetica, Arial, sans-serif; // Apply Helvetica font
+  font-size: 20px; // Set font size to 20px
+  margin-bottom: 8px; // Add some space between list items
+}
