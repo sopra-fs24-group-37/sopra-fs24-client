@@ -36,8 +36,9 @@ const Lobby = ({ client }) => {
   
     const gameSubscription = client.subscribe("/topic/games/getGames", message => {
       const updatedGames = JSON.parse(message.body);
-      setGames(updatedGames);
-      console.log("Updated games list received:", updatedGames);
+      const filteredGames = updatedGames.filter((game) => game.gameStatus === "WAITING");
+      setGames(filteredGames);
+      console.log("Updated games list received:", filteredGames);
     });
 
     client.publish({
