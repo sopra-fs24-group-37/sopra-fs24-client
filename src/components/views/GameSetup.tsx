@@ -17,6 +17,9 @@ const GameSetup = ({ client }) => {
   const [users, setUsers] = useState<User[]>(null);
   const [isGamemaster, setIsGamemaster] = useState(false);
   const [timerValue, setTimerValue] = useState(30); // standard timer set to 30
+  const [numRounds, setNumRounds] = useState(10);
+  const [guessTime, setguessTime] = useState(30);
+  const [GamePassword, setGamePassword] = useState(false);
 
   useEffect(() => {
     const updateSubscription = client.subscribe(
@@ -24,12 +27,15 @@ const GameSetup = ({ client }) => {
       (message) => {
         console.log(`Received: ${message.body}`);
         const gameData = JSON.parse(message.body);
-        const numRounds = gameData.numRounds;
-        const guessTime = gameData.guessTime;
-        const password = gameData.password;
+        const receivedNumRounds = gameData.numRounds;
+        setNumRounds(receivedNumRounds);
+        const receivedguessTime = gameData.guessTime;
+        setguessTime(receivedguessTime);
+        const receivedGamePassword = gameData.setGamePassword;
+        setGamePassword(receivedGamePassword);
         console.log("Number of Rounds:", numRounds);
         console.log("Guess Time:", guessTime);
-        console.log("Password:", password);
+        console.log("Password:", setGamePassword);
         const updatedUsers = gameData.players.map((player) => ({
           username: player.user.username,
         }));
@@ -157,8 +163,9 @@ const GameSetup = ({ client }) => {
       {showGameSettings && (
         <GameSettings
           client={client}
-          timerValue={timerValue}
-          handleTimerChange={setTimerValue}
+          currentGuessTimeValue={guessTime}
+          currentRoundsValue={numRounds}
+          currentPasswordValue={timerValue}
           hideSettingsContainer={hideSettingsContainer}
         />
       )}

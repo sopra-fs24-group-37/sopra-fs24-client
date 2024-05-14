@@ -4,10 +4,16 @@ import { Button } from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/GameSetup.scss";
 
-const GameSettings = ({ client, currentTimerValue, hideSettingsContainer }) => {
-  const [guessTime, setSelectedTimer] = useState(currentTimerValue);
+const GameSettings = ({
+  client,
+  currentGuessTimeValue,
+  currentRoundsValue,
+  currentPasswordValue,
+  hideSettingsContainer,
+}) => {
+  const [guessTime, setSelectedTimer] = useState(currentGuessTimeValue);
   const [numRounds, setSelectedRounds] = useState(currentRoundsValue);
-  const [setGamePassword, setSetGamePassword] = useState(false); // New state for toggling game password
+  const [setGamePassword, setSetGamePassword] = useState(currentPasswordValue); // New state for toggling game password
   const gameId = sessionStorage.getItem("gameId");
 
   const handleLocalTimerChange = (event) => {
@@ -39,21 +45,21 @@ const GameSettings = ({ client, currentTimerValue, hideSettingsContainer }) => {
   return (
     <BaseContainer title="Game Settings" className="gamesetup container">
       <div className="gamesetup-row">
-        <div className="gamesetup explanation">Guessing Time:</div>
-        <select value={guessTime} onChange={handleLocalTimerChange}>
-          <option value={30}>30s</option>
-          <option value={20}>20s</option>
-          <option value={10}>10s</option>
+        <div className="gamesetup explanation">Number of Rounds:</div>
+        <select value={numRounds} onChange={changeRounds}>
+          <option value={2}>2</option>
+          <option value={5}>5</option>
+          <option value={10}>10</option>
         </select>
       </div>
       <br />
       <br />
       <div className="gamesetup-row">
-        <div className="gamesetup explanation">Number of Rounds:</div>
-        <select value={guessTime} onChange={changeRounds}>
-          <option value={2}>2</option>
-          <option value={5}>5</option>
-          <option value={10}>10</option>
+        <div className="gamesetup explanation">Guessing Time:</div>
+        <select value={guessTime} onChange={handleLocalTimerChange}>
+          <option value={30}>30s</option>
+          <option value={20}>20s</option>
+          <option value={10}>10s</option>
         </select>
       </div>
       <br />
@@ -80,7 +86,9 @@ const GameSettings = ({ client, currentTimerValue, hideSettingsContainer }) => {
 };
 
 GameSettings.propTypes = {
-  currentTimerValue: PropTypes.number.isRequired,
+  currentGuessTimeValue: PropTypes.number.isRequired,
+  currentRoundsValue: PropTypes.number.isRequired,
+  currentPasswordValue: PropTypes.number.isRequired,
   hideSettingsContainer: PropTypes.func.isRequired,
   client: PropTypes.object.isRequired,
 };
