@@ -103,9 +103,11 @@ const GameRound = ({ client }) => {
 
     if (foundCanton) {
       console.log("Found canton:", foundCanton.properties.kan_code[0]); // Log the found canton's kan_code
+
       return foundCanton.properties.kan_code[0]; // Access the first element of kan_code
     } else {
       console.log("No canton found for the given location");
+      
       return null;
     }
   };
