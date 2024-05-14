@@ -24,6 +24,12 @@ const GameSetup = ({ client }) => {
       (message) => {
         console.log(`Received: ${message.body}`);
         const gameData = JSON.parse(message.body);
+        const numRounds = gameData.numRounds;
+        const guessTime = gameData.guessTime;
+        const password = gameData.password;
+        console.log("Number of Rounds:", numRounds);
+        console.log("Guess Time:", guessTime);
+        console.log("Password:", password);
         const updatedUsers = gameData.players.map((player) => ({
           username: player.user.username,
         }));
@@ -150,6 +156,7 @@ const GameSetup = ({ client }) => {
 
       {showGameSettings && (
         <GameSettings
+          client={client}
           timerValue={timerValue}
           handleTimerChange={setTimerValue}
           hideSettingsContainer={hideSettingsContainer}
