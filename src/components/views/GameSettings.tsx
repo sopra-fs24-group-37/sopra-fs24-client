@@ -4,28 +4,34 @@ import { Button } from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/GameSetup.scss";
 
-const GameSettings = ({
-  client,
-  currentGuessTimeValue,
-  currentRoundsValue,
-  currentPasswordValue,
-  hideSettingsContainer,
-}) => {
-  const [guessTime, setSelectedTimer] = useState(currentGuessTimeValue);
-  const [numRounds, setSelectedRounds] = useState(currentRoundsValue);
-  const [setGamePassword, setSetGamePassword] = useState(currentPasswordValue); // New state for toggling game password
+const GameSettings = ({ client, hideSettingsContainer }) => {
+  const [guessTime, setSelectedTimer] = useState(
+    sessionStorage.getItem("guessTime") || null
+  );
+  const [numRounds, setSelectedRounds] = useState(
+    sessionStorage.getItem("numRounds") || null
+  );
+  const [setGamePassword, setSetGamePassword] = useState(
+    sessionStorage.getItem("setGamePassword") === "true" || false
+  ); // New state for toggling game password
   const gameId = sessionStorage.getItem("gameId");
 
   const handleLocalTimerChange = (event) => {
-    setSelectedTimer(parseInt(event.target.value));
+    const selectedTime = parseInt(event.target.value);
+    setSelectedTimer(selectedTime);
+    sessionStorage.setItem("guessTime", String(selectedTime));
   };
 
   const changeRounds = (event) => {
-    setSelectedRounds(parseInt(event.target.value));
+    const selectedRounds = parseInt(event.target.value);
+    setSelectedRounds(selectedRounds);
+    sessionStorage.setItem("numRounds", String(selectedRounds));
   };
 
   const toggleGamePassword = () => {
-    setSetGamePassword((prevState) => !prevState); // Toggle the current state
+    const newValue = !setGamePassword;
+    setSetGamePassword(newValue);
+    sessionStorage.setItem("setGamePassword", String(newValue));
   };
 
   const applySettings = () => {
@@ -86,9 +92,6 @@ const GameSettings = ({
 };
 
 GameSettings.propTypes = {
-  currentGuessTimeValue: PropTypes.number.isRequired,
-  currentRoundsValue: PropTypes.number.isRequired,
-  currentPasswordValue: PropTypes.number.isRequired,
   hideSettingsContainer: PropTypes.func.isRequired,
   client: PropTypes.object.isRequired,
 };
