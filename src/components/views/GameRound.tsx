@@ -10,6 +10,8 @@ import "leaflet/dist/leaflet.css";
 import Timer from "components/ui/Timer";
 import PropTypes from "prop-types";
 import { Button } from "components/ui/Button";
+import swissCantons from "../../geodata/cantons.json";
+import { point, polygon, booleanPointInPolygon } from "@turf/turf";
 
 const GameRound = ({ client }) => {
   const navigate = useNavigate();
@@ -24,6 +26,8 @@ const GameRound = ({ client }) => {
   const [gameEnd, setGameEnd] = useState(false);
   const [roundSubscription, setRoundSubscription] = useState(null);
   const [endSubscription, setEndSubscription] = useState(null);
+  const [showCanton, setShowCanton] = useState(false);  // State to manage "power-up" activation
+  const [additionalCantons, setAdditionalCantons] = useState([]);
 
   useEffect(() => {
     const roundSub = client.subscribe(
@@ -76,6 +80,38 @@ const GameRound = ({ client }) => {
     }
   };
 
+  const handleCantonHint = () => {
+    setShowCanton(true);  // Activate canton highlighting
+  };
+
+  const handleTripleHint = () => {
+    const cantonCode = getCantonCodeForLocation(location); // Get the kan_code for the current location
+    console.log("Location kan_code (cantonCode1):", cantonCode); // Log the location's kan_code
+
+    const otherCantons = swissCantons.features.filter(canton => canton.properties.kan_code[0] !== cantonCode);
+    console.log("Other cantons:", otherCantons); // Log the location's kan_code
+    const shuffled = otherCantons.sort(() => 0.5 - Math.random());
+    setAdditionalCantons(shuffled.slice(0, 2));
+    setShowCanton(true);
+  };
+  
+  const getCantonCodeForLocation = (location) => {
+    const clickedPoint = point([location.lng, location.lat]);
+    const foundCanton = swissCantons.features.find(feature =>
+      booleanPointInPolygon(clickedPoint, polygon(feature.geometry.type === "MultiPolygon" ? feature.geometry.coordinates[0] : feature.geometry.coordinates))
+    );
+
+    if (foundCanton) {
+      console.log("Found canton:", foundCanton.properties.kan_code[0]); // Log the found canton's kan_code
+
+      return foundCanton.properties.kan_code[0]; // Access the first element of kan_code
+    } else {
+      console.log("No canton found for the given location");
+      
+      return null;
+    }
+  };
+
   const handleBeforeUnload = (event) => {
     api.put("/games/" + gameId + "/leave", userId);
     sessionStorage.removeItem("gameId");
@@ -115,7 +151,7 @@ const GameRound = ({ client }) => {
       <div className="gameround side-by-side-containers">
         <BaseContainer
           className="gameround container"
-          style={{ height: "650px" }}
+          style={{ height: "700px" }}
         >
           {imageUrl && <img src={imageUrl} alt="Swiss Landscape" />}
           <br></br>
@@ -124,11 +160,17 @@ const GameRound = ({ client }) => {
               Photo by{" "}
               <a
                 href={`https://unsplash.com/@${photographer_username}?utm_source=swissquiz&utm_medium=referral`}
+                target="_blank"
+                rel="noopener noreferrer"          
               >
                 {photographer}
               </a>{" "}
               on{" "}
-              <a href="https://unsplash.com/?utm_source=swissquiz&utm_medium=referral">
+              <a 
+                href="https://unsplash.com/?utm_source=swissquiz&utm_medium=referral"
+                target="_blank" // Opens link in a new window/tab
+                rel="noopener noreferrer" // Security measure
+              >
                 Unsplash
               </a>
             </div>
@@ -137,13 +179,16 @@ const GameRound = ({ client }) => {
         <BaseContainer
           title="Where was this image taken? Make your guess by clicking on the map!"
           className="gameround container"
-          style={{ height: "650px" }}
+          style={{ height: "700px" }}
         >
           <>
             <SwissMap
               onMapClick={handleMapClick}
               selectedLocation={selectedLocation}
               imageLocation={!canInteract ? location : undefined} // Pass the image location when the interaction is disabled
+              showCanton={showCanton} // Pass the state to SwissMap
+              cantonLocation={location} // Assuming `location` is the canton's actual location
+              additionalCantons={additionalCantons}
             />
             <br />
             <Timer
@@ -152,6 +197,12 @@ const GameRound = ({ client }) => {
               className="gameround title-font"
             />
           </>
+          <br />
+          <div className="button-container">
+            <Button >Double Score</Button> 
+            <Button onClick={handleCantonHint}>Canton Hint</Button>
+            <Button onClick={handleTripleHint}>Triple Hint</Button>
+          </div>
         </BaseContainer>
       </div>
     </div>

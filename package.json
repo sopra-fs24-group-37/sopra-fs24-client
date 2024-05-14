@@ -4,10 +4,13 @@
   "private": true,
   "dependencies": {
     "@stomp/stompjs": "^7.0.0",
+    "@turf/turf": "^6.5.0",
     "axios": "^1.6.8",
     "eslint-config-react-app": "^7.0.1",
     "leaflet": "^1.9.4",
+    "lodash": "^4.17.21",
     "react": "^18.2.0",
+    "react-confetti": "^6.1.0",
     "react-dom": "^18.2.0",
     "react-leaflet": "^4.2.1",
     "react-router-dom": "^6.21.3",
