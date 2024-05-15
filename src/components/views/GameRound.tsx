@@ -22,16 +22,33 @@ const GameRound = ({ client }) => {
   const [selectedLocation, setSelectedLocation] = useState({ lat: 0, lng: 0 });
   const [canInteract, setCanInteract] = useState(true);
   const gameId = sessionStorage.getItem("gameId");
-  const userId = sessionStorage.getItem("userId");
+  const userId = parseInt(sessionStorage.getItem("userId"), 10); // Ensure userId is a number
   const [gameEnd, setGameEnd] = useState(false);
   const [roundSubscription, setRoundSubscription] = useState(null);
   const [endSubscription, setEndSubscription] = useState(null);
   const [showCanton, setShowCanton] = useState(false); // State to manage "power-up" activation
   const [additionalCantons, setAdditionalCantons] = useState([]);
+  const [currentPlayer, setCurrentPlayer] = useState(null);
 
   useEffect(() => {
+    // Fetch game information from the backend
+    const fetchGameInfo = async () => {
+      try {
+        const response = await api.get(`/games/${gameId}`);
+        console.log("Game Info:", response.data); // Log the response data
+
+        // Identify the current user and set currentPlayer
+        const player = response.data.players.find(p => p.user.userId === userId);
+        setCurrentPlayer(player);
+      } catch (error) {
+        console.error("Error fetching game info:", handleError(error));
+      }
+    };
+
+    fetchGameInfo();
+
     const roundSub = client.subscribe(
-      "/topic/games/" + gameId + "/round",
+      `/topic/games/${gameId}/round`,
       (message) => {
         console.log(`Received: ${message.body}`);
         try {
@@ -55,7 +72,7 @@ const GameRound = ({ client }) => {
     setRoundSubscription(roundSub);
 
     const gameEndSubscription = client.subscribe(
-      "/topic/games/" + gameId + "/ended",
+      `/topic/games/${gameId}/ended`,
       (message) => {
         console.log(`Received: ${message.body}`);
         setGameEnd(true);
@@ -64,15 +81,21 @@ const GameRound = ({ client }) => {
     setEndSubscription(gameEndSubscription);
 
     client.publish({
-      destination: "/app/games/" + gameId + "/checkin",
+      destination: `/app/games/${gameId}/checkin`,
       body: gameId,
     });
     window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
+      if (roundSubscription) {
+        roundSubscription.unsubscribe();
+      }
+      if (endSubscription) {
+        endSubscription.unsubscribe();
+      }
     };
-  }, []);
+  }, [client, gameId, userId]); // Add dependencies to useEffect
 
   const handleMapClick = (latlng) => {
     if (canInteract) {
@@ -80,8 +103,13 @@ const GameRound = ({ client }) => {
     }
   };
 
+  const handleDoubleScore = () => {
+    sendPowerUpUpdate("doubleScore");
+  };
+
   const handleCantonHint = () => {
     setShowCanton(true); // Activate canton highlighting
+    sendPowerUpUpdate("cantonHint");
   };
 
   const handleTripleHint = () => {
@@ -95,6 +123,7 @@ const GameRound = ({ client }) => {
     const shuffled = otherCantons.sort(() => 0.5 - Math.random());
     setAdditionalCantons(shuffled.slice(0, 2));
     setShowCanton(true);
+    sendPowerUpUpdate("multipleCantonHint");
   };
 
   const getCantonCodeForLocation = (location) => {
@@ -122,7 +151,7 @@ const GameRound = ({ client }) => {
   };
 
   const handleBeforeUnload = (event) => {
-    api.put("/games/" + gameId + "/leave", userId);
+    api.put(`/games/${gameId}/leave`, userId);
     sessionStorage.removeItem("gameId");
   };
 
@@ -131,7 +160,7 @@ const GameRound = ({ client }) => {
     const { lat, lng } = selectedLocation; // needs to be selected location
     console.log(lat, lng);
     client.publish({
-      destination: "/app/games/" + gameId + "/guess",
+      destination: `/app/games/${gameId}/guess`,
       body: JSON.stringify({
         latitude: lat,
         longitude: lng,
@@ -146,12 +175,27 @@ const GameRound = ({ client }) => {
     }
     if (gameEnd) {
       setTimeout(() => {
-        navigate("/gamepodium/" + gameId);
+        navigate(`/gamepodium/${gameId}`);
       }, 5000);
     } else {
       setTimeout(() => {
-        navigate("/gameround/" + gameId + "/waiting");
+        navigate(`/gameround/${gameId}/waiting`);
       }, 5000);
+    }
+  };
+
+  const sendPowerUpUpdate = async (powerUpType) => {
+    try {
+      await api.put(`/games/${gameId}`, {
+        userId: userId,
+        powerUp: powerUpType,
+      });
+      setCurrentPlayer((prevPlayer) => ({
+        ...prevPlayer,
+        [powerUpType]: false,
+      }));
+    } catch (error) {
+      console.error(`Error using ${powerUpType}:`, handleError(error));
     }
   };
 
@@ -208,9 +252,27 @@ const GameRound = ({ client }) => {
           </>
           <br />
           <div className="button-container">
-            <Button title="Use this power-up to get double points for your guess. You can only used this power-up once per game!">Double Score</Button>
-            <Button title="Use this power-up to be shown the canton in which the image was taken. You can only used this power-up once per game!" onClick={handleCantonHint}>Canton Hint</Button>
-            <Button title="Use this power-up to be shown three cantons in one of which the image was taken. You can only used this power-up once per game!" onClick={handleTripleHint}>Triple Hint</Button>
+            <Button 
+              title="Use this power-up to get double points for your guess. You can only use this power-up once per game!" 
+              disabled={!currentPlayer?.doubleScore}
+              onClick={handleDoubleScore}
+            >
+              Double Score
+            </Button>
+            <Button 
+              title="Use this power-up to be shown the canton in which the image was taken. You can only use this power-up once per game!" 
+              disabled={!currentPlayer?.cantonHint} 
+              onClick={handleCantonHint}
+            >
+              Canton Hint
+            </Button>
+            <Button 
+              title="Use this power-up to be shown three cantons in one of which the image was taken. You can only use this power-up once per game!" 
+              disabled={!currentPlayer?.multipleCantonHint} 
+              onClick={handleTripleHint}
+            >
+              Triple Hint
+            </Button>
           </div>
         </BaseContainer>
       </div>
