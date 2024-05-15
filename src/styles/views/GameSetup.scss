@@ -74,6 +74,13 @@
       cursor: pointer;
       transition: transform 0.2s ease; }
 }}
+.label-custom {
+  font-size: 1.2em; 
+}
+.checkbox-custom {
+  transform: scale(2); 
+  margin-left: 15px; 
+}
 
 .align-self-end {
   margin-top: auto;

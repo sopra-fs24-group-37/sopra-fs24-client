@@ -17,11 +17,11 @@ import blueIcon from "../../images/blue_icon.svg";
 import greenIcon from "../../images/green_icon.svg";
 import pinkIcon from "../../images/pink_icon.svg";
 import purpleIcon from "../../images/purple_icon.svg";
-import { point, polygon, booleanPointInPolygon } from "@turf/turf";
+//import { point, polygon, booleanPointInPolygon } from "@turf/turf";
 
 const bounds = [
   [45.49, 5.73], // South-West
-  [48.05, 10.71] // North-East
+  [48.05, 10.71], // North-East
 ];
 
 const minZoom = 7.6; // Adjust according to your needs
@@ -36,7 +36,7 @@ interface SwissMapProps {
     lat: number;
     lng: number;
   };
-  additionalCantons?: any[];  // Array to hold additional cantons to highlight
+  additionalCantons?: any[]; // Array to hold additional cantons to highlight
 }
 
 // Function to create custom icons
@@ -54,30 +54,37 @@ const SwissMap: React.FC<SwissMapProps> = ({
   imageLocation,
   showCanton,
   cantonLocation,
-  additionalCantons
+  additionalCantons,
 }) => {
   const [cantonHighlight, setCantonHighlight] = useState(null);
-  
+
   useEffect(() => {
     let highlights = [];
     if (showCanton && cantonLocation) {
       const clickedPoint = point([cantonLocation.lng, cantonLocation.lat]);
-      const foundCanton = swissCantons.features.find(feature =>
-        booleanPointInPolygon(clickedPoint, polygon(feature.geometry.type === "MultiPolygon" ? feature.geometry.coordinates[0] : feature.geometry.coordinates))
+      const foundCanton = swissCantons.features.find((feature) =>
+        booleanPointInPolygon(
+          clickedPoint,
+          polygon(
+            feature.geometry.type === "MultiPolygon"
+              ? feature.geometry.coordinates[0]
+              : feature.geometry.coordinates
+          )
+        )
       );
-  
+
       if (foundCanton) {
         highlights.push(foundCanton);
       }
     }
     if (additionalCantons && additionalCantons.length > 0) {
-      additionalCantons.forEach(canton => {
+      additionalCantons.forEach((canton) => {
         highlights.push(canton);
       });
     }
     setCantonHighlight(highlights); // Update to handle an array of highlights
   }, [showCanton, cantonLocation, additionalCantons]);
-  
+
   function LocationMarker() {
     useMapEvents({
       click(e) {
@@ -93,7 +100,7 @@ const SwissMap: React.FC<SwissMapProps> = ({
     fillColor: "#F1BCEF", // Color for the fill
     fillOpacity: 0.3, // 30% opacity for the area fill
     weight: 6, // Width of the boundary line
-    opacity: 1 // Opacity of the boundary line
+    opacity: 1, // Opacity of the boundary line
   };
 
   const cantonStyle = {
@@ -128,9 +135,14 @@ const SwissMap: React.FC<SwissMapProps> = ({
       <TileLayer url="https://server.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}" />
       <FeatureGroup>
         <GeoJSON data={swissBoundaries} style={swissStyle} />
-        {cantonHighlight && cantonHighlight.map((canton, index) => (
-          <GeoJSON key={canton.properties.kan_code} data={canton} style={cantonStyle} />
-        ))}
+        {cantonHighlight &&
+          cantonHighlight.map((canton, index) => (
+            <GeoJSON
+              key={canton.properties.kan_code}
+              data={canton}
+              style={cantonStyle}
+            />
+          ))}
       </FeatureGroup>
       <LocationMarker />
       {selectedLocation && (

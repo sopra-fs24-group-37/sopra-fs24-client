@@ -4,18 +4,19 @@ import BaseContainer from "components/ui/BaseContainer";
 import { api, handleError } from "helpers/api";
 import { User } from "types";
 import { Button } from "components/ui/Button";
-import "styles/views/GameSetup.scss";
+import GameSettings from "./GameSettings"; // Import the GameSettings component
 import PropTypes from "prop-types";
 
 const GameSetup = ({ client }) => {
   const [players, setPlayers] = useState<User[]>([]);
-  const [showGameSettings, setShowGameSettings] = useState(false); // State to manage visibility of game settings
+  const [showGameSettings, setShowGameSettings] = useState(false);
   const { state } = useLocation();
   const navigate = useNavigate();
   const currentUser = sessionStorage.getItem("userId");
   const gameId = sessionStorage.getItem("gameId");
   const [users, setUsers] = useState<User[]>(null);
   const [isGamemaster, setIsGamemaster] = useState(false);
+  const [pin, setPin] = useState("");
 
   useEffect(() => {
     const updateSubscription = client.subscribe(
@@ -23,10 +24,17 @@ const GameSetup = ({ client }) => {
       (message) => {
         console.log(`Received: ${message.body}`);
         const gameData = JSON.parse(message.body);
+        const numRounds = gameData.numRounds;
+        const guessTime = gameData.guessTime;
+        const password = gameData.password;
+        console.log("Number of Rounds:", numRounds);
+        console.log("Guess Time:", guessTime);
+        console.log("Password:", password);
         const updatedUsers = gameData.players.map((player) => ({
           username: player.user.username,
         }));
         setUsers(updatedUsers);
+        setPin(password);
         setIsGamemaster(gameData.gameMaster === parseInt(currentUser));
       }
     );
@@ -41,7 +49,13 @@ const GameSetup = ({ client }) => {
       destination: "/app/games/" + gameId + "/joining",
       body: gameId,
     });
-  }, []);
+
+    return () => {
+      // Cleanup subscriptions
+      updateSubscription.unsubscribe();
+      startSubscription.unsubscribe();
+    };
+  }, [client, gameId, currentUser, navigate]);
 
   const startGame = async () => {
     try {
@@ -51,14 +65,14 @@ const GameSetup = ({ client }) => {
         body: gameId,
       });
       if (response.status === 200) {
-        // Game started successfully
+        sessionStorage.removeItem("guessTime");
+        sessionStorage.removeItem("numRounds");
+        sessionStorage.removeItem("setGamePassword");
         navigate("/gameround/" + gameId);
       } else {
-        // Handle other HTTP status codes if needed
         console.error(`Starting game failed with status: ${response.status}`);
       }
     } catch (error) {
-      // Handle network errors or other exceptions
       console.error(`Starting game failed: ${handleError(error)}`);
     }
   };
@@ -74,13 +88,15 @@ const GameSetup = ({ client }) => {
             destination: "/app/games/" + gameId + "/joining",
             body: gameId,
           });
+          sessionStorage.removeItem("guessTime");
+          sessionStorage.removeItem("numRounds");
+          sessionStorage.removeItem("setGamePassword");
           sessionStorage.removeItem("gameId");
           navigate("/lobby");
         } else {
           console.error(`Leaving game failed with status: ${response.status}`);
         }
       } catch (error) {
-        // Handle network errors or other exceptions
         console.error(`Leaving game failed: ${handleError(error)}`);
       }
     }
@@ -115,6 +131,13 @@ const GameSetup = ({ client }) => {
           className="gamesetup container"
         >
           {usersContent}
+          {pin && (
+            <div className="gamesetup-row">
+              <div className="gamesetup explanation">
+                PIN: {pin && pin.toString().replace(/(\d{3})(\d{3})/, "$1 $2")}
+              </div>
+            </div>
+          )}
           <br></br>
           <Button
             width="100%"
@@ -147,7 +170,7 @@ const GameSetup = ({ client }) => {
 
       {showGameSettings && (
         <GameSettings
-          showGameSettings={showGameSettings}
+          client={client}
           hideSettingsContainer={hideSettingsContainer}
         />
       )}
@@ -156,41 +179,7 @@ const GameSetup = ({ client }) => {
 };
 
 GameSetup.propTypes = {
-  client: PropTypes.object.isRequired, // Validate prop type
-};
-
-/**The following part is for adjusting the game parameters and could be a seperate component */
-
-const GameSettings = ({ showGameSettings, hideSettingsContainer }) => {
-  const [timerValue, setTimerValue] = useState(30); // standard timer set to 30
-
-  const handleTimerChange = (event) => {
-    setTimerValue(parseInt(event.target.value)); // converting to integer
-  };
-
-  return (
-    <BaseContainer title="Game Settings" className="gamesetup container">
-      <div className="gamesetup-row">
-        <div className="gamesetup explanation">Guessing Time:</div>
-        <select value={timerValue} onChange={handleTimerChange}>
-          <option value={30}>30s</option>
-          <option value={20}>20s</option>
-          <option value={10}>10s</option>
-        </select>
-      </div>
-      <br></br>
-      <Button width="100%" onClick={hideSettingsContainer}>
-        Cancel
-      </Button>
-      <br></br>
-      <Button width="100%">Apply</Button>
-    </BaseContainer>
-  );
-};
-
-GameSettings.propTypes = {
-  showGameSettings: PropTypes.bool.isRequired, // Validate prop type
-  hideSettingsContainer: PropTypes.func.isRequired, // Validate prop type
+  client: PropTypes.object.isRequired,
 };
 
 export default GameSetup;
