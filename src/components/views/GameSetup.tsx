@@ -63,6 +63,9 @@ const GameSetup = ({ client }) => {
         body: gameId,
       });
       if (response.status === 200) {
+        sessionStorage.removeItem("guessTime");
+        sessionStorage.removeItem("numRounds");
+        sessionStorage.removeItem("setGamePassword");
         navigate("/gameround/" + gameId);
       } else {
         console.error(`Starting game failed with status: ${response.status}`);
@@ -83,6 +86,9 @@ const GameSetup = ({ client }) => {
             destination: "/app/games/" + gameId + "/joining",
             body: gameId,
           });
+          sessionStorage.removeItem("guessTime");
+          sessionStorage.removeItem("numRounds");
+          sessionStorage.removeItem("setGamePassword");
           sessionStorage.removeItem("gameId");
           navigate("/lobby");
         } else {

@@ -1,37 +1,38 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import PropTypes from "prop-types";
 import { Button } from "components/ui/Button";
 import BaseContainer from "components/ui/BaseContainer";
 import "styles/views/GameSetup.scss";
 
 const GameSettings = ({ client, hideSettingsContainer }) => {
-  const [guessTime, setSelectedTimer] = useState(
+  const [guessTime, setGuessTime] = useState(
     parseInt(sessionStorage.getItem("guessTime")) || null
   );
-  const [numRounds, setSelectedRounds] = useState(
+  const [numRounds, setNumRounds] = useState(
     parseInt(sessionStorage.getItem("numRounds")) || null
   );
   const [setGamePassword, setSetGamePassword] = useState(
     sessionStorage.getItem("setGamePassword") === "true" || false
-  ); // New state for toggling game password
+  );
   const gameId = sessionStorage.getItem("gameId");
 
   const handleLocalTimerChange = (event) => {
     const selectedTime = parseInt(event.target.value);
-    setSelectedTimer(selectedTime);
+    setGuessTime(selectedTime);
     sessionStorage.setItem("guessTime", selectedTime);
   };
 
   const changeRounds = (event) => {
     const selectedRounds = parseInt(event.target.value);
-    setSelectedRounds(selectedRounds);
+    setNumRounds(selectedRounds);
     sessionStorage.setItem("numRounds", selectedRounds);
   };
 
   const toggleGamePassword = () => {
-    const newValue = !setGamePassword;
-    setSetGamePassword(newValue);
-    sessionStorage.setItem("setGamePassword", String(newValue));
+    if (!setGamePassword) {
+      setSetGamePassword(true);
+      sessionStorage.setItem("setGamePassword", "true");
+    }
   };
 
   const applySettings = () => {
@@ -43,11 +44,10 @@ const GameSettings = ({ client, hideSettingsContainer }) => {
     console.log(payload);
     client.publish({
       destination: `/app/games/${gameId}/settings`,
-      body: JSON.stringify(payload), // Convert payload to JSON string
+      body: JSON.stringify(payload),
     });
 
     console.log("Settings update message published.");
-    // Hide the settings container
     hideSettingsContainer();
   };
 
@@ -56,7 +56,7 @@ const GameSettings = ({ client, hideSettingsContainer }) => {
       <div className="gamesetup-row">
         <div className="gamesetup explanation">Number of Rounds:</div>
         <select value={numRounds} onChange={changeRounds}>
-          <option value={2}>2</option>
+          <option value={3}>3</option>
           <option value={5}>5</option>
           <option value={10}>10</option>
         </select>
@@ -74,12 +74,17 @@ const GameSettings = ({ client, hideSettingsContainer }) => {
       <br />
       <br />
       <div className="gamesetup-row">
+        <label htmlFor="gamePassword" className="label-custom">
+          Private Game
+        </label>
         <input
+          id="gamePassword"
           type="checkbox"
           checked={setGamePassword}
           onChange={toggleGamePassword}
+          disabled={setGamePassword} // Disable the checkbox if it's already checked
+          className="checkbox-custom"
         />
-        <label>Set Game Password</label>
       </div>
       <br />
       <br />
