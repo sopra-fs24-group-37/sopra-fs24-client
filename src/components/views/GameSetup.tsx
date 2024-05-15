@@ -133,7 +133,9 @@ const GameSetup = ({ client }) => {
           {usersContent}
           {pin && (
             <div className="gamesetup-row">
-              <div className="gamesetup explanation">PIN: {pin}</div>
+              <div className="gamesetup explanation">
+                PIN: {pin && pin.toString().replace(/(\d{3})(\d{3})/, "$1 $2")}
+              </div>
             </div>
           )}
           <br></br>
