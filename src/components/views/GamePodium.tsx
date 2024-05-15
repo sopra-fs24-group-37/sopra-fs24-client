@@ -55,7 +55,7 @@ const GamePodium = () => {
           ))}
         </ol>
         <br />
-        <Button width="100%" onClick={goToLobby}>
+        <Button title="Click here to go back to the lobby" width="100%" onClick={goToLobby}>
           Go back to Lobby
         </Button>
       </BaseContainer>

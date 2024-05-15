@@ -134,6 +134,7 @@ const Lobby = ({ client }) => {
           <li
             key={user.userId}
             onClick={() => navigate(`/profile/${user.userId}`)}
+            title="Click here to take a look at the user's profile"
           >
             <Player user={user} />
           </li>
@@ -172,7 +173,11 @@ const Lobby = ({ client }) => {
             The following users have registered:
           </p>
           {usersContent}
-          <Button width="100%" onClick={() => logout()}>
+          <Button 
+            width="100%" 
+            onClick={() => logout()}
+            title="Click here to log out"
+          >
             Logout
           </Button>
         </BaseContainer>
@@ -182,6 +187,7 @@ const Lobby = ({ client }) => {
             className="align-self-end"
             width="100%"
             onClick={initiateGame}
+            title="Click here to initiate a new game"
           >
             Initiate new game
           </Button>

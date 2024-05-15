@@ -208,9 +208,9 @@ const GameRound = ({ client }) => {
           </>
           <br />
           <div className="button-container">
-            <Button>Double Score</Button>
-            <Button onClick={handleCantonHint}>Canton Hint</Button>
-            <Button onClick={handleTripleHint}>Triple Hint</Button>
+            <Button title="Use this power-up to get double points for your guess. You can only used this power-up once per game!">Double Score</Button>
+            <Button title="Use this power-up to be shown the canton in which the image was taken. You can only used this power-up once per game!" onClick={handleCantonHint}>Canton Hint</Button>
+            <Button title="Use this power-up to be shown three cantons in one of which the image was taken. You can only used this power-up once per game!" onClick={handleTripleHint}>Triple Hint</Button>
           </div>
         </BaseContainer>
       </div>

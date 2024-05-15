@@ -113,7 +113,9 @@ const GameSetup = ({ client }) => {
   let usersContent = <div>Waiting for other players to join...</div>;
   if (users) {
     usersContent = (
-      <ul className="gamesetup user-list">
+      <ul className="gamesetup user-list"
+        title="This user has joined your game"
+      >
         {users.map((user, index) => (
           <div className="gamesetup user-container" key={index}>
             <li>{user.username}</li>
@@ -142,6 +144,7 @@ const GameSetup = ({ client }) => {
           <Button
             width="100%"
             onClick={startGame}
+            title="Click here to start the game"
             disabled={
               !isGamemaster ||
               showGameSettings ||
@@ -157,12 +160,16 @@ const GameSetup = ({ client }) => {
               width="100%"
               onClick={showSettingsContainer}
               disabled={!isGamemaster || showGameSettings}
+              title="Click here to adjust the game settings"
             >
               Game Settings
             </Button>
           }
           <br></br>
-          <Button width="100%" onClick={leaveGame}>
+          <Button 
+            width="100%" onClick={leaveGame}
+            title="Click here to go back to the lobby"
+          >
             Back to Lobby
           </Button>
         </BaseContainer>
