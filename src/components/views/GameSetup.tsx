@@ -16,6 +16,7 @@ const GameSetup = ({ client }) => {
   const gameId = sessionStorage.getItem("gameId");
   const [users, setUsers] = useState<User[]>(null);
   const [isGamemaster, setIsGamemaster] = useState(false);
+  const [pin, setPin] = useState("");
 
   useEffect(() => {
     const updateSubscription = client.subscribe(
@@ -25,14 +26,15 @@ const GameSetup = ({ client }) => {
         const gameData = JSON.parse(message.body);
         const numRounds = gameData.numRounds;
         const guessTime = gameData.guessTime;
-        const setGamePassword = gameData.setGamePassword;
+        const password = gameData.password;
         console.log("Number of Rounds:", numRounds);
         console.log("Guess Time:", guessTime);
-        console.log("Password:", setGamePassword);
+        console.log("Password:", password);
         const updatedUsers = gameData.players.map((player) => ({
           username: player.user.username,
         }));
         setUsers(updatedUsers);
+        setPin(password);
         setIsGamemaster(gameData.gameMaster === parseInt(currentUser));
       }
     );
@@ -129,6 +131,11 @@ const GameSetup = ({ client }) => {
           className="gamesetup container"
         >
           {usersContent}
+          {pin && (
+            <div className="gamesetup-row">
+              <div className="gamesetup explanation">PIN: {pin}</div>
+            </div>
+          )}
           <br></br>
           <Button
             width="100%"
