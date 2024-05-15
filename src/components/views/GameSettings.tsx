@@ -19,19 +19,16 @@ const GameSettings = ({ client, hideSettingsContainer }) => {
   const handleLocalTimerChange = (event) => {
     const selectedTime = parseInt(event.target.value);
     setGuessTime(selectedTime);
-    sessionStorage.setItem("guessTime", selectedTime);
   };
 
   const changeRounds = (event) => {
     const selectedRounds = parseInt(event.target.value);
     setNumRounds(selectedRounds);
-    sessionStorage.setItem("numRounds", selectedRounds);
   };
 
   const toggleGamePassword = () => {
     if (!setGamePassword) {
       setSetGamePassword(true);
-      sessionStorage.setItem("setGamePassword", "true");
     }
   };
 
@@ -46,6 +43,9 @@ const GameSettings = ({ client, hideSettingsContainer }) => {
       destination: `/app/games/${gameId}/settings`,
       body: JSON.stringify(payload),
     });
+    sessionStorage.setItem("guessTime", guessTime);
+    sessionStorage.setItem("numRounds", numRounds);
+    sessionStorage.setItem("setGamePassword", "true");
 
     console.log("Settings update message published.");
     hideSettingsContainer();
