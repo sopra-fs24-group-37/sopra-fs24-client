@@ -11,7 +11,7 @@ import Timer from "components/ui/Timer";
 import PropTypes from "prop-types";
 import { Button } from "components/ui/Button";
 import swissCantons from "../../geodata/cantons.json";
-//import { point, polygon, booleanPointInPolygon } from "@turf/turf";
+import { point, polygon, booleanPointInPolygon } from "@turf/turf";
 
 const GameRound = ({ client }) => {
   const navigate = useNavigate();

@@ -17,7 +17,7 @@ import blueIcon from "../../images/blue_icon.svg";
 import greenIcon from "../../images/green_icon.svg";
 import pinkIcon from "../../images/pink_icon.svg";
 import purpleIcon from "../../images/purple_icon.svg";
-//import { point, polygon, booleanPointInPolygon } from "@turf/turf";
+import { point, polygon, booleanPointInPolygon } from "@turf/turf";
 
 const bounds = [
   [45.49, 5.73], // South-West

@@ -4,7 +4,7 @@ import { api, handleError } from "helpers/api";
 import BaseContainer from "components/ui/BaseContainer";
 import { Button } from "components/ui/Button";
 import "styles/views/GamePodium.scss";
-//import Confetti from "react-confetti";
+import Confetti from "react-confetti";
 
 const GamePodium = () => {
   const navigate = useNavigate();
@@ -42,7 +42,7 @@ const GamePodium = () => {
 
   return (
     <div className="flex-center-wrapper">
-      {celebration /*&& <Confetti />*/}
+      {celebration && <Confetti />}
       <BaseContainer
         title="And the winner is ..."
         className="gamepodium container"
