@@ -26,8 +26,6 @@ const Lobby = ({ client }) => {
   const [users, setUsers] = useState<User[]>(null);
   const [games, setGames] = useState<Game[]>(null);
   const [showInfo, setShowInfo] = useState(false); // handles state of info screen
-  const [selectedGame, setSelectedGame] = useState(null); // state to track selected game
-  const [textFieldValue, setTextFieldValue] = useState(""); // state to manage text field value
 
   useEffect(() => {
     const userSubscription = client.subscribe(
@@ -76,10 +74,6 @@ const Lobby = ({ client }) => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("userId");
     navigate("/login");
-  };
-
-  const handleGameClick = (gameId: string) => {
-    setSelectedGame(gameId);
   };
 
   const initiateGame = async () => {
@@ -153,7 +147,7 @@ const Lobby = ({ client }) => {
     gamesContent = (
       <div className="lobby game-list">
         {games.map((game: Game) => (
-          <li key={game.gameId} onClick={() => handleGameClick(game.gameId)}>
+          <li key={game.gameId} onClick={() => joinGame(game.gameId)}>
             <div className="lobby game-container">
               {getUserUsername(game.gameMaster)}&apos;s Game
             </div>
@@ -162,33 +156,6 @@ const Lobby = ({ client }) => {
       </div>
     );
   }
-
-  // Popup component
-  const Popup = () => {
-    const handleInputChange = (event) => {
-      setTextFieldValue(event.target.value);
-    };
-
-    const handleSubmit = () => {
-      // Handle submission, e.g., sending the text field value to the server
-      // For now, let's just log the value
-      console.log("Submitted value:", textFieldValue);
-      // Close the popup
-      setSelectedGame(null);
-    };
-
-    return (
-      <div className="popup">
-        <input
-          type="text"
-          value={textFieldValue}
-          onChange={handleInputChange}
-          placeholder="Enter your text"
-        />
-        <Button onClick={handleSubmit}>Submit</Button>
-      </div>
-    );
-  };
 
   return (
     <div className="flex-center-wrapper">
@@ -199,7 +166,6 @@ const Lobby = ({ client }) => {
         onClick={toggleInfo}
       />
       {showInfo && <InfoWindow onClose={() => setShowInfo(false)} />}
-      {selectedGame && <Popup />}
       <div className="lobby side-by-side-containers">
         <BaseContainer title="Registered users" className="lobby container">
           <p className="lobby paragraph">

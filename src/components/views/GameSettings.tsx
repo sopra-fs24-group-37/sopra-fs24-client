@@ -35,16 +35,18 @@ const GameSettings = ({ client, hideSettingsContainer }) => {
   };
 
   const applySettings = () => {
+    const payload = {
+      numRounds: numRounds,
+      guessTime: guessTime,
+      setGamePassword: setGamePassword,
+    };
+    console.log(payload);
     client.publish({
       destination: `/app/games/${gameId}/settings`,
-      body: {
-        guessTime: 20,
-        numRounds: 4,
-        setGamePassword,
-      },
+      body: JSON.stringify(payload), // Convert payload to JSON string
     });
-    console.log("Settings update message published.");
 
+    console.log("Settings update message published.");
     // Hide the settings container
     hideSettingsContainer();
   };
