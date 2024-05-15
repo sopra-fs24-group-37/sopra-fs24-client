@@ -26,46 +26,60 @@ const Lobby = ({ client }) => {
   const [users, setUsers] = useState<User[]>(null);
   const [games, setGames] = useState<Game[]>(null);
   const [showInfo, setShowInfo] = useState(false); // handles state of info screen
+  const [selectedGame, setSelectedGame] = useState(null); // state to track selected game
+  const [textFieldValue, setTextFieldValue] = useState(""); // state to manage text field value
 
   useEffect(() => {
-    const userSubscription = client.subscribe("/topic/users/getUsers", message => {
-      const updatedUsers = JSON.parse(message.body);
-      setUsers(updatedUsers);
-      console.log("Updated users list received:", updatedUsers);
-    });
-  
-    const gameSubscription = client.subscribe("/topic/games/getGames", message => {
-      const updatedGames = JSON.parse(message.body);
-      const filteredGames = updatedGames.filter((game) => game.gameStatus === "WAITING");
-      setGames(filteredGames);
-      console.log("Updated games list received:", filteredGames);
+    const userSubscription = client.subscribe(
+      "/topic/users/getUsers",
+      (message) => {
+        const updatedUsers = JSON.parse(message.body);
+        setUsers(updatedUsers);
+        console.log("Updated users list received:", updatedUsers);
+      }
+    );
+
+    const gameSubscription = client.subscribe(
+      "/topic/games/getGames",
+      (message) => {
+        const updatedGames = JSON.parse(message.body);
+        const filteredGames = updatedGames.filter(
+          (game) => game.gameStatus === "WAITING"
+        );
+        setGames(filteredGames);
+        console.log("Updated games list received:", filteredGames);
+      }
+    );
+
+    client.publish({
+      destination: "/app/users/updateUsers",
     });
 
     client.publish({
-      destination: "/app/users/updateUsers"
+      destination: "/app/games/updateGames",
     });
 
-    client.publish({
-      destination: "/app/games/updateGames"
-    });
-  
     return () => {
       userSubscription.unsubscribe();
       gameSubscription.unsubscribe();
     };
   }, [client]);
-  
+
   // shows info screen upon click
   const toggleInfo = () => {
     setShowInfo(!showInfo);
   };
-    
+
   /*  Here come a bunch of functions used in the components further down this file. */
 
   const logout = (): void => {
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("userId");
     navigate("/login");
+  };
+
+  const handleGameClick = (gameId: string) => {
+    setSelectedGame(gameId);
   };
 
   const initiateGame = async () => {
@@ -77,7 +91,7 @@ const Lobby = ({ client }) => {
       sessionStorage.setItem("gameId", games.gameId);
       if (response.status === 201) {
         client.publish({
-          destination: "/app/games/updateGames"
+          destination: "/app/games/updateGames",
         });
         // Game created successfully, navigate to the game setup page
         navigate(`/gamesetup/${games.gameId}`);
@@ -118,64 +132,15 @@ const Lobby = ({ client }) => {
     return user ? user.username : "Unknown";
   };
 
-  /*  OLD ENDPOINTS FOR USER AND GAME IMPORT. CAN BE DELETED ONCE WS WORK FINE! */
-  
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const response = await api.get("/users");
-  //       await new Promise((resolve) =>
-  //         setTimeout(resolve, 1000)
-  //       ); /* Can be removed */
-  //       // Get the returned users and update the state.
-  //       setUsers(response.data);
-  //       // See here to get more data.
-  //       console.log(response);
-  //     } catch (error) {
-  //       console.error(
-  //         `Something went wrong while fetching the users: \n${handleError(
-  //           error
-  //         )}`
-  //       );
-  //       console.error("Details:", error);
-  //       alert(
-  //         "Something went wrong while fetching the users! See the console for details."
-  //       );
-  //     }
-  //   }
-
-  //   async function fetchGames() {
-  //     try {
-  //       const response = await api.get("/games");
-  //       await new Promise((resolve) => setTimeout(resolve, 1000));
-  //       const filteredGames = response.data.filter(
-  //         (game) => game.gameStatus === "WAITING"
-  //       );
-  //       setGames(filteredGames);
-  //       console.log(response);
-  //     } catch (error) {
-  //       console.error(
-  //         `Something went wrong while fetching the games: \n${handleError(
-  //           error
-  //         )}`
-  //       );
-  //       console.error("Details:", error);
-  //       alert(
-  //         "Something went wrong while fetching the games! See the console for details."
-  //       );
-  //     }
-  //   }
-
-  //   fetchData();
-  //   fetchGames();
-  // }, []);
-
   let usersContent = <Spinner />;
   if (users) {
     usersContent = (
       <ul className="lobby user-list">
         {users.map((user: User & { userId: number }) => (
-          <li key={user.userId} onClick={() => navigate(`/profile/${user.userId}`)}>
+          <li
+            key={user.userId}
+            onClick={() => navigate(`/profile/${user.userId}`)}
+          >
             <Player user={user} />
           </li>
         ))}
@@ -188,7 +153,7 @@ const Lobby = ({ client }) => {
     gamesContent = (
       <div className="lobby game-list">
         {games.map((game: Game) => (
-          <li key={game.gameId} onClick={() => joinGame(game.gameId)}>
+          <li key={game.gameId} onClick={() => handleGameClick(game.gameId)}>
             <div className="lobby game-container">
               {getUserUsername(game.gameMaster)}&apos;s Game
             </div>
@@ -198,10 +163,43 @@ const Lobby = ({ client }) => {
     );
   }
 
+  // Popup component
+  const Popup = () => {
+    const handleInputChange = (event) => {
+      setTextFieldValue(event.target.value);
+    };
+
+    const handleSubmit = () => {
+      // Handle submission, e.g., sending the text field value to the server
+      // For now, let's just log the value
+      console.log("Submitted value:", textFieldValue);
+      // Close the popup
+      setSelectedGame(null);
+    };
+
+    return (
+      <div className="popup">
+        <input
+          type="text"
+          value={textFieldValue}
+          onChange={handleInputChange}
+          placeholder="Enter your text"
+        />
+        <Button onClick={handleSubmit}>Submit</Button>
+      </div>
+    );
+  };
+
   return (
     <div className="flex-center-wrapper">
-      <img src={infoIcon} alt="Info" className="info-icon" onClick={toggleInfo} />
+      <img
+        src={infoIcon}
+        alt="Info"
+        className="info-icon"
+        onClick={toggleInfo}
+      />
       {showInfo && <InfoWindow onClose={() => setShowInfo(false)} />}
+      {selectedGame && <Popup />}
       <div className="lobby side-by-side-containers">
         <BaseContainer title="Registered users" className="lobby container">
           <p className="lobby paragraph">

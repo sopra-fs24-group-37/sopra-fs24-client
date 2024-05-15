@@ -6,10 +6,10 @@ import "styles/views/GameSetup.scss";
 
 const GameSettings = ({ client, hideSettingsContainer }) => {
   const [guessTime, setSelectedTimer] = useState(
-    sessionStorage.getItem("guessTime") || null
+    parseInt(sessionStorage.getItem("guessTime")) || null
   );
   const [numRounds, setSelectedRounds] = useState(
-    sessionStorage.getItem("numRounds") || null
+    parseInt(sessionStorage.getItem("numRounds")) || null
   );
   const [setGamePassword, setSetGamePassword] = useState(
     sessionStorage.getItem("setGamePassword") === "true" || false
@@ -19,13 +19,13 @@ const GameSettings = ({ client, hideSettingsContainer }) => {
   const handleLocalTimerChange = (event) => {
     const selectedTime = parseInt(event.target.value);
     setSelectedTimer(selectedTime);
-    sessionStorage.setItem("guessTime", String(selectedTime));
+    sessionStorage.setItem("guessTime", selectedTime);
   };
 
   const changeRounds = (event) => {
     const selectedRounds = parseInt(event.target.value);
     setSelectedRounds(selectedRounds);
-    sessionStorage.setItem("numRounds", String(selectedRounds));
+    sessionStorage.setItem("numRounds", selectedRounds);
   };
 
   const toggleGamePassword = () => {
@@ -37,11 +37,12 @@ const GameSettings = ({ client, hideSettingsContainer }) => {
   const applySettings = () => {
     client.publish({
       destination: `/app/games/${gameId}/settings`,
-      body: numRounds,
-      guessTime,
-      setGamePassword,
+      body: {
+        guessTime: 20,
+        numRounds: 4,
+        setGamePassword,
+      },
     });
-
     console.log("Settings update message published.");
 
     // Hide the settings container

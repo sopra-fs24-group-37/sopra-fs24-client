@@ -11,7 +11,7 @@ import Timer from "components/ui/Timer";
 import PropTypes from "prop-types";
 import { Button } from "components/ui/Button";
 import swissCantons from "../../geodata/cantons.json";
-import { point, polygon, booleanPointInPolygon } from "@turf/turf";
+//import { point, polygon, booleanPointInPolygon } from "@turf/turf";
 
 const GameRound = ({ client }) => {
   const navigate = useNavigate();
@@ -26,7 +26,7 @@ const GameRound = ({ client }) => {
   const [gameEnd, setGameEnd] = useState(false);
   const [roundSubscription, setRoundSubscription] = useState(null);
   const [endSubscription, setEndSubscription] = useState(null);
-  const [showCanton, setShowCanton] = useState(false);  // State to manage "power-up" activation
+  const [showCanton, setShowCanton] = useState(false); // State to manage "power-up" activation
   const [additionalCantons, setAdditionalCantons] = useState([]);
 
   useEffect(() => {
@@ -81,24 +81,33 @@ const GameRound = ({ client }) => {
   };
 
   const handleCantonHint = () => {
-    setShowCanton(true);  // Activate canton highlighting
+    setShowCanton(true); // Activate canton highlighting
   };
 
   const handleTripleHint = () => {
     const cantonCode = getCantonCodeForLocation(location); // Get the kan_code for the current location
     console.log("Location kan_code (cantonCode1):", cantonCode); // Log the location's kan_code
 
-    const otherCantons = swissCantons.features.filter(canton => canton.properties.kan_code[0] !== cantonCode);
+    const otherCantons = swissCantons.features.filter(
+      (canton) => canton.properties.kan_code[0] !== cantonCode
+    );
     console.log("Other cantons:", otherCantons); // Log the location's kan_code
     const shuffled = otherCantons.sort(() => 0.5 - Math.random());
     setAdditionalCantons(shuffled.slice(0, 2));
     setShowCanton(true);
   };
-  
+
   const getCantonCodeForLocation = (location) => {
     const clickedPoint = point([location.lng, location.lat]);
-    const foundCanton = swissCantons.features.find(feature =>
-      booleanPointInPolygon(clickedPoint, polygon(feature.geometry.type === "MultiPolygon" ? feature.geometry.coordinates[0] : feature.geometry.coordinates))
+    const foundCanton = swissCantons.features.find((feature) =>
+      booleanPointInPolygon(
+        clickedPoint,
+        polygon(
+          feature.geometry.type === "MultiPolygon"
+            ? feature.geometry.coordinates[0]
+            : feature.geometry.coordinates
+        )
+      )
     );
 
     if (foundCanton) {
@@ -107,7 +116,7 @@ const GameRound = ({ client }) => {
       return foundCanton.properties.kan_code[0]; // Access the first element of kan_code
     } else {
       console.log("No canton found for the given location");
-      
+
       return null;
     }
   };
@@ -161,12 +170,12 @@ const GameRound = ({ client }) => {
               <a
                 href={`https://unsplash.com/@${photographer_username}?utm_source=swissquiz&utm_medium=referral`}
                 target="_blank"
-                rel="noopener noreferrer"          
+                rel="noopener noreferrer"
               >
                 {photographer}
               </a>{" "}
               on{" "}
-              <a 
+              <a
                 href="https://unsplash.com/?utm_source=swissquiz&utm_medium=referral"
                 target="_blank" // Opens link in a new window/tab
                 rel="noopener noreferrer" // Security measure
@@ -199,7 +208,7 @@ const GameRound = ({ client }) => {
           </>
           <br />
           <div className="button-container">
-            <Button >Double Score</Button> 
+            <Button>Double Score</Button>
             <Button onClick={handleCantonHint}>Canton Hint</Button>
             <Button onClick={handleTripleHint}>Triple Hint</Button>
           </div>
