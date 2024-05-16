@@ -165,6 +165,7 @@ const Lobby = ({ client }) => {
         alt="Info"
         className="info-icon"
         onClick={toggleInfo}
+        title="Click here to see the game rules"
       />
       {showInfo && <InfoWindow onClose={() => setShowInfo(false)} />}
       <div className="lobby side-by-side-containers">
