@@ -135,9 +135,11 @@ const GameRound = ({ client }) => {
 
     if (foundCanton) {
       console.log("Found canton:", foundCanton.properties.kan_code[0]);
+
       return foundCanton.properties.kan_code[0];
     } else {
       console.log("No canton found for the given location");
+      
       return null;
     }
   };
@@ -156,9 +158,9 @@ const GameRound = ({ client }) => {
       latitude: lat,
       longitude: lng,
       userId: userId,
-      doubleScore: !doubleScoreUsed && currentPlayer?.doubleScore,
-      cantonHint: !cantonHintUsed && currentPlayer?.cantonHint,
-      multipleCantonHint: !tripleHintUsed && currentPlayer?.multipleCantonHint,
+      useDoubleScore: doubleScoreUsed,
+      useCantonHint: cantonHintUsed,
+      useMultipleCantonHint: tripleHintUsed
     };
     console.log("Data sent to backend:", guessPayload);
     
