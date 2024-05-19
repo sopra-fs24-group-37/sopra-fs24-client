@@ -83,6 +83,9 @@ const GameSetup = ({ client }) => {
       try {
         const currentUserId = sessionStorage.getItem("userId");
         const response = await api.put(`/games/${gameId}/leave`, currentUserId);
+        if (isGamemaster) {
+          await api.delete(`/games/${gameId}`);
+        }
         if (response.status === 200) {
           client.publish({
             destination: "/app/games/" + gameId + "/joining",
@@ -113,7 +116,8 @@ const GameSetup = ({ client }) => {
   let usersContent = <div>Waiting for other players to join...</div>;
   if (users) {
     usersContent = (
-      <ul className="gamesetup user-list"
+      <ul
+        className="gamesetup user-list"
         title="This user has joined your game"
       >
         {users.map((user, index) => (
@@ -166,8 +170,9 @@ const GameSetup = ({ client }) => {
             </Button>
           }
           <br></br>
-          <Button 
-            width="100%" onClick={leaveGame}
+          <Button
+            width="100%"
+            onClick={leaveGame}
             title="Click here to go back to the lobby"
           >
             Back to Lobby

@@ -101,18 +101,29 @@ const Lobby = ({ client }) => {
 
   const joinGame = async (gameId: string) => {
     try {
-      const currentUserId = sessionStorage.getItem("userId");
-      console.log("Current GameID:", gameId);
-      const response = await api.put(`/games/${gameId}/join`, currentUserId);
-      const games = new Game(response.data);
-      sessionStorage.setItem("gameId", games.gameId);
+      // Fetch game details before attempting to join
+      const gameResponse = await api.get(`/games/${gameId}`);
+      const game = gameResponse.data;
 
-      if (response.status === 200) {
-        // Game created successfully, navigate to the game setup page
-        navigate(`/gamesetup/${games.gameId}`);
+      if (!game.password) {
+        // If the game's password is null
+        const currentUserId = sessionStorage.getItem("userId");
+        console.log("Current GameID:", gameId);
+        const response = await api.put(`/games/${gameId}/join`, currentUserId);
+        const games = new Game(response.data);
+        sessionStorage.setItem("gameId", games.gameId);
+
+        if (response.status === 200) {
+          // Game joined successfully, navigate to the game setup page
+          navigate(`/gamesetup/${games.gameId}`);
+        } else {
+          // Handle other HTTP status codes if needed
+          console.error(`Joining game failed with status: ${response.status}`);
+        }
       } else {
-        // Handle other HTTP status codes if needed
-        console.error(`Joining game failed with status: ${response.status}`);
+        console.log(
+          `Game ${gameId} has a password and cannot be joined automatically`
+        );
       }
     } catch (error) {
       // Handle network errors or other exceptions
@@ -121,6 +132,12 @@ const Lobby = ({ client }) => {
   };
 
   const getUserUsername = (userId: number): string => {
+    if (!users) {
+      console.error("Users array is null or undefined");
+
+      return "Unknown";
+    }
+
     const user = users.find((user) => user.userId === userId);
 
     return user ? user.username : "Unknown";
@@ -174,8 +191,8 @@ const Lobby = ({ client }) => {
             The following users have registered:
           </p>
           {usersContent}
-          <Button 
-            width="100%" 
+          <Button
+            width="100%"
             onClick={() => logout()}
             title="Click here to log out"
           >
