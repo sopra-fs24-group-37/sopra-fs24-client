@@ -26,6 +26,7 @@ const Lobby = ({ client }) => {
   const [users, setUsers] = useState<User[]>(null);
   const [games, setGames] = useState<Game[]>(null);
   const [showInfo, setShowInfo] = useState(false); // handles state of info screen
+  const [password, setPassword] = useState<string>("");
 
   useEffect(() => {
     const userSubscription = client.subscribe(
@@ -103,10 +104,10 @@ const Lobby = ({ client }) => {
     try {
       const currentUserId = sessionStorage.getItem("userId");
       console.log("Current GameID:", gameId);
-      const response = await api.put(`/games/${gameId}/join`, {
-        userId: currentUserId,
-        password: password || null,
+      const response = await api.put(`/games/${gameId}/join`, currentUserId, {
+        params: { gamePassword: password || null },
       });
+
       const games = new Game(response.data);
       sessionStorage.setItem("gameId", games.gameId);
 
