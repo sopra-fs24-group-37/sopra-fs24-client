@@ -99,35 +99,48 @@ const Lobby = ({ client }) => {
     }
   };
 
-  const joinGame = async (gameId: string) => {
+  const joinGame = async (gameId: string, password?: string) => {
     try {
-      // Fetch game details before attempting to join
-      const gameResponse = await api.get(`/games/${gameId}`);
-      const game = gameResponse.data;
+      const currentUserId = sessionStorage.getItem("userId");
+      console.log("Current GameID:", gameId);
+      const response = await api.put(`/games/${gameId}/join`, {
+        userId: currentUserId,
+        password: password || null,
+      });
+      const games = new Game(response.data);
+      sessionStorage.setItem("gameId", games.gameId);
 
-      if (!game.password) {
-        // If the game's password is null
-        const currentUserId = sessionStorage.getItem("userId");
-        console.log("Current GameID:", gameId);
-        const response = await api.put(`/games/${gameId}/join`, currentUserId);
-        const games = new Game(response.data);
-        sessionStorage.setItem("gameId", games.gameId);
-
-        if (response.status === 200) {
-          // Game joined successfully, navigate to the game setup page
-          navigate(`/gamesetup/${games.gameId}`);
-        } else {
-          // Handle other HTTP status codes if needed
-          console.error(`Joining game failed with status: ${response.status}`);
-        }
+      if (response.status === 200) {
+        // Game joined successfully, navigate to the game setup page
+        navigate(`/gamesetup/${games.gameId}`);
       } else {
-        console.log(
-          `Game ${gameId} has a password and cannot be joined automatically`
-        );
+        // Handle other HTTP status codes if needed
+        console.error(`Joining game failed with status: ${response.status}`);
       }
     } catch (error) {
       // Handle network errors or other exceptions
       console.error(`Joining game failed: ${handleError(error)}`);
+    }
+  };
+
+  const handleJoinGameClick = async (gameId: string) => {
+    try {
+      const gameResponse = await api.get(`/games/${gameId}`);
+      const game = gameResponse.data;
+
+      if (!game.password) {
+        joinGame(gameId);
+      } else {
+        const password = prompt(
+          "This game is private. Please enter the password:"
+        );
+        if (password !== null) {
+          joinGame(gameId, password);
+        }
+      }
+    } catch (error) {
+      // Handle network errors or other exceptions
+      console.error(`Fetching game details failed: ${handleError(error)}`);
     }
   };
 
@@ -165,7 +178,10 @@ const Lobby = ({ client }) => {
     gamesContent = (
       <div className="lobby game-list">
         {games.map((game: Game) => (
-          <li key={game.gameId} onClick={() => joinGame(game.gameId)}>
+          <li
+            key={game.gameId}
+            onClick={() => handleJoinGameClick(game.gameId)}
+          >
             <div className="lobby game-container">
               {getUserUsername(game.gameMaster)}&apos;s Game
             </div>
