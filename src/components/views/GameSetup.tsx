@@ -30,6 +30,15 @@ const GameSetup = ({ client }) => {
         console.log("Number of Rounds:", numRounds);
         console.log("Guess Time:", guessTime);
         console.log("Password:", password);
+
+        const gameMasterPresent = gameData.players.some(
+          (player) => player.user.userId === gameData.gameMaster
+        );
+        if (!gameMasterPresent) {
+          console.log("HOST DISCONNECTED");
+          leaveGame();
+        }
+
         const updatedUsers = gameData.players.map((player) => ({
           username: player.user.username,
         }));
@@ -77,31 +86,32 @@ const GameSetup = ({ client }) => {
     }
   };
 
-  const leaveGame = async () => {
+  const confirm_leave = () => {
     const confirmLeave = window.confirm("Do you want to leave this Lobby?");
     if (confirmLeave) {
-      try {
-        const currentUserId = sessionStorage.getItem("userId");
-        const response = await api.put(`/games/${gameId}/leave`, currentUserId);
-        if (isGamemaster) {
-          await api.delete(`/games/${gameId}`);
-        }
-        if (response.status === 200) {
-          client.publish({
-            destination: "/app/games/" + gameId + "/joining",
-            body: gameId,
-          });
-          sessionStorage.removeItem("guessTime");
-          sessionStorage.removeItem("numRounds");
-          sessionStorage.removeItem("setGamePassword");
-          sessionStorage.removeItem("gameId");
-          navigate("/lobby");
-        } else {
-          console.error(`Leaving game failed with status: ${response.status}`);
-        }
-      } catch (error) {
-        console.error(`Leaving game failed: ${handleError(error)}`);
+      leaveGame();
+    }
+  };
+
+  const leaveGame = async () => {
+    try {
+      const currentUserId = sessionStorage.getItem("userId");
+      const response = await api.put(`/games/${gameId}/leave`, currentUserId);
+      if (response.status === 200) {
+        client.publish({
+          destination: "/app/games/" + gameId + "/joining",
+          body: gameId,
+        });
+        sessionStorage.removeItem("guessTime");
+        sessionStorage.removeItem("numRounds");
+        sessionStorage.removeItem("setGamePassword");
+        sessionStorage.removeItem("gameId");
+        navigate("/lobby");
+      } else {
+        console.error(`Leaving game failed with status: ${response.status}`);
       }
+    } catch (error) {
+      console.error(`Leaving game failed: ${handleError(error)}`);
     }
   };
 
@@ -172,7 +182,7 @@ const GameSetup = ({ client }) => {
           <br></br>
           <Button
             width="100%"
-            onClick={leaveGame}
+            onClick={confirm_leave}
             title="Click here to go back to the lobby"
           >
             Back to Lobby
