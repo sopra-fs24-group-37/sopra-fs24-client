@@ -147,7 +147,7 @@ const GameSetup = ({ client }) => {
       >
         {users.map((user, index) => (
           <div className="gamesetup user-container" key={index}>
-            <li>{user.username}</li>
+            <li className="gamesetup user-container user-item">{user.username}</li>
           </div>
         ))}
       </ul>

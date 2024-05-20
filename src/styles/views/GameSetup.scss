@@ -24,23 +24,25 @@
     padding-left: 0;
   }
   &.user-container {
-    text-align: center; // Center the text
     margin-bottom: 10px; // Add some spacing between user elements
     font-size: 1.2rem; // Increase font size
     font-weight: bold; // Make the text bold
     margin: 0.5em 0;
     width: 20em;
-    padding: 10px;
+    padding: 8px; // Add padding inside the container
     border-radius: $borderRadius;
     display: flex;
-    align-items: center;
+    align-items: center; // Vertically center the content
+    justify-content: flex-start; // Align items to the left
     background: lighten($accent, 5);
+    height: 50px; // Fix the height of the container
   }
   &.user-item {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    flex-direction: row; // Ensure items are aligned in a row
+    align-items: center; // Vertically center the items
+    justify-content: flex-start; // Align items to the left
+    width: 100%;
   }
   & p,h2 {
     margin: 0.5em 0;
