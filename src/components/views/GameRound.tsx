@@ -51,16 +51,16 @@ const GameRound = ({ client }) => {
         console.log(`Received: ${message.body}`);
         try {
           const jsonObject = JSON.parse(message.body);
-          setImageUrl(jsonObject.urls.regular);
+          setImageUrl(jsonObject.regular_url);
           setLocation({
-            lat: jsonObject.location.position.latitude,
-            lng: jsonObject.location.position.longitude,
+            lat: jsonObject.latitude,
+            lng: jsonObject.longitude,
           });
-          if (jsonObject.user.name) {
-            setPhotographer(jsonObject.user.name);
+          if (jsonObject.user_name) {
+            setPhotographer(jsonObject.user_name);
           }
-          if (jsonObject.user.username) {
-            setPhotographerUsername(jsonObject.user.username);
+          if (jsonObject.user_username) {
+            setPhotographerUsername(jsonObject.user_username);
           }
         } catch (error) {
           console.error("Error parsing JSON:", error);

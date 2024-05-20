@@ -5,11 +5,13 @@ import BaseContainer from "components/ui/BaseContainer";
 import { Button } from "components/ui/Button";
 import "styles/views/GamePodium.scss";
 import Confetti from "react-confetti";
+import PropTypes from "prop-types";
 
-const GamePodium = () => {
+const GamePodium = ({ client }) => {
   const navigate = useNavigate();
   const [players, setPlayers] = useState([]);
   const [celebration, setCelebration] = useState(false); // State to control confetti
+  const gameId = sessionStorage.getItem("gameId")
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -32,11 +34,17 @@ const GamePodium = () => {
       }
     };
 
+    client.publish({
+      destination: `/app/games/${gameId}/checkin`,
+      body: gameId,
+    });
+
     fetchLeaderboard();
   }, []);
 
   const goToLobby = () => {
     navigate("/lobby");
+    sessionStorage.removeItem("gameId")
     setCelebration(false); // Turn off confetti when leaving the page
   };
 
@@ -61,6 +69,10 @@ const GamePodium = () => {
       </BaseContainer>
     </div>
   );
+};
+
+GamePodium.propTypes = {
+  client: PropTypes.object.isRequired,
 };
 
 export default GamePodium;
