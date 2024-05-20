@@ -4,6 +4,7 @@ import BaseContainer from "components/ui/BaseContainer";
 import { api, handleError } from "helpers/api";
 import { User } from "types";
 import { Button } from "components/ui/Button";
+import ConfirmLeave from "components/ui/ConfirmLeave";
 import GameSettings from "./GameSettings"; // Import the GameSettings component
 import PropTypes from "prop-types";
 
@@ -17,6 +18,7 @@ const GameSetup = ({ client }) => {
   const [users, setUsers] = useState<User[]>(null);
   const [isGamemaster, setIsGamemaster] = useState(false);
   const [pin, setPin] = useState("");
+  const [showConfirmLeave, setShowConfirmLeave] = useState(false); // New state for ConfirmLeave
 
   useEffect(() => {
     const updateSubscription = client.subscribe(
@@ -65,6 +67,19 @@ const GameSetup = ({ client }) => {
       startSubscription.unsubscribe();
     };
   }, [client, gameId, currentUser, navigate]);
+
+  const confirmLeave = () => {
+    setShowConfirmLeave(true); // Show ConfirmLeave component
+  };
+
+  const handleLeaveConfirmation = () => {
+    leaveGame();
+    setShowConfirmLeave(false); // Hide ConfirmLeave component after leave action
+  };
+
+  const handleLeaveCancel = () => {
+    setShowConfirmLeave(false); // Hide ConfirmLeave component if canceled
+  };
 
   const startGame = async () => {
     try {
@@ -182,14 +197,19 @@ const GameSetup = ({ client }) => {
           <br></br>
           <Button
             width="100%"
-            onClick={confirm_leave}
+            onClick={confirmLeave}
             title="Click here to go back to the lobby"
           >
             Back to Lobby
           </Button>
         </BaseContainer>
       )}
-
+      {showConfirmLeave && (
+        <ConfirmLeave
+          onConfirm={handleLeaveConfirmation}
+          onCancel={handleLeaveCancel}
+        />
+      )}
       {showGameSettings && (
         <GameSettings
           client={client}

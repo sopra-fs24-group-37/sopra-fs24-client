@@ -10,6 +10,7 @@ import { User } from "types";
 import Game from "models/Game";
 import infoIcon from "../../images/info_icon.svg";
 import InfoWindow from "./InfoWindow";
+import GamePassword from "components/ui/GamePassword"; // Import the GamePassword component
 
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
@@ -27,6 +28,8 @@ const Lobby = ({ client }) => {
   const [games, setGames] = useState<Game[]>(null);
   const [showInfo, setShowInfo] = useState(false); // handles state of info screen
   const [password, setPassword] = useState<string>("");
+  const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
+  const [selectedGameId, setSelectedGameId] = useState<string>(null);
 
   useEffect(() => {
     const userSubscription = client.subscribe(
@@ -64,12 +67,9 @@ const Lobby = ({ client }) => {
     };
   }, [client]);
 
-  // shows info screen upon click
   const toggleInfo = () => {
     setShowInfo(!showInfo);
   };
-
-  /*  Here come a bunch of functions used in the components further down this file. */
 
   const logout = (): void => {
     sessionStorage.removeItem("token");
@@ -88,14 +88,11 @@ const Lobby = ({ client }) => {
         client.publish({
           destination: "/app/games/updateGames",
         });
-        // Game created successfully, navigate to the game setup page
         navigate(`/gamesetup/${games.gameId}`);
       } else {
-        // Handle other HTTP status codes if needed
         console.error(`Game creation failed with status: ${response.status}`);
       }
     } catch (error) {
-      // Handle network errors or other exceptions
       console.error(`Game creation failed: ${handleError(error)}`);
     }
   };
@@ -112,14 +109,11 @@ const Lobby = ({ client }) => {
       sessionStorage.setItem("gameId", games.gameId);
 
       if (response.status === 200) {
-        // Game joined successfully, navigate to the game setup page
         navigate(`/gamesetup/${games.gameId}`);
       } else {
-        // Handle other HTTP status codes if needed
         console.error(`Joining game failed with status: ${response.status}`);
       }
     } catch (error) {
-      // Handle network errors or other exceptions
       console.error(`Joining game failed: ${handleError(error)}`);
     }
   };
@@ -132,17 +126,21 @@ const Lobby = ({ client }) => {
       if (!game.password) {
         joinGame(gameId);
       } else {
-        const password = prompt(
-          "This game is private. Please enter the password:"
-        );
-        if (password !== null) {
-          joinGame(gameId, password);
-        }
+        setSelectedGameId(gameId);
+        setShowPasswordPrompt(true);
       }
     } catch (error) {
-      // Handle network errors or other exceptions
       console.error(`Fetching game details failed: ${handleError(error)}`);
     }
+  };
+
+  const handlePasswordSubmit = (password: string) => {
+    setShowPasswordPrompt(false);
+    joinGame(selectedGameId, password);
+  };
+
+  const handlePasswordCancel = () => {
+    setShowPasswordPrompt(false);
   };
 
   const getUserUsername = (userId: number): string => {
@@ -202,6 +200,12 @@ const Lobby = ({ client }) => {
         title="Click here to see the game rules"
       />
       {showInfo && <InfoWindow onClose={() => setShowInfo(false)} />}
+      {showPasswordPrompt && (
+        <GamePassword
+          onSubmit={handlePasswordSubmit}
+          onCancel={handlePasswordCancel}
+        />
+      )}
       <div className="lobby side-by-side-containers">
         <BaseContainer title="Registered users" className="lobby container">
           <p className="lobby paragraph">

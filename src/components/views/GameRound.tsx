@@ -30,13 +30,16 @@ const GameRound = ({ client }) => {
   const [doubleScoreUsed, setDoubleScoreUsed] = useState(false);
   const [cantonHintUsed, setCantonHintUsed] = useState(false);
   const [tripleHintUsed, setTripleHintUsed] = useState(false);
+  const [receivedEndTime, setEndTime] = useState(null);
 
   useEffect(() => {
     const fetchGameInfo = async () => {
       try {
         const response = await api.get(`/games/${gameId}`);
         console.log("Game Info:", response.data);
-        const player = response.data.players.find(p => p.user.userId === userId);
+        const player = response.data.players.find(
+          (p) => p.user.userId === userId
+        );
         setCurrentPlayer(player);
       } catch (error) {
         console.error("Error fetching game info:", handleError(error));
@@ -61,6 +64,9 @@ const GameRound = ({ client }) => {
           }
           if (jsonObject.user_username) {
             setPhotographerUsername(jsonObject.user_username);
+          }
+          if (jsonObject.endtime) {
+            setEndTime(jsonObject.endtime);
           }
         } catch (error) {
           console.error("Error parsing JSON:", error);
@@ -139,7 +145,7 @@ const GameRound = ({ client }) => {
       return foundCanton.properties.kan_code[0];
     } else {
       console.log("No canton found for the given location");
-      
+
       return null;
     }
   };
@@ -160,10 +166,10 @@ const GameRound = ({ client }) => {
       userId: userId,
       useDoubleScore: doubleScoreUsed,
       useCantonHint: cantonHintUsed,
-      useMultipleCantonHint: tripleHintUsed
+      useMultipleCantonHint: tripleHintUsed,
     };
     console.log("Data sent to backend:", guessPayload);
-    
+
     client.publish({
       destination: `/app/games/${gameId}/guess`,
       body: JSON.stringify(guessPayload),
@@ -232,7 +238,7 @@ const GameRound = ({ client }) => {
             />
             <br />
             <Timer
-              initialCount={15}
+              endTime={receivedEndTime}
               onTimeUp={handleTimeUp}
               className="gameround title-font"
             />
