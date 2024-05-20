@@ -9,13 +9,14 @@ const Waiting = () => {
   const [roundStats, setRoundStats] = useState([]);
   const [actualLocation, setActualLocation] = useState({ lat: 0, lng: 0 });
   const gameId = sessionStorage.getItem("gameId");
-  const userId = sessionStorage.getItem("userId");
+  const userId = parseInt(sessionStorage.getItem("userId"), 10); // Convert to integer
+  const [gameEnd, setGameEnd] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
       try {
-        const response = await api.get("round/" + gameId + "/leaderboard");
+        const response = await api.get(`round/${gameId}/leaderboard`);
         console.log("Results from last round:", response);
         setRoundStats(response.data.roundStats);
         setActualLocation({
@@ -27,11 +28,29 @@ const Waiting = () => {
       }
     };
 
+    const fetchGameInfo = async () => {
+      try {
+        const gameInfoResponse = await api.get(`/games/${gameId}`);
+        const gameInfo = gameInfoResponse.data;
+        console.log("Game Info:", gameInfo);
+        if (gameInfo.gameStatus === "ENDED") {
+          setGameEnd(true);
+        }
+      } catch (error) {
+        console.error("Failed to fetch game info:", error);
+      }
+    };
+
     fetchLeaderboard();
+    fetchGameInfo();
 
     const timer = setTimeout(() => {
-      navigate("/gameround/" + gameId);
-    }, 5000);
+      if (gameEnd) {
+        navigate(`/gamepodium/${gameId}`);
+      } else {
+        navigate(`/gameround/${gameId}`);
+      }
+    }, 10000);
 
     window.addEventListener("beforeunload", handleBeforeUnload);
 
@@ -39,10 +58,10 @@ const Waiting = () => {
       clearTimeout(timer);
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [gameId, navigate]);
+  }, [gameId, navigate, gameEnd]);
 
   const handleBeforeUnload = (event) => {
-    api.put("/games/" + gameId + "/leave", userId);
+    api.put(`/games/${gameId}/leave`, userId);
     sessionStorage.removeItem("gameId");
   };
 
@@ -50,7 +69,9 @@ const Waiting = () => {
     <ul className="no-bullets">
       {roundStats.map((stat) => (
         <li key={stat.gamePlayer.playerId}>
-          {stat.gamePlayer.user.username} has scored {stat.gamePlayer.score} points so far!
+          {stat.gamePlayer.user.userId === userId
+            ? `You have scored ${stat.pointsInc} points in the last round!`
+            : `${stat.gamePlayer.user.username} has scored ${stat.pointsInc} points in the last round!`}
         </li>
       ))}
     </ul>
@@ -60,7 +81,7 @@ const Waiting = () => {
     <div className="flex-center-wrapper">
       <div className="container-wrapper">
         <BaseContainer
-          title="Here are your current scores:"
+          title="Round results:"
           className="waiting-container"
         >
           {renderScores()}
@@ -71,6 +92,7 @@ const Waiting = () => {
           <ResultMap
             actualLocation={actualLocation}
             playerGuesses={roundStats}
+            userId={userId}
           />
         </BaseContainer>
       </div>

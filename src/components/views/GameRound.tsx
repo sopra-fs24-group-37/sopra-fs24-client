@@ -175,17 +175,11 @@ const GameRound = ({ client }) => {
     if (endSubscription) {
       endSubscription.unsubscribe();
     }
-    if (gameEnd) {
-      setTimeout(() => {
-        navigate(`/gamepodium/${gameId}`);
-      }, 5000);
-    } else {
-      setTimeout(() => {
-        navigate(`/gameround/${gameId}/waiting`);
-      }, 5000);
-    }
+    setTimeout(() => {
+      navigate(`/gameround/${gameId}/waiting`);
+    }, 5000);
   };
-
+  
   return (
     <div className="flex-center-wrapper">
       <div className="gameround side-by-side-containers">

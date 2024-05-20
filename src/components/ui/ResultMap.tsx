@@ -27,6 +27,7 @@ const maxZoom = 10; // Adjust according to your needs
 interface ResultMapProps {
   actualLocation: { lat: number; lng: number };
   playerGuesses: any[];
+  userId: number; // Add userId to the props
 }
 
 // Function to create custom icons
@@ -41,6 +42,7 @@ const createIcon = (iconUrl: string) =>
 const ResultMap: React.FC<ResultMapProps> = ({
   actualLocation,
   playerGuesses,
+  userId, // Destructure userId from props
 }) => {
   const swissStyle = {
     color: "#E993E6", // Color for the boundary
@@ -52,10 +54,11 @@ const ResultMap: React.FC<ResultMapProps> = ({
 
   // Create icons for each marker
   const blackMarkerIcon = createIcon(blackIcon);
-  const blueMarkerIcon = createIcon(blueIcon);
-  const greenMarkerIcon = createIcon(greenIcon);
   const pinkMarkerIcon = createIcon(pinkIcon);
   const purpleMarkerIcon = createIcon(purpleIcon);
+  const blueMarkerIcon = createIcon(blueIcon);
+  const greenMarkerIcon = createIcon(greenIcon);
+  const otherIcons = [blueMarkerIcon, greenMarkerIcon, purpleMarkerIcon];
 
   return (
     <MapContainer
@@ -80,13 +83,18 @@ const ResultMap: React.FC<ResultMapProps> = ({
       <Marker position={[actualLocation.lat, actualLocation.lng]} icon={blackMarkerIcon}>
         <Popup>Actual location</Popup>
       </Marker>
-      {playerGuesses.map((stat, index) => {
+      {playerGuesses.map((stat) => {
         const guess = stat.guess;
-        const icon = index === 0 ? purpleMarkerIcon : [blueMarkerIcon, greenMarkerIcon, pinkMarkerIcon][(index - 1) % 3];
-        
+        const isCurrentUser = stat.gamePlayer.user.userId === userId;
+        const icon = isCurrentUser ? pinkMarkerIcon : otherIcons[playerGuesses.indexOf(stat) % otherIcons.length];
+
+        const popupText = isCurrentUser
+          ? "Your guess"
+          : `${stat.gamePlayer.user.username}'s guess`;
+
         return (
           <Marker key={stat.gamePlayer.playerId} position={[guess[0], guess[1]]} icon={icon}>
-            <Popup>{stat.gamePlayer.user.username}`&apos;`s guess</Popup>
+            <Popup>{popupText}</Popup>
           </Marker>
         );
       })}
