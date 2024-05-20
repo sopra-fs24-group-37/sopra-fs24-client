@@ -45,7 +45,7 @@ const GameSettings = ({ client, hideSettingsContainer }) => {
     });
     sessionStorage.setItem("guessTime", guessTime);
     sessionStorage.setItem("numRounds", numRounds);
-    sessionStorage.setItem("setGamePassword", "true");
+    sessionStorage.setItem("setGamePassword", setGamePassword);
 
     console.log("Settings update message published.");
     hideSettingsContainer();

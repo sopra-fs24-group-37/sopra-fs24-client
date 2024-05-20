@@ -10,6 +10,7 @@ import { User } from "types";
 import Game from "models/Game";
 import infoIcon from "../../images/info_icon.svg";
 import InfoWindow from "./InfoWindow";
+import GamePassword from "components/ui/GamePassword"; // Import the GamePassword component
 
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
@@ -26,6 +27,9 @@ const Lobby = ({ client }) => {
   const [users, setUsers] = useState<User[]>(null);
   const [games, setGames] = useState<Game[]>(null);
   const [showInfo, setShowInfo] = useState(false); // handles state of info screen
+  const [password, setPassword] = useState<string>("");
+  const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
+  const [selectedGameId, setSelectedGameId] = useState<string>(null);
 
   useEffect(() => {
     const userSubscription = client.subscribe(
@@ -63,12 +67,9 @@ const Lobby = ({ client }) => {
     };
   }, [client]);
 
-  // shows info screen upon click
   const toggleInfo = () => {
     setShowInfo(!showInfo);
   };
-
-  /*  Here come a bunch of functions used in the components further down this file. */
 
   const logout = (): void => {
     sessionStorage.removeItem("token");
@@ -87,40 +88,68 @@ const Lobby = ({ client }) => {
         client.publish({
           destination: "/app/games/updateGames",
         });
-        // Game created successfully, navigate to the game setup page
         navigate(`/gamesetup/${games.gameId}`);
       } else {
-        // Handle other HTTP status codes if needed
         console.error(`Game creation failed with status: ${response.status}`);
       }
     } catch (error) {
-      // Handle network errors or other exceptions
       console.error(`Game creation failed: ${handleError(error)}`);
     }
   };
 
-  const joinGame = async (gameId: string) => {
+  const joinGame = async (gameId: string, password?: string) => {
     try {
       const currentUserId = sessionStorage.getItem("userId");
       console.log("Current GameID:", gameId);
-      const response = await api.put(`/games/${gameId}/join`, currentUserId);
+      const response = await api.put(`/games/${gameId}/join`, currentUserId, {
+        params: { gamePassword: password || null },
+      });
+
       const games = new Game(response.data);
       sessionStorage.setItem("gameId", games.gameId);
 
       if (response.status === 200) {
-        // Game created successfully, navigate to the game setup page
         navigate(`/gamesetup/${games.gameId}`);
       } else {
-        // Handle other HTTP status codes if needed
         console.error(`Joining game failed with status: ${response.status}`);
       }
     } catch (error) {
-      // Handle network errors or other exceptions
       console.error(`Joining game failed: ${handleError(error)}`);
     }
   };
 
+  const handleJoinGameClick = async (gameId: string) => {
+    try {
+      const gameResponse = await api.get(`/games/${gameId}`);
+      const game = gameResponse.data;
+
+      if (!game.password) {
+        joinGame(gameId);
+      } else {
+        setSelectedGameId(gameId);
+        setShowPasswordPrompt(true);
+      }
+    } catch (error) {
+      console.error(`Fetching game details failed: ${handleError(error)}`);
+    }
+  };
+
+  const handlePasswordSubmit = (password: string) => {
+    setShowPasswordPrompt(false);
+    joinGame(selectedGameId, password);
+  };
+
+  const handlePasswordCancel = () => {
+    setShowPasswordPrompt(false);
+  };
+
   const getUserUsername = (userId: number): string => {
+    if (!users) {
+      console.error("Users array is null or undefined");
+
+      return "Unknown";
+    }
+
     const user = users.find((user) => user.userId === userId);
 
     return user ? user.username : "Unknown";
@@ -148,7 +177,10 @@ const Lobby = ({ client }) => {
     gamesContent = (
       <div className="lobby game-list">
         {games.map((game: Game) => (
-          <li key={game.gameId} onClick={() => joinGame(game.gameId)}>
+          <li
+            key={game.gameId}
+            onClick={() => handleJoinGameClick(game.gameId)}
+          >
             <div className="lobby game-container">
               {getUserUsername(game.gameMaster)}&apos;s Game
             </div>
@@ -168,14 +200,20 @@ const Lobby = ({ client }) => {
         title="Click here to see the game rules"
       />
       {showInfo && <InfoWindow onClose={() => setShowInfo(false)} />}
+      {showPasswordPrompt && (
+        <GamePassword
+          onSubmit={handlePasswordSubmit}
+          onCancel={handlePasswordCancel}
+        />
+      )}
       <div className="lobby side-by-side-containers">
         <BaseContainer title="Registered users" className="lobby container">
           <p className="lobby paragraph">
             The following users have registered:
           </p>
           {usersContent}
-          <Button 
-            width="100%" 
+          <Button
+            width="100%"
             onClick={() => logout()}
             title="Click here to log out"
           >

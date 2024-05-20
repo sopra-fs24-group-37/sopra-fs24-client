@@ -68,7 +68,7 @@ const AppRouter = () => {
         </Route>
 
         <Route path="/gamepodium/:gameId" element={<LobbyGuard />}>
-          <Route path="/gamepodium/:gameId" element={<GamePodium />} />
+          <Route path="/gamepodium/:gameId" element={<GamePodium client={client}/>} />
         </Route>
 
         <Route path="/" element={
