@@ -26,6 +26,7 @@ const Lobby = ({ client }) => {
   const [users, setUsers] = useState<User[]>(null);
   const [games, setGames] = useState<Game[]>(null);
   const [showInfo, setShowInfo] = useState(false); // handles state of info screen
+  const [password, setPassword] = useState<string>("");
 
   useEffect(() => {
     const userSubscription = client.subscribe(
@@ -99,16 +100,19 @@ const Lobby = ({ client }) => {
     }
   };
 
-  const joinGame = async (gameId: string) => {
+  const joinGame = async (gameId: string, password?: string) => {
     try {
       const currentUserId = sessionStorage.getItem("userId");
       console.log("Current GameID:", gameId);
-      const response = await api.put(`/games/${gameId}/join`, currentUserId);
+      const response = await api.put(`/games/${gameId}/join`, currentUserId, {
+        params: { gamePassword: password || null },
+      });
+
       const games = new Game(response.data);
       sessionStorage.setItem("gameId", games.gameId);
 
       if (response.status === 200) {
-        // Game created successfully, navigate to the game setup page
+        // Game joined successfully, navigate to the game setup page
         navigate(`/gamesetup/${games.gameId}`);
       } else {
         // Handle other HTTP status codes if needed
@@ -120,7 +124,34 @@ const Lobby = ({ client }) => {
     }
   };
 
+  const handleJoinGameClick = async (gameId: string) => {
+    try {
+      const gameResponse = await api.get(`/games/${gameId}`);
+      const game = gameResponse.data;
+
+      if (!game.password) {
+        joinGame(gameId);
+      } else {
+        const password = prompt(
+          "This game is private. Please enter the password:"
+        );
+        if (password !== null) {
+          joinGame(gameId, password);
+        }
+      }
+    } catch (error) {
+      // Handle network errors or other exceptions
+      console.error(`Fetching game details failed: ${handleError(error)}`);
+    }
+  };
+
   const getUserUsername = (userId: number): string => {
+    if (!users) {
+      console.error("Users array is null or undefined");
+
+      return "Unknown";
+    }
+
     const user = users.find((user) => user.userId === userId);
 
     return user ? user.username : "Unknown";
@@ -148,7 +179,10 @@ const Lobby = ({ client }) => {
     gamesContent = (
       <div className="lobby game-list">
         {games.map((game: Game) => (
-          <li key={game.gameId} onClick={() => joinGame(game.gameId)}>
+          <li
+            key={game.gameId}
+            onClick={() => handleJoinGameClick(game.gameId)}
+          >
             <div className="lobby game-container">
               {getUserUsername(game.gameMaster)}&apos;s Game
             </div>
@@ -174,8 +208,8 @@ const Lobby = ({ client }) => {
             The following users have registered:
           </p>
           {usersContent}
-          <Button 
-            width="100%" 
+          <Button
+            width="100%"
             onClick={() => logout()}
             title="Click here to log out"
           >
