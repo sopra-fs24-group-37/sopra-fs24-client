@@ -83,6 +83,7 @@ const ResultMap: React.FC<ResultMapProps> = ({
       {playerGuesses.map((stat, index) => {
         const guess = stat.guess;
         const icon = index === 0 ? purpleMarkerIcon : [blueMarkerIcon, greenMarkerIcon, pinkMarkerIcon][(index - 1) % 3];
+        
         return (
           <Marker key={stat.gamePlayer.playerId} position={[guess[0], guess[1]]} icon={icon}>
             <Popup>{stat.gamePlayer.user.username}`&apos;`s guess</Popup>
