@@ -65,8 +65,8 @@ const GameRound = ({ client }) => {
           if (jsonObject.user_username) {
             setPhotographerUsername(jsonObject.user_username);
           }
-          if (jsonObject.endtime) {
-            setEndTime(jsonObject.endtime);
+          if (jsonObject.end_time) {
+            setEndTime(jsonObject.end_time);
           }
         } catch (error) {
           console.error("Error parsing JSON:", error);
@@ -238,7 +238,7 @@ const GameRound = ({ client }) => {
             />
             <br />
             <Timer
-              endTime={receivedEndTime}
+              end_time={receivedEndTime}
               onTimeUp={handleTimeUp}
               className="gameround title-font"
             />
