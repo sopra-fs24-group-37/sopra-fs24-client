@@ -48,18 +48,6 @@ At the end of each round, players' guesses and information about the used power-
 
 The [SwissMap component](https://github.com/sopra-fs24-group-37/sopra-fs24-client/blob/main/src/components/ui/SwissMap.tsx) is crucial for our application, as it allows players to submit guesses during a game round. The application was built using the [React Leaflet library](https://react-leaflet.js.org) and uses the [World Ocean Base layer by arcgis](https://hub.arcgis.com/datasets/esri::world-ocean-base/about) in combination with geojson dataset from [swisstopo](https://www.swisstopo.admin.ch/de/landschaftsmodell-swissboundaries3d) to render the geographical surface as well as  the national boundaries of Switzerland. A second geojson dataset is used to dynamically render the boundaries of cantons if a related power-up is used (see above). The map tracks the location guesses made by players and communicates them to the [GameRound component](https://github.com/sopra-fs24-group-37/sopra-fs24-client/blob/main/src/components/views/GameRound.tsx), into which it is visually integrated. 
 
-
-### Additional Features
-
-#### Keep Alive
-
-KeepAlive() / UserDropOut() arose due to the need of handling idle users or ones that close the tab during the game. While not a
-component per-se, it still is a essential feature of this game to understand. Users get "kicked" from the game and logged out and their co-players are informed of this. <br>
-However, this also makes it very important that the players have a **stable internet connection** as else they might be seen as inresponsive by the server.
-
-#### Token Authorization
-In every REST request the client sends (except for login / register), and in every Websocket send / subscribe event, it includes the logged in users current token. This ensures all requests we make are authorized and prevents malicious use of our API / Websocket.
-
 ## Launch & Development <a id="launch--development"></a>
 
 ### Prerequisites
