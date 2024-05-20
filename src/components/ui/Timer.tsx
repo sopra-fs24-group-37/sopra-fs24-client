@@ -62,6 +62,7 @@ const Timer = ({ end_time, onTimeUp, className }) => {
   const formatTimeLeft = (milliseconds) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const seconds = totalSeconds % 60;
+    
     return `Time remaining: ${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
