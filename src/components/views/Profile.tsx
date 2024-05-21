@@ -7,6 +7,31 @@ import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
 import "styles/views/Profile.scss";
 import { User } from "types";
+import "styles/views/Login.scss";
+
+const FormField = (props) => {
+  const inputType =
+    props.label.toLowerCase() === "password" ? "password" : "text";
+
+  return (
+    <div className="login field">
+      <label className="login label">{props.label}</label>
+      <input
+        type={inputType}
+        className="login input"
+        placeholder="enter here.."
+        value={props.value}
+        onChange={(e) => props.onChange(e.target.value)}
+      />
+    </div>
+  );
+};
+
+FormField.propTypes = {
+  label: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func,
+};
 
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
@@ -22,25 +47,23 @@ Player.propTypes = {
 
 const Profile = () => {
   const navigate = useNavigate();
-  const [user, setUsers] = useState<User[]>(null);
+  const [user, setUser] = useState<User>(null); // Change to single user
   const { userId } = useParams();
+  const [showEdit, setShowEdit] = useState(false);
+  const [newUsername, setNewUsername] = useState("");
+
   useEffect(() => {
-    // effect callbacks are synchronous to prevent race conditions. So we put the async function inside:
     async function fetchData() {
       try {
         const response = await api.get("/users/" + userId);
 
-        // Get the returned users and update the state.
-        setUsers(response.data);
+        setUser(response.data);
 
-        // This is just some data for you to see what is available.
-        // Feel free to remove it.
         console.log("request to:", response.request.responseURL);
         console.log("status code:", response.status);
         console.log("status text:", response.statusText);
         console.log("requested data:", response.data);
 
-        // See here to get more data.
         console.log(response);
       } catch (error) {
         console.error(
@@ -58,12 +81,35 @@ const Profile = () => {
     fetchData();
   }, [userId]);
 
+  const handleUsernameChange = async () => {
+    try {
+      const response = await api.put(`/users/${userId}`, {
+        userId: userId,
+        username: newUsername,
+      });
+      setUser(response.data);
+      setShowEdit(false);
+    } catch (error) {
+      console.error(
+        `Something went wrong while updating the username: \n${handleError(
+          error
+        )}`
+      );
+      console.error("Details:", error);
+      alert(
+        "Something went wrong while updating the username! See the console for details."
+      );
+    }
+  };
+
+  const loggedInUserId = sessionStorage.getItem("userId");
+
   let content = <Spinner />;
 
   if (user) {
     content = (
       <div className="profile container">
-        <div className="profile title">{user.username}&apos;s Profile </div>
+        <div className="profile title">{user.username}&apos;s Profile</div>
         <p>
           <strong>Status:</strong> {user.status}
         </p>
@@ -76,6 +122,32 @@ const Profile = () => {
         <p>
           <strong>Points scored:</strong> {user.totalScores}
         </p>
+        {loggedInUserId === userId && (
+          <>
+            <Button width="100%" onClick={() => setShowEdit(true)}>
+              Change Username
+            </Button>
+            {showEdit && (
+              <>
+                <div
+                  className="overlay"
+                  onClick={() => setShowEdit(false)}
+                ></div>
+                <div className="edit-form">
+                  <FormField
+                    label="New Username"
+                    value={newUsername}
+                    onChange={(un: string) => setNewUsername(un)}
+                  />
+                  <Button width="100%" onClick={handleUsernameChange}>
+                    Save
+                  </Button>
+                </div>
+              </>
+            )}
+          </>
+        )}
+        <br />
         <Button width="100%" onClick={() => navigate("/lobby")}>
           Go back to Lobby
         </Button>

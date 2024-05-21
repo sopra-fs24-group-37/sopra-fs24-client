@@ -37,4 +37,41 @@
     justify-content: center;
     margin-top: 2em;
   }
+  
 }
+.edit-form {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  background-color: white;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login.field {
+  margin-bottom: 1rem;
+}
+
+.login.label {
+  display: block;
+  margin-bottom: 1rem;
+}
+
+.login.input {
+  width: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); 
+  z-index: 9; }
