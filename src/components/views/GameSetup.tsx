@@ -9,6 +9,7 @@ import { Button } from "components/ui/Button";
 import ConfirmLeave from "components/ui/ConfirmLeave";
 import GameSettings from "./GameSettings";
 import PropTypes from "prop-types";
+import { Howl } from "howler";
 import StartSound from "../../sounds/Start.mp3";
 
 const GameSetup = ({ client }) => {
