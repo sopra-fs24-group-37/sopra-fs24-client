@@ -9,6 +9,8 @@ import { Button } from "components/ui/Button";
 import ConfirmLeave from "components/ui/ConfirmLeave";
 import GameSettings from "./GameSettings";
 import PropTypes from "prop-types";
+import { Howl } from "howler";
+import StartSound from "../../sounds/Start.mp3";
 
 const GameSetup = ({ client }) => {
   const [players, setPlayers] = useState<User[]>([]);
@@ -21,6 +23,15 @@ const GameSetup = ({ client }) => {
   const [isGamemaster, setIsGamemaster] = useState(false);
   const [pin, setPin] = useState("");
   const [showConfirmLeave, setShowConfirmLeave] = useState(false);
+
+  const playSound = () => {
+    const sound = new Howl({
+      src: [StartSound],
+      autoplay: true,
+      loop: false,
+      volume: 1.0,
+    });
+  };
 
   useEffect(() => {
     const updateSubscription = client.subscribe(
@@ -90,6 +101,7 @@ const GameSetup = ({ client }) => {
   };
 
   const startGame = async () => {
+    playSound();
     try {
       const response = await api.put(`/games/${gameId}/start`);
       client.publish({

@@ -4,7 +4,7 @@ import { Button } from "components/ui/Button";
 import "styles/views/Landing.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import { Howl } from "howler";
-import IntroSound from "../../sounds/Intro.mp3"; // Import the sound file
+import IntroSound from "../../sounds/Intro.mp3";
 
 const Landing = () => {
   const navigate = useNavigate();

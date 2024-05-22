@@ -10,6 +10,8 @@ import PropTypes from "prop-types";
 import { Button } from "components/ui/Button";
 import swissCantons from "../../geodata/cantons.json";
 import { point, polygon, booleanPointInPolygon } from "@turf/turf";
+import { Howl } from "howler";
+import StartSound from "../../sounds/Start.mp3";
 
 const GameRound = ({ client }) => {
   const navigate = useNavigate();
@@ -30,6 +32,15 @@ const GameRound = ({ client }) => {
   const [cantonHintUsed, setCantonHintUsed] = useState(false);
   const [tripleHintUsed, setTripleHintUsed] = useState(false);
   const [receivedEndTime, setEndTime] = useState(null);
+
+  const playSound = () => {
+    const sound = new Howl({
+      src: [StartSound],
+      autoplay: true,
+      loop: false,
+      volume: 1.0,
+    });
+  };
 
   useEffect(() => {
     const fetchGameInfo = async () => {
@@ -107,11 +118,13 @@ const GameRound = ({ client }) => {
   };
 
   const handleCantonHint = () => {
+    playSound();
     setShowCanton(true);
     setCantonHintUsed(true);
   };
 
   const handleTripleHint = () => {
+    playSound();
     const cantonCode = getCantonCodeForLocation(location);
     console.log("Location kan_code (cantonCode):", cantonCode);
 
@@ -241,7 +254,10 @@ const GameRound = ({ client }) => {
             <Button
               title="Use this power-up to get double points for your guess. You can only use this power-up once per game!"
               disabled={!canInteract || doubleScoreUsed || !currentPlayer?.doubleScore}
-              onClick={() => setDoubleScoreUsed(true)}
+              onClick={() => {
+                playSound();
+                setDoubleScoreUsed(true);
+              }}
             >
               Double Score
             </Button>
