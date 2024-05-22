@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import BaseContainer from "components/ui/BaseContainer";
 import { api, handleError } from "helpers/api";
 import { User } from "types";
 import { Button } from "components/ui/Button";
 import ConfirmLeave from "components/ui/ConfirmLeave";
-import GameSettings from "./GameSettings"; // Import the GameSettings component
+import GameSettings from "./GameSettings";
 import PropTypes from "prop-types";
 
 const GameSetup = ({ client }) => {
@@ -18,7 +20,7 @@ const GameSetup = ({ client }) => {
   const [users, setUsers] = useState<User[]>(null);
   const [isGamemaster, setIsGamemaster] = useState(false);
   const [pin, setPin] = useState("");
-  const [showConfirmLeave, setShowConfirmLeave] = useState(false); // New state for ConfirmLeave
+  const [showConfirmLeave, setShowConfirmLeave] = useState(false);
 
   useEffect(() => {
     const updateSubscription = client.subscribe(
@@ -38,7 +40,12 @@ const GameSetup = ({ client }) => {
         );
         if (!gameMasterPresent) {
           console.log("HOST DISCONNECTED");
-          leaveGame();
+          toast.error(
+            "The host has left the game. You're being redirected shortly!"
+          );
+          setTimeout(() => {
+            leaveGame();
+          }, 5000);
         }
 
         const updatedUsers = gameData.players.map((player) => ({
@@ -49,6 +56,7 @@ const GameSetup = ({ client }) => {
         setIsGamemaster(gameData.gameMaster === parseInt(currentUser));
       }
     );
+
     const startSubscription = client.subscribe(
       "/topic/games/" + gameId + "/started",
       (message) => {
@@ -151,6 +159,7 @@ const GameSetup = ({ client }) => {
 
   return (
     <div className="flex-center-wrapper">
+      <ToastContainer /> {/* Add ToastContainer to render toasts */}
       {!showGameSettings && (
         <BaseContainer
           title="Users ready to play:"

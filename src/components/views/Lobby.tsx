@@ -5,6 +5,8 @@ import { Button } from "components/ui/Button";
 import { useNavigate } from "react-router-dom";
 import BaseContainer from "components/ui/BaseContainer";
 import PropTypes from "prop-types";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import "styles/views/Lobby.scss";
 import { User } from "types";
 import Game from "models/Game";
@@ -110,11 +112,17 @@ const Lobby = ({ client }) => {
 
       if (response.status === 200) {
         navigate(`/gamesetup/${games.gameId}`);
+      } else if (response.status === 401) {
+        toast.error("Invalid password.");
       } else {
         console.error(`Joining game failed with status: ${response.status}`);
       }
     } catch (error) {
-      console.error(`Joining game failed: ${handleError(error)}`);
+      if (error.response && error.response.status === 401) {
+        toast.error("Invalid password.");
+      } else {
+        console.error(`Joining game failed: ${handleError(error)}`);
+      }
     }
   };
 
@@ -192,6 +200,7 @@ const Lobby = ({ client }) => {
 
   return (
     <div className="flex-center-wrapper">
+      <ToastContainer /> {/* Add ToastContainer to render toasts */}
       <img
         src={infoIcon}
         alt="Info"
