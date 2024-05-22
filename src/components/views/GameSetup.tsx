@@ -101,13 +101,6 @@ const GameSetup = ({ client }) => {
     }
   };
 
-  const confirm_leave = () => {
-    const confirmLeave = window.confirm("Do you want to leave this Lobby?");
-    if (confirmLeave) {
-      leaveGame();
-    }
-  };
-
   const leaveGame = async () => {
     try {
       const currentUserId = sessionStorage.getItem("userId");
@@ -147,7 +140,9 @@ const GameSetup = ({ client }) => {
       >
         {users.map((user, index) => (
           <div className="gamesetup user-container" key={index}>
-            <li className="gamesetup user-container user-item">{user.username}</li>
+            <li className="gamesetup user-container user-item">
+              {user.username}
+            </li>
           </div>
         ))}
       </ul>
