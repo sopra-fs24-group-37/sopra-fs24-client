@@ -240,21 +240,21 @@ const GameRound = ({ client }) => {
           <div className="button-container">
             <Button
               title="Use this power-up to get double points for your guess. You can only use this power-up once per game!"
-              disabled={doubleScoreUsed || !currentPlayer?.doubleScore}
+              disabled={!canInteract || doubleScoreUsed || !currentPlayer?.doubleScore}
               onClick={() => setDoubleScoreUsed(true)}
             >
               Double Score
             </Button>
             <Button
               title="Use this power-up to be shown the canton in which the image was taken. You can only use this power-up once per game!"
-              disabled={cantonHintUsed || !currentPlayer?.cantonHint}
+              disabled={!canInteract || cantonHintUsed || !currentPlayer?.cantonHint}
               onClick={handleCantonHint}
             >
               Canton Hint
             </Button>
             <Button
               title="Use this power-up to be shown three cantons in one of which the image was taken. You can only use this power-up once per game!"
-              disabled={tripleHintUsed || !currentPlayer?.multipleCantonHint}
+              disabled={!canInteract || tripleHintUsed || !currentPlayer?.multipleCantonHint}
               onClick={handleTripleHint}
             >
               Triple Hint
