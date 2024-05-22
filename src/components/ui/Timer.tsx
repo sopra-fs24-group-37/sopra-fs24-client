@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 const Timer = ({ end_time, onTimeUp, className }) => {
   const [timeLeft, setTimeLeft] = useState(null);
+  const [timeUpTriggered, setTimeUpTriggered] = useState(false);
 
   useEffect(() => {
     if (end_time) {
@@ -35,7 +36,10 @@ const Timer = ({ end_time, onTimeUp, className }) => {
         if (distance <= 0) {
           clearInterval(intervalId);
           setTimeLeft(0);
-          onTimeUp();
+          if (!timeUpTriggered) {
+            setTimeUpTriggered(true);
+            onTimeUp();
+          }
         } else {
           setTimeLeft(distance);
         }
@@ -43,7 +47,7 @@ const Timer = ({ end_time, onTimeUp, className }) => {
 
       return () => clearInterval(intervalId);
     }
-  }, [end_time, onTimeUp]);
+  }, [end_time, onTimeUp, timeUpTriggered]);
 
   const calculateTimeDifference = (endTime, currentTime) => {
     const endMillis =
@@ -62,7 +66,7 @@ const Timer = ({ end_time, onTimeUp, className }) => {
   const formatTimeLeft = (milliseconds) => {
     const totalSeconds = Math.floor(milliseconds / 1000);
     const seconds = totalSeconds % 60;
-    
+
     return `Time remaining: ${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
