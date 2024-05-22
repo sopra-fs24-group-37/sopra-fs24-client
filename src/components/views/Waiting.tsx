@@ -9,8 +9,7 @@ const Waiting = () => {
   const [roundStats, setRoundStats] = useState([]);
   const [actualLocation, setActualLocation] = useState({ lat: 0, lng: 0 });
   const gameId = sessionStorage.getItem("gameId");
-  const userId = parseInt(sessionStorage.getItem("userId"), 10); // Convert to integer
-  const [gameEnd, setGameEnd] = useState(false);
+  const userId = parseInt(sessionStorage.getItem("userId"), 10);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,24 +27,12 @@ const Waiting = () => {
       }
     };
 
-    const fetchGameInfo = async () => {
-      try {
-        const gameInfoResponse = await api.get(`/games/${gameId}`);
-        const gameInfo = gameInfoResponse.data;
-        console.log("Game Info:", gameInfo);
-        if (gameInfo.gameStatus === "ENDED") {
-          setGameEnd(true);
-        }
-      } catch (error) {
-        console.error("Failed to fetch game info:", error);
-      }
-    };
-
     fetchLeaderboard();
-    fetchGameInfo();
 
     const timer = setTimeout(() => {
+      const gameEnd = sessionStorage.getItem("gameEnd") === "true";
       if (gameEnd) {
+        sessionStorage.removeItem("gameEnd");
         navigate(`/gamepodium/${gameId}`);
       } else {
         navigate(`/gameround/${gameId}`);
@@ -58,7 +45,7 @@ const Waiting = () => {
       clearTimeout(timer);
       window.removeEventListener("beforeunload", handleBeforeUnload);
     };
-  }, [gameId, navigate, gameEnd]);
+  }, [gameId, navigate]);
 
   const handleBeforeUnload = (event) => {
     api.put(`/games/${gameId}/leave`, userId);
@@ -77,6 +64,8 @@ const Waiting = () => {
     </ul>
   );
 
+  const gameEnd = sessionStorage.getItem("gameEnd") === "true";
+
   return (
     <div className="flex-center-wrapper">
       <div className="container-wrapper">
@@ -86,7 +75,17 @@ const Waiting = () => {
         >
           {renderScores()}
           <br />
-          <span className="bold-helvetica">Get ready for the next round!</span>
+          <span className="bold-helvetica">
+            {gameEnd ? (
+              <>
+                Final round complete.
+                <br />
+                Calculating results ...
+              </>
+            ) : (
+              "Get ready for the next round!"
+            )}
+          </span>
         </BaseContainer>
         <BaseContainer className="map-container">
           <ResultMap

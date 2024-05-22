@@ -21,7 +21,6 @@ const GameRound = ({ client }) => {
   const [canInteract, setCanInteract] = useState(true);
   const gameId = sessionStorage.getItem("gameId");
   const userId = parseInt(sessionStorage.getItem("userId"), 10);
-  const [gameEnd, setGameEnd] = useState(false);
   const [roundSubscription, setRoundSubscription] = useState(null);
   const [endSubscription, setEndSubscription] = useState(null);
   const [showCanton, setShowCanton] = useState(false); // State to manage "power-up" activation
@@ -79,7 +78,7 @@ const GameRound = ({ client }) => {
       `/topic/games/${gameId}/ended`,
       (message) => {
         console.log(`Received: ${message.body}`);
-        setGameEnd(true);
+        sessionStorage.setItem("gameEnd", "true");
       }
     );
     setEndSubscription(gameEndSubscription);
