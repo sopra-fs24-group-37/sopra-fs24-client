@@ -45,6 +45,7 @@ const GamePodium = ({ client }) => {
   const goToLobby = () => {
     navigate("/lobby");
     sessionStorage.removeItem("gameId")
+    sessionStorage.removeItem("powerupCount")
     setCelebration(false); // Turn off confetti when leaving the page
   };
 
