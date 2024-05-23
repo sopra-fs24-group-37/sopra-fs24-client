@@ -29,7 +29,7 @@ const GameSetup = ({ client }) => {
       src: [StartSound],
       autoplay: true,
       loop: false,
-      volume: 1.0,
+      volume: 0.5,
     });
   };
 

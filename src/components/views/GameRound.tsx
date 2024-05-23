@@ -164,6 +164,7 @@ const GameRound = ({ client }) => {
 
   const handleBeforeUnload = (event) => {
     api.put(`/games/${gameId}/leave`, userId);
+    api.put(`/users/${userId}/logout`);
     sessionStorage.removeItem("gameId");
   };
 
@@ -197,7 +198,7 @@ const GameRound = ({ client }) => {
       navigate(`/gameround/${gameId}/waiting`);
     }, 5000);
   };
-  
+
   return (
     <div className="flex-center-wrapper">
       <div className="gameround side-by-side-containers">
@@ -253,7 +254,9 @@ const GameRound = ({ client }) => {
           <div className="button-container">
             <Button
               title="Use this power-up to get double points for your guess. You can only use this power-up once per game!"
-              disabled={!canInteract || doubleScoreUsed || !currentPlayer?.doubleScore}
+              disabled={
+                !canInteract || doubleScoreUsed || !currentPlayer?.doubleScore
+              }
               onClick={() => {
                 playSound();
                 setDoubleScoreUsed(true);
@@ -263,14 +266,20 @@ const GameRound = ({ client }) => {
             </Button>
             <Button
               title="Use this power-up to be shown the canton in which the image was taken. You can only use this power-up once per game!"
-              disabled={!canInteract || cantonHintUsed || !currentPlayer?.cantonHint}
+              disabled={
+                !canInteract || cantonHintUsed || !currentPlayer?.cantonHint
+              }
               onClick={handleCantonHint}
             >
               Canton Hint
             </Button>
             <Button
               title="Use this power-up to be shown three cantons in one of which the image was taken. You can only use this power-up once per game!"
-              disabled={!canInteract || tripleHintUsed || !currentPlayer?.multipleCantonHint}
+              disabled={
+                !canInteract ||
+                tripleHintUsed ||
+                !currentPlayer?.multipleCantonHint
+              }
               onClick={handleTripleHint}
             >
               Triple Hint

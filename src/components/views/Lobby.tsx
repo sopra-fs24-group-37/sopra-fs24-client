@@ -74,6 +74,8 @@ const Lobby = ({ client }) => {
   };
 
   const logout = (): void => {
+    const userId = sessionStorage.getItem("userId");
+    api.put(`/users/${userId}/logout`);
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("userId");
     navigate("/login");
