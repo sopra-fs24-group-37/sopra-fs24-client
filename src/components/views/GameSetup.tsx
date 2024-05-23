@@ -54,7 +54,6 @@ const GameSetup = ({ client }) => {
           (player) => player.user.userId === gameData.gameMaster
         );
         if (!gameMasterPresent) {
-          console.log("HOST DISCONNECTED");
           toast.error(
             "The host has left the game. You're being redirected shortly!"
           );
@@ -134,7 +133,7 @@ const GameSetup = ({ client }) => {
       }
     }, 2000); // 2-second delay
   };
-  
+
   const leaveGame = async () => {
     try {
       const currentUserId = sessionStorage.getItem("userId");
@@ -211,7 +210,7 @@ const GameSetup = ({ client }) => {
                 !isGamemaster ||
                 showGameSettings ||
                 users.length <= 1 ||
-                users.length > 2
+                users.length > 4
               }
             >
               Start Game
