@@ -51,6 +51,11 @@ const Profile = () => {
   const [showEdit, setShowEdit] = useState(false);
   const [newUsername, setNewUsername] = useState("");
 
+  const limitUsernameChange = (input) => {
+    const limitedInput = input.slice(0, 15);
+    setNewUsername(limitedInput);
+  };
+
   useEffect(() => {
     async function fetchData() {
       try {
@@ -138,7 +143,7 @@ const Profile = () => {
                   <FormField
                     label="New Username"
                     value={newUsername}
-                    onChange={(un: string) => setNewUsername(un)}
+                    onChange={(un: string) => limitUsernameChange(un)}
                   />
                   <Button width="100%" onClick={handleUsernameChange}>
                     Save

@@ -38,6 +38,11 @@ const Registration = () => {
   const [username, setUsername] = useState<string>(null);
   const [errorMessage, setErrorMessage] = useState<string>(null); // State to handle error message
 
+  const handleUsernameChange = (input) => {
+    const limitedInput = input.slice(0, 15);
+    setUsername(limitedInput);
+  };
+
   const doRegistration = async () => {
     try {
       const requestBody = JSON.stringify({ username, password });
@@ -75,7 +80,7 @@ const Registration = () => {
           <FormField
             label="Username"
             value={username}
-            onChange={(un: string) => setUsername(un)}
+            onChange={(un: string) => handleUsernameChange(un)}
           />
           <FormField
             label="Password"
