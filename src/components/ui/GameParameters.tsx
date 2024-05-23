@@ -9,8 +9,11 @@ const GameParameters = ({ numRounds, guessTime }) => {
 
   return (
     <BaseContainer className="parameter base-container">
-      <p className="parameter title">Number of Rounds: {defaultNumRounds}</p>
-      <p className="parameter title">Time to guess: {defaultGuessTime}</p>
+      <p className="parameter title">Game Settings:</p>
+      <p className="parameter description">
+        Number of Rounds: {defaultNumRounds}
+      </p>
+      <p className="parameter description">Time to guess: {defaultGuessTime}</p>
     </BaseContainer>
   );
 };
