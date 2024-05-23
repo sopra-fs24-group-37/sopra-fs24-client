@@ -79,9 +79,10 @@ const GameSetup = ({ client }) => {
       destination: "/app/games/" + gameId + "/joining",
       body: gameId,
     });
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
-      // Cleanup subscriptions
+      window.removeEventListener("beforeunload", handleBeforeUnload);
       updateSubscription.unsubscribe();
       startSubscription.unsubscribe();
     };
@@ -99,7 +100,13 @@ const GameSetup = ({ client }) => {
   const handleLeaveCancel = () => {
     setShowConfirmLeave(false); // Hide ConfirmLeave component if canceled
   };
-
+  const handleBeforeUnload = (event) => {
+    const userId = sessionStorage.getItem("userId");
+    api.put(`/games/${gameId}/leave`, userId);
+    api.put(`/users/${userId}/logout`);
+    sessionStorage.removeItem("gameId");
+    console.log("handeBeforeUnload executed sucessfully!");
+  };
   const startGame = async () => {
     playSound();
     try {
