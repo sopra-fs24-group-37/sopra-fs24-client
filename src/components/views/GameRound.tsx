@@ -13,6 +13,10 @@ import { point, polygon, booleanPointInPolygon } from "@turf/turf";
 import { Howl } from "howler";
 import StartSound from "../../sounds/Start.mp3";
 import UserName from "components/ui/UserName";
+import Powerup1 from "../../sounds/Powerup1.mp3";
+import Powerup2 from "../../sounds/Powerup2.mp3";
+import Powerup3 from "../../sounds/Powerup3.mp3";
+
 
 const GameRound = ({ client }) => {
   const navigate = useNavigate();
@@ -33,10 +37,17 @@ const GameRound = ({ client }) => {
   const [cantonHintUsed, setCantonHintUsed] = useState(false);
   const [tripleHintUsed, setTripleHintUsed] = useState(false);
   const [receivedEndTime, setEndTime] = useState(null);
+  const [powerupCount, setPowerupCount] = useState(() => {
+    const savedCount = sessionStorage.getItem("powerupCount");
+    
+    return savedCount ? parseInt(savedCount, 10) : 0;
+  });
 
-  const playSound = () => {
-    const sound = new Howl({
-      src: [StartSound],
+  const sounds = [Powerup1, Powerup2, Powerup3];
+
+  const playSound = (index) => {
+    const soundInstance = new Howl({
+      src: [sounds[index]],
       autoplay: true,
       loop: false,
       volume: 1.0,
@@ -112,6 +123,10 @@ const GameRound = ({ client }) => {
     };
   }, [client, gameId, userId]);
 
+  useEffect(() => {
+    sessionStorage.setItem("powerupCount", powerupCount);
+  }, [powerupCount]);
+
   const handleMapClick = (latlng) => {
     if (canInteract) {
       setSelectedLocation(latlng);
@@ -119,13 +134,15 @@ const GameRound = ({ client }) => {
   };
 
   const handleCantonHint = () => {
-    playSound();
+    playSound(powerupCount);
+    setPowerupCount((prevCount) => prevCount + 1);
     setShowCanton(true);
     setCantonHintUsed(true);
   };
 
   const handleTripleHint = () => {
-    playSound();
+    playSound(powerupCount);
+    setPowerupCount((prevCount) => prevCount + 1);
     const cantonCode = getCantonCodeForLocation(location);
     console.log("Location kan_code (cantonCode):", cantonCode);
 
@@ -200,6 +217,13 @@ const GameRound = ({ client }) => {
     }, 5000);
   };
 
+
+  const handleDoubleScore = () => {
+    playSound(powerupCount);
+    setPowerupCount((prevCount) => prevCount + 1);
+    setDoubleScoreUsed(true);
+  };
+
   return (
     <div className="flex-center-wrapper">
       <UserName username={sessionStorage.getItem("username")} />
@@ -256,13 +280,8 @@ const GameRound = ({ client }) => {
           <div className="button-container">
             <Button
               title="Use this power-up to get double points for your guess. You can only use this power-up once per game!"
-              disabled={
-                !canInteract || doubleScoreUsed || !currentPlayer?.doubleScore
-              }
-              onClick={() => {
-                playSound();
-                setDoubleScoreUsed(true);
-              }}
+              disabled={!canInteract || doubleScoreUsed || !currentPlayer?.doubleScore}
+              onClick={handleDoubleScore}
             >
               Double Score
             </Button>

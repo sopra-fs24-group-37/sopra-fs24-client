@@ -112,25 +112,29 @@ const GameSetup = ({ client }) => {
   };
   const startGame = async () => {
     playSound();
-    try {
-      const response = await api.put(`/games/${gameId}/start`);
-      client.publish({
-        destination: "/app/games/" + gameId + "/started",
-        body: gameId,
-      });
-      if (response.status === 200) {
-        sessionStorage.removeItem("guessTime");
-        sessionStorage.removeItem("numRounds");
-        sessionStorage.removeItem("setGamePassword");
-        navigate("/gameround/" + gameId);
-      } else {
-        console.error(`Starting game failed with status: ${response.status}`);
+    setTimeout(async () => {
+      try {
+        const response = await api.put(`/games/${gameId}/start`);
+        client.publish({
+          destination: "/app/games/" + gameId + "/started",
+          body: gameId,
+        });
+        if (response.status === 200) {
+          sessionStorage.removeItem("guessTime");
+          sessionStorage.removeItem("numRounds");
+          sessionStorage.removeItem("setGamePassword");
+          sessionStorage.removeItem("powerupCount"); // safety measure
+          sessionStorage.removeItem("gameEnd"); // safety measure
+          navigate("/gameround/" + gameId);
+        } else {
+          console.error(`Starting game failed with status: ${response.status}`);
+        }
+      } catch (error) {
+        console.error(`Starting game failed: ${handleError(error)}`);
       }
-    } catch (error) {
-      console.error(`Starting game failed: ${handleError(error)}`);
-    }
+    }, 2000); // 2-second delay
   };
-
+  
   const leaveGame = async () => {
     try {
       const currentUserId = sessionStorage.getItem("userId");
