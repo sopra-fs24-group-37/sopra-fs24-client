@@ -18,6 +18,7 @@ const GamePodium = ({ client }) => {
       const gameId = sessionStorage.getItem("gameId");
       if (!gameId) {
         console.error("Game ID is missing from session storage");
+        
         return;
       }
 
