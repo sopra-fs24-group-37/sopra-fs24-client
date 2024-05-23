@@ -5,14 +5,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
+import Alert from "components/ui/Alert"; // Import the new Alert component
 import PropTypes from "prop-types";
 
-/*
-It is possible to add multiple components inside a single file,
-however be sure not to clutter your files with an endless amount!
-As a rule of thumb, use one file per component and only add small,
-specific components that belong to the main one in the same file.
- */
 const FormField = (props) => {
   const inputType =
     props.label.toLowerCase() === "password" ? "password" : "text";
@@ -41,30 +36,30 @@ const Registration = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState<string>(null);
   const [username, setUsername] = useState<string>(null);
+  const [errorMessage, setErrorMessage] = useState<string>(null); // State to handle error message
 
   const doRegistration = async () => {
     try {
       const requestBody = JSON.stringify({ username, password });
       const response = await api.post("/users", requestBody);
 
-      // Get the returned user and update a new object.
       const user = new User(response.data);
 
-      // Store the token into the local storage.
       sessionStorage.setItem("token", user.token);
       sessionStorage.setItem("userId", user.userId);
 
-      // Registration successfully worked --> navigate to the route /lobby in the LobbyRouter
       navigate("/lobby");
     } catch (error) {
-      alert(
-        `Something went wrong during the registration: \n${handleError(error)}`
-      );
+      setErrorMessage(`Something went wrong during the registration: ${handleError(error)}`);
     }
   };
 
   const goToLogin = () => {
     navigate("/login");
+  };
+
+  const handleCloseAlert = () => {
+    setErrorMessage(null);
   };
 
   return (
@@ -101,11 +96,9 @@ const Registration = () => {
           </div>
         </div>
       </div>
+      {errorMessage && <Alert message={errorMessage} onClose={handleCloseAlert} />} {/* Render alert independently */}
     </BaseContainer>
   );
 };
 
-/**
- * You can get access to the history object's properties via the useLocation, useNavigate, useParams, ... hooks.
- */
 export default Registration;

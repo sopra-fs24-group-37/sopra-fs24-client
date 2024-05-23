@@ -1,3 +1,4 @@
+// Login.js
 import React, { useState } from "react";
 import { api, handleError } from "helpers/api";
 import User from "models/User";
@@ -5,14 +6,9 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "components/ui/Button";
 import "styles/views/Login.scss";
 import BaseContainer from "components/ui/BaseContainer";
+import Alert from "components/ui/Alert"; // Import the Alert component
 import PropTypes from "prop-types";
 
-/*
-It is possible to add multiple components inside a single file,
-however be sure not to clutter your files with an endless amount!
-As a rule of thumb, use one file per component and only add small,
-specific components that belong to the main one in the same file.
- */
 const FormField = (props) => {
   const inputType =
     props.label.toLowerCase() === "password" ? "password" : "text";
@@ -41,6 +37,7 @@ const Login = () => {
   const navigate = useNavigate();
   const [password, setPassword] = useState<string>(null);
   const [username, setUsername] = useState<string>(null);
+  const [errorMessage, setErrorMessage] = useState<string>(null); // State to handle error message
 
   const doLogin = async () => {
     try {
@@ -57,12 +54,16 @@ const Login = () => {
       // Login successfully worked --> navigate to the route /lobby in the LobbyRouter
       navigate("/lobby");
     } catch (error) {
-      alert(`Something went wrong during the login: \n${handleError(error)}`);
+      setErrorMessage(`Something went wrong during the login: ${handleError(error)}`);
     }
   };
 
   const goToRegistration = () => {
     navigate("/registration");
+  };
+
+  const handleCloseAlert = () => {
+    setErrorMessage(null);
   };
 
   return (
@@ -101,11 +102,9 @@ const Login = () => {
           </div>
         </div>
       </div>
+      {errorMessage && <Alert message={errorMessage} onClose={handleCloseAlert} />} {/* Render alert independently */}
     </BaseContainer>
   );
 };
 
-/**
- * You can get access to the history object's properties via the useLocation, useNavigate, useParams, ... hooks.
- */
 export default Login;
