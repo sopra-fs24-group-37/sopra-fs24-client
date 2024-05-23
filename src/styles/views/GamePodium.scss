@@ -9,10 +9,64 @@
     flex-direction: column;
     align-items: center;
     box-shadow: $dropShadow;
-    min-width: 350px; 
+    min-width: 350px;
 
     // Set font style for the whole container
     font-family: $fontDefault;
+    font-size: 16px;
+  }
+
+  .podium-container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    height: 300px;
+    margin: 10px 0;
+  }
+
+  .podium-position {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    margin: 0 10px;
+    padding: 30px;
+    color: #fff;
+    border-radius: 20px;
+  }
+
+  .position-1 {
+    height: 180px;
+    background-color: #F27EE5;
+  }
+
+  .position-2 {
+    height: 140px;
+    background-color: #F1BCEF;
+  }
+
+  .position-3 {
+    height: 100px;
+    background-color: #FFDBFB; /* Bronze color */
+  }
+
+  .podium-rank {
+    font-size: 24px;
+    font-weight: bold;
+  }
+
+  .podium-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+  }
+
+  .player-name {
+    font-size: 18px;
+  }
+
+  .player-score {
     font-size: 16px;
   }
 

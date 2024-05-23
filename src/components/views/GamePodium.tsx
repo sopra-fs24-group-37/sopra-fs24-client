@@ -11,14 +11,13 @@ const GamePodium = ({ client }) => {
   const navigate = useNavigate();
   const [players, setPlayers] = useState([]);
   const [celebration, setCelebration] = useState(false); // State to control confetti
-  const gameId = sessionStorage.getItem("gameId")
+  const gameId = sessionStorage.getItem("gameId");
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
       const gameId = sessionStorage.getItem("gameId");
       if (!gameId) {
         console.error("Game ID is missing from session storage");
-
         return;
       }
 
@@ -40,29 +39,32 @@ const GamePodium = ({ client }) => {
     });
 
     fetchLeaderboard();
-  }, []);
+  }, [client, gameId]);
 
   const goToLobby = () => {
     navigate("/lobby");
-    sessionStorage.removeItem("gameId")
-    sessionStorage.removeItem("powerupCount")
+    sessionStorage.removeItem("gameId");
+    sessionStorage.removeItem("powerupCount");
     setCelebration(false); // Turn off confetti when leaving the page
   };
+
+  const topThree = players.slice(0, 3);
 
   return (
     <div className="flex-center-wrapper">
       {celebration && <Confetti />}
-      <BaseContainer
-        title="And the winner is ..."
-        className="gamepodium container"
-      >
-        <ol>
-          {players.map((player, index) => (
-            <li key={index}>
-              {player.user.username}: {player.score}
-            </li>
+      <BaseContainer title="And the winner is ..." className="gamepodium container">
+        <div className="podium-container">
+          {topThree.map((player, index) => (
+            <div key={index} className={`podium-position position-${index + 1}`}>
+              <div className="podium-rank">{index + 1}</div>
+              <div className="podium-player">
+                <div className="player-name">{player.user.username}</div>
+                <div className="player-score">{player.score}</div>
+              </div>
+            </div>
           ))}
-        </ol>
+        </div>
         <br />
         <Button title="Click here to go back to the lobby" width="100%" onClick={goToLobby}>
           Go back to Lobby
