@@ -50,6 +50,7 @@ const GamePodium = ({ client }) => {
   };
 
   const topThree = players.slice(0, 3);
+  const others = players.slice(3);
 
   return (
     <div className="flex-center-wrapper">
@@ -66,6 +67,19 @@ const GamePodium = ({ client }) => {
             </div>
           ))}
         </div>
+        {others.length > 0 && (
+          <div className="others-container">
+            <ul className="others-list">
+              {others.map((player, index) => (
+                <li key={index + 4} className="others-list-item">
+                  <span className="others-rank">{index + 4}.</span>
+                  <span className="others-name">{player.user.username}</span>
+                  <span className="others-score">{player.score}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         <br />
         <Button title="Click here to go back to the lobby" width="100%" onClick={goToLobby}>
           Go back to Lobby

@@ -198,7 +198,7 @@ const GameSetup = ({ client }) => {
               !isGamemaster ||
               showGameSettings ||
               users.length <= 1 ||
-              users.length > 2
+              users.length > 4
             }
           >
             Start Game

@@ -33,20 +33,21 @@
     padding: 30px;
     color: #fff;
     border-radius: 20px;
+    min-width: 120px;
   }
 
   .position-1 {
-    height: 180px;
+    height: 250px;
     background-color: #F27EE5;
   }
 
   .position-2 {
-    height: 140px;
+    height: 200px;
     background-color: #F1BCEF;
   }
 
   .position-3 {
-    height: 100px;
+    height: 150px;
     background-color: #FFDBFB; /* Bronze color */
   }
 
@@ -87,4 +88,50 @@
     align-items: center;
     justify-content: center;
   }
+
+  .others-container {
+  margin-top: 20px;
+  text-align: center;
+
+  h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .others-list {
+    list-style-type: none;
+    padding: 0;
+
+    .others-list-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px;
+      background: $background;
+      border-radius: $borderRadius;
+      margin-bottom: 10px;
+    }
+
+    .others-rank,
+    .others-name,
+    .others-score {
+      font-size: 18px;
+    }
+
+    .others-rank {
+      width: 30px;
+    }
+
+    .others-name {
+      flex: 1;
+      text-align: left;
+      padding-left: 10px;
+    }
+
+    .others-score {
+      width: 70px;
+      text-align: right;
+    }
+  }
+}
+
 }
