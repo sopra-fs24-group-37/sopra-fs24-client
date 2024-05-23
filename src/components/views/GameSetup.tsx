@@ -47,6 +47,8 @@ const GameSetup = ({ client }) => {
         console.log("Number of Rounds:", numRounds);
         console.log("Guess Time:", guessTime);
         console.log("Password:", password);
+        sessionStorage.setItem("guessTime", guessTime);
+        sessionStorage.setItem("numRounds", numRounds);
 
         const gameMasterPresent = gameData.players.some(
           (player) => player.user.userId === gameData.gameMaster
@@ -182,34 +184,35 @@ const GameSetup = ({ client }) => {
       <UserName username={sessionStorage.getItem("username")} />
       <ToastContainer />
       {!showGameSettings && (
-        <BaseContainer
-          title="Users ready to play:"
-          className="gamesetup container"
-        >
-          {usersContent}
-          {pin && (
-            <div className="gamesetup-row">
-              <div className="gamesetup explanation">
-                PIN: {pin && pin.toString().replace(/(\d{3})(\d{3})/, "$1 $2")}
-              </div>
-            </div>
-          )}
-          <br></br>
-          <Button
-            width="100%"
-            onClick={startGame}
-            title="Click here to start the game"
-            disabled={
-              !isGamemaster ||
-              showGameSettings ||
-              users.length <= 1 ||
-              users.length > 2
-            }
+        <div className="gamesetup side-by-side-containers">
+          <BaseContainer
+            title="Users ready to play:"
+            className="gamesetup container"
           >
-            Start Game
-          </Button>
-          <br></br>
-          {
+            {usersContent}
+            {pin && (
+              <div className="gamesetup-row">
+                <div className="gamesetup explanation">
+                  PIN:{" "}
+                  {pin && pin.toString().replace(/(\d{3})(\d{3})/, "$1 $2")}
+                </div>
+              </div>
+            )}
+            <br />
+            <Button
+              width="100%"
+              onClick={startGame}
+              title="Click here to start the game"
+              disabled={
+                !isGamemaster ||
+                showGameSettings ||
+                users.length <= 1 ||
+                users.length > 2
+              }
+            >
+              Start Game
+            </Button>
+            <br />
             <Button
               width="100%"
               onClick={showSettingsContainer}
@@ -218,22 +221,20 @@ const GameSetup = ({ client }) => {
             >
               Game Settings
             </Button>
-          }
-          <br></br>
-          <Button
-            width="100%"
-            onClick={confirmLeave}
-            title="Click here to go back to the lobby"
-          >
-            Back to Lobby
-          </Button>
-        </BaseContainer>
-      )}
-      {!showGameSettings && (
-        <GameParameters
-          numRounds={sessionStorage.getItem("numRounds")}
-          guessTime={sessionStorage.getItem("guessTime")}
-        />
+            <br />
+            <Button
+              width="100%"
+              onClick={confirmLeave}
+              title="Click here to go back to the lobby"
+            >
+              Back to Lobby
+            </Button>
+          </BaseContainer>
+          <GameParameters
+            numRounds={sessionStorage.getItem("numRounds")}
+            guessTime={sessionStorage.getItem("guessTime")}
+          />
+        </div>
       )}
       {showConfirmLeave && (
         <ConfirmLeave
