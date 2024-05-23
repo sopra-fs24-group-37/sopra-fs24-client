@@ -133,7 +133,7 @@ We would like to thank [Fengjiao Ji](https://github.com/feji08) for guiding us t
 
 - **[Esri](https://www.esri.com/en-us/home)**: provider of the World Ocean Base tile used for rendering the geographical surface of Switzerland
 
-Sound effects were created with [GarageBaned](https://www.apple.com/de/mac/garageband/). The entry melody played when going to the login or registration area is absed on the first two bars of the [Swiss Psalm](https://de.wikipedia.org/wiki/Datei:Schweizerpsalm.svg). 
+Sound effects were created with [GarageBand](https://www.apple.com/de/mac/garageband/). The entry melody played when going to the login or registration area is absed on the first two bars of the [Swiss Psalm](https://de.wikipedia.org/wiki/Datei:Schweizerpsalm.svg). 
 
 ## License <a id="license"></a>
 
