@@ -2,7 +2,7 @@
 
 .parameter.base-container {
     width: auto;
-    height: 125px; 
+    height: 150px; 
     border-radius: $borderRadius;
     box-shadow: $dropShadow;
     background: $background;
@@ -12,6 +12,7 @@
     align-items: center;
     min-width: 200px; 
     margin-left: auto;
+    padding: 5px;
 }
 
 .parameter.title {
@@ -19,9 +20,11 @@
     font-size: 20px;
     text-align: center;
     margin-bottom: 10px;
+    padding: 5px
 }
 .parameter.description {
     font-size: 16px;
     text-align: center;
     margin-bottom: 10px;
+    padding: 5px
 }
