@@ -34,6 +34,10 @@ const AppRouter = () => {
     };
   }, []);
 
+  if (!client) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <BrowserRouter>
       <Routes>
