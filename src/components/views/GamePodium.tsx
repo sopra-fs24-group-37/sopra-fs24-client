@@ -6,12 +6,13 @@ import { Button } from "components/ui/Button";
 import "styles/views/GamePodium.scss";
 import Confetti from "react-confetti";
 import PropTypes from "prop-types";
+import UserName from "components/ui/UserName";
 
 const GamePodium = ({ client }) => {
   const navigate = useNavigate();
   const [players, setPlayers] = useState([]);
   const [celebration, setCelebration] = useState(false); // State to control confetti
-  const gameId = sessionStorage.getItem("gameId")
+  const gameId = sessionStorage.getItem("gameId");
 
   useEffect(() => {
     const fetchLeaderboard = async () => {
@@ -44,12 +45,13 @@ const GamePodium = ({ client }) => {
 
   const goToLobby = () => {
     navigate("/lobby");
-    sessionStorage.removeItem("gameId")
+    sessionStorage.removeItem("gameId");
     setCelebration(false); // Turn off confetti when leaving the page
   };
 
   return (
     <div className="flex-center-wrapper">
+      <UserName username={sessionStorage.getItem("username")} />
       {celebration && <Confetti />}
       <BaseContainer
         title="And the winner is ..."
@@ -63,7 +65,11 @@ const GamePodium = ({ client }) => {
           ))}
         </ol>
         <br />
-        <Button title="Click here to go back to the lobby" width="100%" onClick={goToLobby}>
+        <Button
+          title="Click here to go back to the lobby"
+          width="100%"
+          onClick={goToLobby}
+        >
           Go back to Lobby
         </Button>
       </BaseContainer>

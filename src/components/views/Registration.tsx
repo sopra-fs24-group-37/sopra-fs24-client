@@ -47,10 +47,13 @@ const Registration = () => {
 
       sessionStorage.setItem("token", user.token);
       sessionStorage.setItem("userId", user.userId);
+      sessionStorage.setItem("username", user.username);
 
       navigate("/lobby");
     } catch (error) {
-      setErrorMessage(`Something went wrong during the registration: ${handleError(error)}`);
+      setErrorMessage(
+        `Something went wrong during the registration: ${handleError(error)}`
+      );
     }
   };
 
@@ -96,7 +99,10 @@ const Registration = () => {
           </div>
         </div>
       </div>
-      {errorMessage && <Alert message={errorMessage} onClose={handleCloseAlert} />} {/* Render alert independently */}
+      {errorMessage && (
+        <Alert message={errorMessage} onClose={handleCloseAlert} />
+      )}{" "}
+      {/* Render alert independently */}
     </BaseContainer>
   );
 };

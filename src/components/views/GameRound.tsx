@@ -12,6 +12,7 @@ import swissCantons from "../../geodata/cantons.json";
 import { point, polygon, booleanPointInPolygon } from "@turf/turf";
 import { Howl } from "howler";
 import StartSound from "../../sounds/Start.mp3";
+import UserName from "components/ui/UserName";
 
 const GameRound = ({ client }) => {
   const navigate = useNavigate();
@@ -201,6 +202,7 @@ const GameRound = ({ client }) => {
 
   return (
     <div className="flex-center-wrapper">
+      <UserName username={sessionStorage.getItem("username")} />
       <div className="gameround side-by-side-containers">
         <BaseContainer
           className="gameround container"

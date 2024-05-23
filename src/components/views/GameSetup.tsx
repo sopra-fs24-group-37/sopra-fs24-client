@@ -11,6 +11,7 @@ import GameSettings from "./GameSettings";
 import PropTypes from "prop-types";
 import { Howl } from "howler";
 import StartSound from "../../sounds/Start.mp3";
+import UserName from "components/ui/UserName";
 
 const GameSetup = ({ client }) => {
   const [players, setPlayers] = useState<User[]>([]);
@@ -105,7 +106,6 @@ const GameSetup = ({ client }) => {
     api.put(`/games/${gameId}/leave`, userId);
     api.put(`/users/${userId}/logout`);
     sessionStorage.removeItem("gameId");
-    console.log("handeBeforeUnload executed sucessfully!");
   };
   const startGame = async () => {
     playSound();
@@ -178,6 +178,7 @@ const GameSetup = ({ client }) => {
 
   return (
     <div className="flex-center-wrapper">
+      <UserName username={sessionStorage.getItem("username")} />
       <ToastContainer /> {/* Add ToastContainer to render toasts */}
       {!showGameSettings && (
         <BaseContainer

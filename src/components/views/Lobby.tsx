@@ -12,7 +12,8 @@ import { User } from "types";
 import Game from "models/Game";
 import infoIcon from "../../images/info_icon.svg";
 import InfoWindow from "./InfoWindow";
-import GamePassword from "components/ui/GamePassword"; // Import the GamePassword component
+import GamePassword from "components/ui/GamePassword";
+import UserName from "components/ui/UserName";
 
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
@@ -78,6 +79,7 @@ const Lobby = ({ client }) => {
     api.put(`/users/${userId}/logout`);
     sessionStorage.removeItem("token");
     sessionStorage.removeItem("userId");
+    sessionStorage.removeItem("username");
     navigate("/login");
   };
 
@@ -202,7 +204,8 @@ const Lobby = ({ client }) => {
 
   return (
     <div className="flex-center-wrapper">
-      <ToastContainer /> {/* Add ToastContainer to render toasts */}
+      <UserName username={sessionStorage.getItem("username")} />
+      <ToastContainer />
       <img
         src={infoIcon}
         alt="Info"
