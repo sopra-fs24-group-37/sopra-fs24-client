@@ -12,6 +12,7 @@ import PropTypes from "prop-types";
 import { Howl } from "howler";
 import StartSound from "../../sounds/Start.mp3";
 import UserName from "components/ui/UserName";
+import GameParameters from "components/ui/GameParameters";
 
 const GameSetup = ({ client }) => {
   const [players, setPlayers] = useState<User[]>([]);
@@ -179,7 +180,7 @@ const GameSetup = ({ client }) => {
   return (
     <div className="flex-center-wrapper">
       <UserName username={sessionStorage.getItem("username")} />
-      <ToastContainer /> {/* Add ToastContainer to render toasts */}
+      <ToastContainer />
       {!showGameSettings && (
         <BaseContainer
           title="Users ready to play:"
@@ -227,6 +228,12 @@ const GameSetup = ({ client }) => {
             Back to Lobby
           </Button>
         </BaseContainer>
+      )}
+      {!showGameSettings && (
+        <GameParameters
+          numRounds={sessionStorage.getItem("numRounds")}
+          guessTime={sessionStorage.getItem("guessTime")}
+        />
       )}
       {showConfirmLeave && (
         <ConfirmLeave
