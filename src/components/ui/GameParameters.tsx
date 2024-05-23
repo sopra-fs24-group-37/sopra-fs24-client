@@ -13,7 +13,9 @@ const GameParameters = ({ numRounds, guessTime }) => {
       <p className="parameter description">
         Number of Rounds: {defaultNumRounds}
       </p>
-      <p className="parameter description">Time to guess: {defaultGuessTime}</p>
+      <p className="parameter description">
+        Time to guess: {defaultGuessTime}s
+      </p>
     </BaseContainer>
   );
 };
