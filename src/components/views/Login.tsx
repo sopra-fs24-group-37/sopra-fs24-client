@@ -50,11 +50,14 @@ const Login = () => {
       // Store the token into the local storage.
       sessionStorage.setItem("token", user.token);
       sessionStorage.setItem("userId", user.userId);
+      sessionStorage.setItem("username", user.username);
 
       // Login successfully worked --> navigate to the route /lobby in the LobbyRouter
       navigate("/lobby");
     } catch (error) {
-      setErrorMessage(`Something went wrong during the login: ${handleError(error)}`);
+      setErrorMessage(
+        `Something went wrong during the login: ${handleError(error)}`
+      );
     }
   };
 
@@ -102,7 +105,10 @@ const Login = () => {
           </div>
         </div>
       </div>
-      {errorMessage && <Alert message={errorMessage} onClose={handleCloseAlert} />} {/* Render alert independently */}
+      {errorMessage && (
+        <Alert message={errorMessage} onClose={handleCloseAlert} />
+      )}{" "}
+      {/* Render alert independently */}
     </BaseContainer>
   );
 };

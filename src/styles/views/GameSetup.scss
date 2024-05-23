@@ -46,10 +46,7 @@
   & p,h2 {
     margin: 0.5em 0;
   }
-  &.side-by-side-containers {
-    display: flex;
-    gap: 50px; // creates gap between the two containers
-  }
+
   &.explanation {
     color: $boxText;
     font-size: 20px;
@@ -75,6 +72,10 @@
       cursor: pointer;
       transition: transform 0.2s ease; }
 }}
+.side-by-side-containers {
+  display: flex;
+  gap: 50px; 
+}
 .label-custom {
   font-size: 1.2em; 
 }
