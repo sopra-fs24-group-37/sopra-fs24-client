@@ -4,6 +4,7 @@ import "styles/views/Waiting.scss";
 import BaseContainer from "components/ui/BaseContainer";
 import { api } from "helpers/api";
 import ResultMap from "components/ui/ResultMap";
+import UserName from "components/ui/UserName";
 
 const Waiting = () => {
   const [roundStats, setRoundStats] = useState([]);
@@ -68,11 +69,9 @@ const Waiting = () => {
 
   return (
     <div className="flex-center-wrapper">
+      <UserName username={sessionStorage.getItem("username")} />
       <div className="container-wrapper">
-        <BaseContainer
-          title="Round results:"
-          className="waiting-container"
-        >
+        <BaseContainer title="Round results:" className="waiting-container">
           {renderScores()}
           <br />
           <span className="bold-helvetica">

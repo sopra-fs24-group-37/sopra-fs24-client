@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import "styles/views/Profile.scss";
 import { User } from "types";
 import "styles/views/Login.scss";
+import UserName from "components/ui/UserName";
 
 const FormField = (props) => {
   const inputType =
@@ -36,8 +37,6 @@ FormField.propTypes = {
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
     <div className="player username">{user.username}</div>
-    {/* <div className="player name">{user.name}</div> */}
-    {/* <div className="player id">id: {user.id}</div> */}
   </div>
 );
 
@@ -89,6 +88,7 @@ const Profile = () => {
       });
       setUser(response.data);
       setShowEdit(false);
+      sessionStorage.setItem("username", newUsername);
     } catch (error) {
       console.error(
         `Something went wrong while updating the username: \n${handleError(
@@ -109,6 +109,7 @@ const Profile = () => {
   if (user) {
     content = (
       <div className="profile container">
+        <UserName username={sessionStorage.getItem("username")} />
         <div className="profile title">{user.username}&apos;s Profile</div>
         <p>
           <strong>Status:</strong> {user.status}

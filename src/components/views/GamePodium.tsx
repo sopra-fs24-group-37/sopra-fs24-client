@@ -6,6 +6,7 @@ import { Button } from "components/ui/Button";
 import "styles/views/GamePodium.scss";
 import Confetti from "react-confetti";
 import PropTypes from "prop-types";
+import UserName from "components/ui/UserName";
 
 const GamePodium = ({ client }) => {
   const navigate = useNavigate();
@@ -54,6 +55,7 @@ const GamePodium = ({ client }) => {
 
   return (
     <div className="flex-center-wrapper">
+      <UserName username={sessionStorage.getItem("username")} />
       {celebration && <Confetti />}
       <BaseContainer title="And the winner is ..." className="gamepodium container">
         <div className="podium-container">
@@ -81,7 +83,11 @@ const GamePodium = ({ client }) => {
           </div>
         )}
         <br />
-        <Button title="Click here to go back to the lobby" width="100%" onClick={goToLobby}>
+        <Button
+          title="Click here to go back to the lobby"
+          width="100%"
+          onClick={goToLobby}
+        >
           Go back to Lobby
         </Button>
       </BaseContainer>

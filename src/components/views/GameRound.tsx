@@ -11,9 +11,12 @@ import { Button } from "components/ui/Button";
 import swissCantons from "../../geodata/cantons.json";
 import { point, polygon, booleanPointInPolygon } from "@turf/turf";
 import { Howl } from "howler";
+import StartSound from "../../sounds/Start.mp3";
+import UserName from "components/ui/UserName";
 import Powerup1 from "../../sounds/Powerup1.mp3";
 import Powerup2 from "../../sounds/Powerup2.mp3";
 import Powerup3 from "../../sounds/Powerup3.mp3";
+
 
 const GameRound = ({ client }) => {
   const navigate = useNavigate();
@@ -179,6 +182,7 @@ const GameRound = ({ client }) => {
 
   const handleBeforeUnload = (event) => {
     api.put(`/games/${gameId}/leave`, userId);
+    api.put(`/users/${userId}/logout`);
     sessionStorage.removeItem("gameId");
   };
 
@@ -213,6 +217,7 @@ const GameRound = ({ client }) => {
     }, 5000);
   };
 
+
   const handleDoubleScore = () => {
     playSound(powerupCount);
     setPowerupCount((prevCount) => prevCount + 1);
@@ -221,6 +226,7 @@ const GameRound = ({ client }) => {
 
   return (
     <div className="flex-center-wrapper">
+      <UserName username={sessionStorage.getItem("username")} />
       <div className="gameround side-by-side-containers">
         <BaseContainer
           className="gameround container"
@@ -281,14 +287,20 @@ const GameRound = ({ client }) => {
             </Button>
             <Button
               title="Use this power-up to be shown the canton in which the image was taken. You can only use this power-up once per game!"
-              disabled={!canInteract || cantonHintUsed || !currentPlayer?.cantonHint}
+              disabled={
+                !canInteract || cantonHintUsed || !currentPlayer?.cantonHint
+              }
               onClick={handleCantonHint}
             >
               Canton Hint
             </Button>
             <Button
               title="Use this power-up to be shown three cantons in one of which the image was taken. You can only use this power-up once per game!"
-              disabled={!canInteract || tripleHintUsed || !currentPlayer?.multipleCantonHint}
+              disabled={
+                !canInteract ||
+                tripleHintUsed ||
+                !currentPlayer?.multipleCantonHint
+              }
               onClick={handleTripleHint}
             >
               Triple Hint

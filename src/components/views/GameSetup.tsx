@@ -11,6 +11,8 @@ import GameSettings from "./GameSettings";
 import PropTypes from "prop-types";
 import { Howl } from "howler";
 import StartSound from "../../sounds/Start.mp3";
+import UserName from "components/ui/UserName";
+import GameParameters from "components/ui/GameParameters";
 
 const GameSetup = ({ client }) => {
   const [players, setPlayers] = useState<User[]>([]);
@@ -29,7 +31,7 @@ const GameSetup = ({ client }) => {
       src: [StartSound],
       autoplay: true,
       loop: false,
-      volume: 1.0,
+      volume: 0.5,
     });
   };
 
@@ -45,6 +47,8 @@ const GameSetup = ({ client }) => {
         console.log("Number of Rounds:", numRounds);
         console.log("Guess Time:", guessTime);
         console.log("Password:", password);
+        sessionStorage.setItem("guessTime", guessTime);
+        sessionStorage.setItem("numRounds", numRounds);
 
         const gameMasterPresent = gameData.players.some(
           (player) => player.user.userId === gameData.gameMaster
@@ -79,9 +83,10 @@ const GameSetup = ({ client }) => {
       destination: "/app/games/" + gameId + "/joining",
       body: gameId,
     });
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
-      // Cleanup subscriptions
+      window.removeEventListener("beforeunload", handleBeforeUnload);
       updateSubscription.unsubscribe();
       startSubscription.unsubscribe();
     };
@@ -99,7 +104,12 @@ const GameSetup = ({ client }) => {
   const handleLeaveCancel = () => {
     setShowConfirmLeave(false); // Hide ConfirmLeave component if canceled
   };
-
+  const handleBeforeUnload = (event) => {
+    const userId = sessionStorage.getItem("userId");
+    api.put(`/games/${gameId}/leave`, userId);
+    api.put(`/users/${userId}/logout`);
+    sessionStorage.removeItem("gameId");
+  };
   const startGame = async () => {
     playSound();
     setTimeout(async () => {
@@ -175,36 +185,38 @@ const GameSetup = ({ client }) => {
 
   return (
     <div className="flex-center-wrapper">
-      <ToastContainer /> {/* Add ToastContainer to render toasts */}
+      <UserName username={sessionStorage.getItem("username")} />
+      <ToastContainer />
       {!showGameSettings && (
-        <BaseContainer
-          title="Users ready to play:"
-          className="gamesetup container"
-        >
-          {usersContent}
-          {pin && (
-            <div className="gamesetup-row">
-              <div className="gamesetup explanation">
-                PIN: {pin && pin.toString().replace(/(\d{3})(\d{3})/, "$1 $2")}
-              </div>
-            </div>
-          )}
-          <br></br>
-          <Button
-            width="100%"
-            onClick={startGame}
-            title="Click here to start the game"
-            disabled={
-              !isGamemaster ||
-              showGameSettings ||
-              users.length <= 1 ||
-              users.length > 4
-            }
+        <div className="gamesetup side-by-side-containers">
+          <BaseContainer
+            title="Users ready to play:"
+            className="gamesetup container"
           >
-            Start Game
-          </Button>
-          <br></br>
-          {
+            {usersContent}
+            {pin && (
+              <div className="gamesetup-row">
+                <div className="gamesetup explanation">
+                  PIN:{" "}
+                  {pin && pin.toString().replace(/(\d{3})(\d{3})/, "$1 $2")}
+                </div>
+              </div>
+            )}
+            <br />
+            <Button
+              width="100%"
+              onClick={startGame}
+              title="Click here to start the game"
+              disabled={
+                !isGamemaster ||
+                showGameSettings ||
+                users.length <= 1 ||
+                users.length > 2
+              }
+            >
+              Start Game
+            </Button>
+            <br />
             <Button
               width="100%"
               onClick={showSettingsContainer}
@@ -213,16 +225,20 @@ const GameSetup = ({ client }) => {
             >
               Game Settings
             </Button>
-          }
-          <br></br>
-          <Button
-            width="100%"
-            onClick={confirmLeave}
-            title="Click here to go back to the lobby"
-          >
-            Back to Lobby
-          </Button>
-        </BaseContainer>
+            <br />
+            <Button
+              width="100%"
+              onClick={confirmLeave}
+              title="Click here to go back to the lobby"
+            >
+              Back to Lobby
+            </Button>
+          </BaseContainer>
+          <GameParameters
+            numRounds={sessionStorage.getItem("numRounds")}
+            guessTime={sessionStorage.getItem("guessTime")}
+          />
+        </div>
       )}
       {showConfirmLeave && (
         <ConfirmLeave
