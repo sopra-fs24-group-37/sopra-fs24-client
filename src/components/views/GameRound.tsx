@@ -57,7 +57,6 @@ const GameRound = ({ client }) => {
     const fetchGameInfo = async () => {
       try {
         const response = await api.get(`/games/${gameId}`);
-        //console.log("Game Info:", response.data);
         const player = response.data.players.find(
           (p) => p.user.userId === userId
         );
@@ -72,7 +71,6 @@ const GameRound = ({ client }) => {
     const roundSub = client.subscribe(
       `/topic/games/${gameId}/round`,
       (message) => {
-        //console.log(`Received: ${message.body}`);
         try {
           const jsonObject = JSON.parse(message.body);
           setImageUrl(jsonObject.regular_url);
@@ -99,7 +97,6 @@ const GameRound = ({ client }) => {
     const gameEndSubscription = client.subscribe(
       `/topic/games/${gameId}/ended`,
       (message) => {
-        //console.log(`Received: ${message.body}`);
         sessionStorage.setItem("gameEnd", "true");
       }
     );
@@ -143,12 +140,9 @@ const GameRound = ({ client }) => {
     playSound(powerupCount);
     setPowerupCount((prevCount) => prevCount + 1);
     const cantonCode = getCantonCodeForLocation(location);
-    //console.log("Location kan_code (cantonCode):", cantonCode);
-
     const otherCantons = swissCantons.features.filter(
       (canton) => canton.properties.kan_code[0] !== cantonCode
     );
-    //console.log("Other cantons:", otherCantons);
     const shuffled = otherCantons.sort(() => 0.5 - Math.random());
     setAdditionalCantons(shuffled.slice(0, 2));
     setShowCanton(true);
@@ -169,12 +163,8 @@ const GameRound = ({ client }) => {
     );
 
     if (foundCanton) {
-      //console.log("Found canton:", foundCanton.properties.kan_code[0]);
-
       return foundCanton.properties.kan_code[0];
     } else {
-      //console.log("No canton found for the given location");
-
       return null;
     }
   };
@@ -188,7 +178,6 @@ const GameRound = ({ client }) => {
   const handleTimeUp = () => {
     setCanInteract(false);
     const { lat, lng } = selectedLocation;
-    //console.log("Guessed coordinates:", lat, lng);
 
     const guessPayload = {
       latitude: lat,
@@ -198,7 +187,6 @@ const GameRound = ({ client }) => {
       useCantonHint: cantonHintUsed,
       useMultipleCantonHint: tripleHintUsed,
     };
-    //console.log("Data sent to backend:", guessPayload);
 
     client.publish({
       destination: `/app/games/${gameId}/guess`,

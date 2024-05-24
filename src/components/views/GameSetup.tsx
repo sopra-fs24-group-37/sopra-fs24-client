@@ -40,14 +40,10 @@ const GameSetup = ({ client }) => {
     const updateSubscription = client.subscribe(
       "/topic/games/" + gameId,
       (message) => {
-        //console.log(`Received: ${message.body}`);
         const gameData = JSON.parse(message.body);
         const numRounds = gameData.numRounds;
         const guessTime = gameData.guessTime;
         const password = gameData.password;
-        //console.log("Number of Rounds:", numRounds);
-        //console.log("Guess Time:", guessTime);
-        //console.log("Password:", password);
         sessionStorage.setItem("guessTime", guessTime);
         sessionStorage.setItem("numRounds", numRounds);
 
@@ -75,7 +71,6 @@ const GameSetup = ({ client }) => {
     const startSubscription = client.subscribe(
       "/topic/games/" + gameId + "/started",
       (message) => {
-        //console.log(`Received: ${message.body}`);
         navigate("/gameround/" + gameId);
       }
     );
@@ -206,7 +201,7 @@ const GameSetup = ({ client }) => {
               onClick={startGame}
               title="Click here to start the game"
               disabled={
-                buttonsDisabled || 
+                buttonsDisabled ||
                 !isGamemaster ||
                 showGameSettings ||
                 users.length <= 1 ||
