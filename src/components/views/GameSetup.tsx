@@ -26,7 +26,9 @@ const GameSetup = ({ client }) => {
   const [pin, setPin] = useState("");
   const [showConfirmLeave, setShowConfirmLeave] = useState(false);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
-
+  const [numRounds, setNumRounds] = useState(null);
+  const [guessTime, setGuessTime] = useState(null);
+  
   const playSound = () => {
     const sound = new Howl({
       src: [StartSound],
@@ -203,6 +205,20 @@ const GameSetup = ({ client }) => {
                 </div>
               </div>
             )}
+            {users && users.length === 1 && (
+              <div className="gamesetup-row">
+                <div className="gamesetup explanation">
+                  At least one more player is needed.
+                </div>
+              </div>
+            )}
+            {users && users.length > 4 && (
+              <div className="gamesetup-row">
+                <div className="gamesetup explanation">
+                  A maximum of four players are allowed.
+                </div>
+              </div>
+            )}   
             <br />
             <Button
               width="100%"
