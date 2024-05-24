@@ -10,6 +10,7 @@
     align-items: center;
     box-shadow: $dropShadow;
     min-width: 350px;
+    z-index: 2; // Ensure this is before the username container
 
     // Set font style for the whole container
     font-family: $fontDefault;

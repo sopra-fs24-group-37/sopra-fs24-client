@@ -22,6 +22,8 @@
     min-width: 350px;
     max-width: 50%;
     text-align: center; // This will center-align text within the container
+    max-height: 650px;
+    z-index: 2; // Ensure this is before the username container
 
     img {
       max-height: 100%; // Maximum height of the image is 100% of its container

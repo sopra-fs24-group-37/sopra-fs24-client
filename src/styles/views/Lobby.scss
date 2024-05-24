@@ -18,6 +18,7 @@
     align-items: center;
     box-shadow: $dropShadow;
     min-width: 350px; 
+    z-index: 2; // Ensure this is before the username container
   }
   &.user-list {
     list-style: none;

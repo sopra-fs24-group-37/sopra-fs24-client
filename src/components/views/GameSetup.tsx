@@ -25,6 +25,7 @@ const GameSetup = ({ client }) => {
   const [isGamemaster, setIsGamemaster] = useState(false);
   const [pin, setPin] = useState("");
   const [showConfirmLeave, setShowConfirmLeave] = useState(false);
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
 
   const playSound = () => {
     const sound = new Howl({
@@ -110,6 +111,7 @@ const GameSetup = ({ client }) => {
     sessionStorage.removeItem("gameId");
   };
   const startGame = async () => {
+    setButtonsDisabled(true);
     playSound();
     setTimeout(async () => {
       try {
@@ -204,6 +206,7 @@ const GameSetup = ({ client }) => {
               onClick={startGame}
               title="Click here to start the game"
               disabled={
+                buttonsDisabled || 
                 !isGamemaster ||
                 showGameSettings ||
                 users.length <= 1 ||
@@ -216,7 +219,7 @@ const GameSetup = ({ client }) => {
             <Button
               width="100%"
               onClick={showSettingsContainer}
-              disabled={!isGamemaster || showGameSettings}
+              disabled={buttonsDisabled || !isGamemaster || showGameSettings}
               title="Click here to adjust the game settings"
             >
               Game Settings
@@ -225,6 +228,7 @@ const GameSetup = ({ client }) => {
             <Button
               width="100%"
               onClick={confirmLeave}
+              disabled={buttonsDisabled}
               title="Click here to go back to the lobby"
             >
               Back to Lobby
