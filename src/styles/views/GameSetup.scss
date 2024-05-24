@@ -23,6 +23,8 @@
   &.user-list {
     list-style: none;
     padding-left: 0;
+    max-height: 400px; // Set the max height
+    overflow-y: auto; // Enable vertical scrolling
   }
   &.user-container {
     font-size: 1.2rem; // Increase font size
