@@ -17,7 +17,6 @@ const Waiting = () => {
     const fetchLeaderboard = async () => {
       try {
         const response = await api.get(`round/${gameId}/leaderboard`);
-        console.log("Results from last round:", response);
         setRoundStats(response.data.roundStats);
         setActualLocation({
           lat: response.data.latitude,
