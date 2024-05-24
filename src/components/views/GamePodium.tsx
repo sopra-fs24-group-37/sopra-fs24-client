@@ -19,7 +19,7 @@ const GamePodium = ({ client }) => {
       const gameId = sessionStorage.getItem("gameId");
       if (!gameId) {
         console.error("Game ID is missing from session storage");
-        
+
         return;
       }
 
@@ -57,10 +57,16 @@ const GamePodium = ({ client }) => {
     <div className="flex-center-wrapper">
       <UserName username={sessionStorage.getItem("username")} />
       {celebration && <Confetti />}
-      <BaseContainer title="And the winner is ..." className="gamepodium container">
+      <BaseContainer
+        title="And the winner is ..."
+        className="gamepodium container"
+      >
         <div className="podium-container">
           {topThree.map((player, index) => (
-            <div key={index} className={`podium-position position-${index + 1}`}>
+            <div
+              key={index}
+              className={`podium-position position-${index + 1}`}
+            >
               <div className="podium-rank">{index + 1}</div>
               <div className="podium-player">
                 <div className="player-name">{player.user.username}</div>

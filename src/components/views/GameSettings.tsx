@@ -38,7 +38,7 @@ const GameSettings = ({ client, hideSettingsContainer }) => {
       guessTime: guessTime,
       setGamePassword: setGamePassword,
     };
-    console.log(payload);
+    //console.log(payload);
     client.publish({
       destination: `/app/games/${gameId}/settings`,
       body: JSON.stringify(payload),
@@ -47,7 +47,7 @@ const GameSettings = ({ client, hideSettingsContainer }) => {
     sessionStorage.setItem("numRounds", numRounds);
     sessionStorage.setItem("setGamePassword", setGamePassword);
 
-    console.log("Settings update message published.");
+    //console.log("Settings update message published.");
     hideSettingsContainer();
   };
 
@@ -75,7 +75,7 @@ const GameSettings = ({ client, hideSettingsContainer }) => {
       <br />
       <div className="gamesetup-row">
         <label htmlFor="gamePassword" className="label-custom">
-          Private Game
+          🔒 Private Game
         </label>
         <input
           id="gamePassword"

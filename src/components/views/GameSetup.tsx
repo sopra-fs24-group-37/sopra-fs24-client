@@ -40,14 +40,14 @@ const GameSetup = ({ client }) => {
     const updateSubscription = client.subscribe(
       "/topic/games/" + gameId,
       (message) => {
-        console.log(`Received: ${message.body}`);
+        //console.log(`Received: ${message.body}`);
         const gameData = JSON.parse(message.body);
         const numRounds = gameData.numRounds;
         const guessTime = gameData.guessTime;
         const password = gameData.password;
-        console.log("Number of Rounds:", numRounds);
-        console.log("Guess Time:", guessTime);
-        console.log("Password:", password);
+        //console.log("Number of Rounds:", numRounds);
+        //console.log("Guess Time:", guessTime);
+        //console.log("Password:", password);
         sessionStorage.setItem("guessTime", guessTime);
         sessionStorage.setItem("numRounds", numRounds);
 
@@ -75,7 +75,7 @@ const GameSetup = ({ client }) => {
     const startSubscription = client.subscribe(
       "/topic/games/" + gameId + "/started",
       (message) => {
-        console.log(`Received: ${message.body}`);
+        //console.log(`Received: ${message.body}`);
         navigate("/gameround/" + gameId);
       }
     );
@@ -169,14 +169,11 @@ const GameSetup = ({ client }) => {
   let usersContent = <div>Waiting for other players to join...</div>;
   if (users) {
     usersContent = (
-      <ul
-        className="gamesetup user-list"
-        title="This user has joined your game"
-      >
+      <ul className="gamesetup user-list">
         {users.map((user, index) => (
           <div className="gamesetup user-container" key={index}>
             <li className="gamesetup user-container user-item">
-              {user.username}
+              👤 {user.username}
             </li>
           </div>
         ))}
@@ -198,7 +195,7 @@ const GameSetup = ({ client }) => {
             {pin && (
               <div className="gamesetup-row">
                 <div className="gamesetup explanation">
-                  PIN:{" "}
+                  🔑 PIN:{" "}
                   {pin && pin.toString().replace(/(\d{3})(\d{3})/, "$1 $2")}
                 </div>
               </div>
