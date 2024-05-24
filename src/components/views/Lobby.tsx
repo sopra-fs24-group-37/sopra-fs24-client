@@ -46,8 +46,9 @@ const Lobby = ({ client }) => {
       "/topic/games/getGames",
       (message) => {
         const updatedGames = JSON.parse(message.body);
+        console.log("Incoming games JSON:", updatedGames); // Log the incoming games JSON
         const filteredGames = updatedGames.filter(
-          (game) => game.gameStatus === "WAITING"
+          (game) => game.gameStatus === "WAITING" && game.players.length < 4
         );
         setGames(filteredGames);
       }
@@ -111,6 +112,9 @@ const Lobby = ({ client }) => {
 
       if (response.status === 200) {
         navigate(`/gamesetup/${games.gameId}`);
+        client.publish({
+          destination: "/app/games/updateGames",
+        });
       } else if (response.status === 401) {
         toast.error("Invalid password.");
       } else {
