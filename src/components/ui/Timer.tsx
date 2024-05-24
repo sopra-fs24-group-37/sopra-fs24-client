@@ -82,7 +82,7 @@ const Timer = ({ end_time, onTimeUp, className }) => {
 };
 
 Timer.propTypes = {
-  end_time: PropTypes.string.isRequired,
+  end_time: PropTypes.string,
   onTimeUp: PropTypes.func.isRequired,
   className: PropTypes.string,
 };

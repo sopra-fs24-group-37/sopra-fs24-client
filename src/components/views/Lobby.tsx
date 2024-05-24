@@ -30,7 +30,6 @@ const Lobby = ({ client }) => {
   const [users, setUsers] = useState<User[]>(null);
   const [games, setGames] = useState<Game[]>(null);
   const [showInfo, setShowInfo] = useState(false); // handles state of info screen
-  const [password, setPassword] = useState<string>("");
   const [showPasswordPrompt, setShowPasswordPrompt] = useState(false);
   const [selectedGameId, setSelectedGameId] = useState<string>(null);
 
