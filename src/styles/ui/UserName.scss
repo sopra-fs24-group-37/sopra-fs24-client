@@ -9,7 +9,9 @@
     height: 50px; 
     border-radius: $borderRadius;
     background-color: rgba(255, 255, 255, 0.978);
-    z-index: 1; // Ensure this is behind other components
+    z-index: 1; 
+    box-shadow: $dropShadow;
+
 }
 
 .username.title {
