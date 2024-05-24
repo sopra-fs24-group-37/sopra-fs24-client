@@ -35,9 +35,9 @@ FormField.propTypes = {
 
 const Login = () => {
   const navigate = useNavigate();
-  const [password, setPassword] = useState<string>(null);
-  const [username, setUsername] = useState<string>(null);
-  const [errorMessage, setErrorMessage] = useState<string>(null); // State to handle error message
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // State to handle error message
 
   const doLogin = async () => {
     try {

@@ -21,8 +21,8 @@ const GameParameters = ({ numRounds, guessTime }) => {
 };
 
 GameParameters.propTypes = {
-  numRounds: PropTypes.any.isRequired,
-  guessTime: PropTypes.any.isRequired,
+  numRounds: PropTypes.any,
+  guessTime: PropTypes.any,
 };
 
 export default GameParameters;
