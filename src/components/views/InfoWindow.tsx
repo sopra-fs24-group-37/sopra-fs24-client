@@ -12,7 +12,7 @@ const InfoWindow: React.FC<InfoWindowProps> = ({ onClose }) => (
     <div className="info-content">
       <p>
         <strong>SwissQuiz</strong> is an interactive online quiz about the
-        geography of Switzerland. In each round, you will see a random image
+        geography of Switzerland for up to four players. In each round, you will see a random image
         from somewhere in Switzerland. Your task is to guess where the image was
         taken by clicking on a map of Switzerland.
       </p>
