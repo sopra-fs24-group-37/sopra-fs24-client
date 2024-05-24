@@ -34,8 +34,8 @@ FormField.propTypes = {
 
 const Registration = () => {
   const navigate = useNavigate();
-  const [password, setPassword] = useState<string>(null);
-  const [username, setUsername] = useState<string>(null);
+  const [password, setPassword] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
   const [errorMessage, setErrorMessage] = useState<string>(null); // State to handle error message
 
   const handleUsernameChange = (input) => {
