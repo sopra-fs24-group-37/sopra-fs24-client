@@ -2,8 +2,8 @@
      style="fill-rule: evenodd; clip-rule: evenodd; stroke-linecap: round;">
     <defs>
         <linearGradient x1="0" y1="0" x2="1" y2="0" gradientUnits="userSpaceOnUse" gradientTransform="matrix(2.30025e-15,-37.566,37.566,2.30025e-15,416.455,540.999)" id="map-marker-38-f">
-            <stop offset="0" stop-color="rgb(151,203,250)"/>
-            <stop offset="1" stop-color="rgb(151,203,250)"/>
+            <stop offset="0" stop-color="rgb(125,228,250)"/>
+            <stop offset="1" stop-color="rgb(125,228,250)"/>
         </linearGradient>
     </defs>
     <g transform="matrix(19.5417,0,0,19.5417,-7889.1,-9807.44)">
