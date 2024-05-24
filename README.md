@@ -15,7 +15,7 @@
 
 ## Introduction <a name="introduction"></a>
 
-SwissQuiz is an interactive online quiz about the geography of Switzerland. In each round, players will be shown a random image taken somewhere in Switzerland. Your task is to guess where the image was taken by clicking on a map of Switzerland. The application thus allows you to discover and explore the beauty of Switzerland in a playful manner.
+SwissQuiz is an interactive online quiz about the geography of Switzerland for up to four players. In each round, players will be shown a random image taken somewhere in Switzerland. Your task is to guess where the image was taken by clicking on a map of Switzerland. The application thus allows you to discover and explore the beauty of Switzerland in a playful manner.
 
 ## Technologies <a id="technologies"></a>
 
