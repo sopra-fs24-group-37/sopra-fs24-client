@@ -46,7 +46,6 @@ const Lobby = ({ client }) => {
       "/topic/games/getGames",
       (message) => {
         const updatedGames = JSON.parse(message.body);
-        console.log("Incoming games JSON:", updatedGames); // Log the incoming games JSON
         const filteredGames = updatedGames.filter(
           (game) => game.gameStatus === "WAITING" && game.players.length < 4
         );
