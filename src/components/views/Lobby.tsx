@@ -17,7 +17,7 @@ import UserName from "components/ui/UserName";
 
 const Player = ({ user }: { user: User }) => (
   <div className="player container">
-    <div className="player username">{user.username}</div>
+    <div className="player username">💫 {user.username}</div>
   </div>
 );
 
@@ -40,7 +40,7 @@ const Lobby = ({ client }) => {
       (message) => {
         const updatedUsers = JSON.parse(message.body);
         setUsers(updatedUsers);
-        console.log("Updated users list received:", updatedUsers);
+        //console.log("Updated users list received:", updatedUsers);
       }
     );
 
@@ -52,7 +52,7 @@ const Lobby = ({ client }) => {
           (game) => game.gameStatus === "WAITING"
         );
         setGames(filteredGames);
-        console.log("Updated games list received:", filteredGames);
+        //console.log("Updated games list received:", filteredGames);
       }
     );
 
@@ -86,7 +86,7 @@ const Lobby = ({ client }) => {
   const initiateGame = async () => {
     try {
       const currentUserId = sessionStorage.getItem("userId");
-      console.log("Current UserID:", currentUserId); // Log the value of currentUserId
+      //console.log("Current UserID:", currentUserId); // Log the value of currentUserId
       const response = await api.post("/games", { gameMaster: currentUserId });
       const games = new Game(response.data);
       sessionStorage.setItem("gameId", games.gameId);
@@ -106,7 +106,7 @@ const Lobby = ({ client }) => {
   const joinGame = async (gameId: string, password?: string) => {
     try {
       const currentUserId = sessionStorage.getItem("userId");
-      console.log("Current GameID:", gameId);
+      //console.log("Current GameID:", gameId);
       const response = await api.put(`/games/${gameId}/join`, currentUserId, {
         params: { gamePassword: password || null },
       });
@@ -194,7 +194,7 @@ const Lobby = ({ client }) => {
             onClick={() => handleJoinGameClick(game.gameId)}
           >
             <div className="lobby game-container">
-              {getUserUsername(game.gameMaster)}&apos;s Game
+              🕹️ {getUserUsername(game.gameMaster)}&apos;s Game
             </div>
           </li>
         ))}

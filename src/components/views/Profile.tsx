@@ -62,13 +62,13 @@ const Profile = () => {
         const response = await api.get("/users/" + userId);
 
         setUser(response.data);
-
+        /*
         console.log("request to:", response.request.responseURL);
         console.log("status code:", response.status);
         console.log("status text:", response.statusText);
         console.log("requested data:", response.data);
 
-        console.log(response);
+        console.log(response);*/
       } catch (error) {
         console.error(
           `Something went wrong while fetching the users: \n${handleError(

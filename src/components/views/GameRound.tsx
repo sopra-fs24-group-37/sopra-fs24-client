@@ -17,7 +17,6 @@ import Powerup1 from "../../sounds/Powerup1.mp3";
 import Powerup2 from "../../sounds/Powerup2.mp3";
 import Powerup3 from "../../sounds/Powerup3.mp3";
 
-
 const GameRound = ({ client }) => {
   const navigate = useNavigate();
   const [imageUrl, setImageUrl] = useState("");
@@ -39,7 +38,7 @@ const GameRound = ({ client }) => {
   const [receivedEndTime, setEndTime] = useState(null);
   const [powerupCount, setPowerupCount] = useState(() => {
     const savedCount = sessionStorage.getItem("powerupCount");
-    
+
     return savedCount ? parseInt(savedCount, 10) : 0;
   });
 
@@ -58,7 +57,7 @@ const GameRound = ({ client }) => {
     const fetchGameInfo = async () => {
       try {
         const response = await api.get(`/games/${gameId}`);
-        console.log("Game Info:", response.data);
+        //console.log("Game Info:", response.data);
         const player = response.data.players.find(
           (p) => p.user.userId === userId
         );
@@ -73,7 +72,7 @@ const GameRound = ({ client }) => {
     const roundSub = client.subscribe(
       `/topic/games/${gameId}/round`,
       (message) => {
-        console.log(`Received: ${message.body}`);
+        //console.log(`Received: ${message.body}`);
         try {
           const jsonObject = JSON.parse(message.body);
           setImageUrl(jsonObject.regular_url);
@@ -100,7 +99,7 @@ const GameRound = ({ client }) => {
     const gameEndSubscription = client.subscribe(
       `/topic/games/${gameId}/ended`,
       (message) => {
-        console.log(`Received: ${message.body}`);
+        //console.log(`Received: ${message.body}`);
         sessionStorage.setItem("gameEnd", "true");
       }
     );
@@ -144,12 +143,12 @@ const GameRound = ({ client }) => {
     playSound(powerupCount);
     setPowerupCount((prevCount) => prevCount + 1);
     const cantonCode = getCantonCodeForLocation(location);
-    console.log("Location kan_code (cantonCode):", cantonCode);
+    //console.log("Location kan_code (cantonCode):", cantonCode);
 
     const otherCantons = swissCantons.features.filter(
       (canton) => canton.properties.kan_code[0] !== cantonCode
     );
-    console.log("Other cantons:", otherCantons);
+    //console.log("Other cantons:", otherCantons);
     const shuffled = otherCantons.sort(() => 0.5 - Math.random());
     setAdditionalCantons(shuffled.slice(0, 2));
     setShowCanton(true);
@@ -170,11 +169,11 @@ const GameRound = ({ client }) => {
     );
 
     if (foundCanton) {
-      console.log("Found canton:", foundCanton.properties.kan_code[0]);
+      //console.log("Found canton:", foundCanton.properties.kan_code[0]);
 
       return foundCanton.properties.kan_code[0];
     } else {
-      console.log("No canton found for the given location");
+      //console.log("No canton found for the given location");
 
       return null;
     }
@@ -189,7 +188,7 @@ const GameRound = ({ client }) => {
   const handleTimeUp = () => {
     setCanInteract(false);
     const { lat, lng } = selectedLocation;
-    console.log("Guessed coordinates:", lat, lng);
+    //console.log("Guessed coordinates:", lat, lng);
 
     const guessPayload = {
       latitude: lat,
@@ -199,7 +198,7 @@ const GameRound = ({ client }) => {
       useCantonHint: cantonHintUsed,
       useMultipleCantonHint: tripleHintUsed,
     };
-    console.log("Data sent to backend:", guessPayload);
+    //console.log("Data sent to backend:", guessPayload);
 
     client.publish({
       destination: `/app/games/${gameId}/guess`,
@@ -216,7 +215,6 @@ const GameRound = ({ client }) => {
       navigate(`/gameround/${gameId}/waiting`);
     }, 5000);
   };
-
 
   const handleDoubleScore = () => {
     playSound(powerupCount);
@@ -280,7 +278,9 @@ const GameRound = ({ client }) => {
           <div className="button-container">
             <Button
               title="Use this power-up to get double points for your guess. You can only use this power-up once per game!"
-              disabled={!canInteract || doubleScoreUsed || !currentPlayer?.doubleScore}
+              disabled={
+                !canInteract || doubleScoreUsed || !currentPlayer?.doubleScore
+              }
               onClick={handleDoubleScore}
             >
               Double Score
